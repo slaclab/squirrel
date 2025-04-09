@@ -108,6 +108,14 @@ class _Backend:
         """Return the Root Entry in this backend"""
         raise NotImplementedError
 
+    def get_tags(self) -> set[str]:
+        """Return the set of valid Collection / Snapshot tags"""
+        raise NotImplementedError
+
+    def set_tags(self, tags: set[str]) -> None:
+        """Set the set of valid Collection / Snapshot tags"""
+        raise NotImplementedError
+
 
 def populate_backend(backend: _Backend, sources: Iterable[Union[Callable, str, Root, Entry]]) -> None:
     """
