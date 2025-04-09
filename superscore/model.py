@@ -215,7 +215,6 @@ class Nestable:
 class Collection(Nestable, Entry):
     """Nestable group of Parameters and Collections"""
     meta_pvs: ClassVar[List[Parameter]] = []
-    all_tags: ClassVar[List[Tag]] = []
 
     title: str = ""
     children: List[Union[UUID, Parameter, Collection]] = field(default_factory=list)
@@ -280,3 +279,4 @@ class Root:
     """Top level structure holding ``Entry``'s.  Denotes the top of the tree"""
     meta_id: UUID = _root_uuid
     entries: List[Entry] = field(default_factory=list)
+    all_tags: set[str] = field(default_factory=set)

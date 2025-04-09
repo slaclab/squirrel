@@ -338,3 +338,13 @@ class FilestoreBackend(_Backend):
         db = self._load_or_initialize()
         yield db
         self.store()
+
+    def get_tags(self) -> set[str]:
+        with self._load_and_store_context():
+            tags = self._root.all_tags
+        return tags
+
+    def set_tags(self, tags) -> None:
+        # for removed tags, remove from all entries?
+        with self._load_and_store_context():
+            self._root.all_tags = tags
