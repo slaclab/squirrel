@@ -523,7 +523,7 @@ class Client:
     ) -> configparser.ConfigParser:
         """
         Attempt to read a config file from the backend's root path.
-        If it does not exist, raise a NotImplementedError indicating
+        If it does not exist, raise a FileNotFoundError indicating
         the user must provide one.
 
         Parameters
@@ -538,7 +538,7 @@ class Client:
 
         Raises
         ------
-        NotImplementedError
+        FileNotFoundError
             If the config file does not exist.
         AttributeError
             If the backend does not define a 'path' attribute.
@@ -552,7 +552,7 @@ class Client:
         config_path = root_dir / filename
 
         if not config_path.exists():
-            raise NotImplementedError(
+            raise FileNotFoundError(
                 f"No backend config found at {config_path}. Please add one to the root of the backend."
             )
 
