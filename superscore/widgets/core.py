@@ -4,7 +4,7 @@ Core widget classes for qt-based GUIs.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, ClassVar, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 from weakref import WeakValueDictionary
 
 from pcdsutils.qt.designer_display import DesignerDisplay
@@ -127,7 +127,7 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
 
     def __init__(self, data: AnyDataclass, **kwargs):
 
-        self.tag_options = kwargs.pop('tag_options', None)
+        tag_strings = kwargs.pop('tag_options', dict())
 
         super().__init__(data=data, **kwargs)
         try:
@@ -148,7 +148,7 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
             self.tags_frame.hide()
             self.tags_input_field.hide()
         else:
-            self.init_tags()
+            self.init_tags(tag_strings)
 
     def init_desc(self) -> None:
         """
@@ -204,21 +204,24 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
         line_count = max(self.desc_edit.document().size().toSize().height(), 1)
         self.desc_edit.setFixedHeight(line_count * 13 + 12)
 
-    def init_tags(self) -> None:
+    def init_tags(self, tag_strings: dict[int, str]) -> None:
         """
         Set up the various tags widgets appropriately.
         """
+        tag_options = {string: index for index, string in tag_strings.items()}
+
         tags_list = TagsWidget(
             data_list=self.bridge.tags,
+            tag_strings=tag_strings,
         )
 
-        def add_tag_to_container(tag: str) -> None:
+        def add_tag_to_container(string: str) -> None:
+            tag = tag_options[string]
             if tag in self.bridge.tags.get():
                 return
-
             tags_list.add_tag(tag)
 
-        tag_editor = TagEditor(self.tag_options)
+        tag_editor = TagEditor(tag_options.keys())
         tag_editor.tag_added.connect(add_tag_to_container)
         self.tags_input.insertWidget(0, tag_editor)
         self.tags_content.addWidget(tags_list)
@@ -247,7 +250,8 @@ class TagsWidget(QtWidgets.QWidget):
     def __init__(
         self,
         parent: Optional[QtWidgets.QWidget] = None,
-        data_list: Optional["QDataclassList"] = None,
+        data_list: Optional[QDataclassList] = None,
+        tag_strings: Dict[int, str] = None,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -269,6 +273,7 @@ class TagsWidget(QtWidgets.QWidget):
         super().__init__(*args, **kwargs)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.data_list = data_list
+        self.tag_strings = tag_strings if tag_strings else {}
         self.widgets = []
         self.flow_layout = FlowLayout(self, margin=0, spacing=5)
         self.setLayout(self.flow_layout)
@@ -279,7 +284,7 @@ class TagsWidget(QtWidgets.QWidget):
                 for starting_value in starting_list:
                     self.add_tag(starting_value, init=True)
 
-    def add_tag(self, starting_value: str, init: bool = False, **kwargs: Any) -> "TagsElem":
+    def add_tag(self, tag_id: int, init: bool = False, **kwargs: Any) -> TagsElem:
         """
         Create and add a new editable tag element to the widget's layout.
 
@@ -289,7 +294,7 @@ class TagsWidget(QtWidgets.QWidget):
 
         Parameters
         ----------
-        starting_value : str
+        tag_id : int
             The text value for the new tag element.
         init : bool, optional
             Flag indicating whether this is part of the initial setup (True) or a new
@@ -302,14 +307,14 @@ class TagsWidget(QtWidgets.QWidget):
         TagsElem
             The newly created tag element.
         """
-        tag = TagsElem(starting_value, self)
+        tag = TagsElem(self.tag_strings[tag_id], self)
         self.widgets.append(tag)
         if not init and self.data_list is not None:
-            self.data_list.append(starting_value)
+            self.data_list.append(tag_id)
         self.flow_layout.addWidget(tag)
         return tag
 
-    def remove_tag(self, tag: "TagsElem") -> None:
+    def remove_tag(self, tag: TagsElem) -> None:
         """
         Remove a tag element from the widget and update the underlying data_list.
 
@@ -342,9 +347,9 @@ class TagsElem(QtWidgets.QWidget):
     **kwargs : Any
         Additional keyword arguments to pass to the base QWidget.
     """
-    def __init__(self, start_text: str, tags_widget: "TagsWidget", **kwargs: Any) -> None:
+    def __init__(self, start_text: str, tags_widget: TagsWidget, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.tags_widget: "TagsWidget" = tags_widget
+        self.tags_widget: TagsWidget = tags_widget
 
         self.label: QtWidgets.QLabel = QtWidgets.QLabel(start_text)
         self.remove_button: QtWidgets.QToolButton = QtWidgets.QToolButton()
@@ -357,9 +362,9 @@ class TagsElem(QtWidgets.QWidget):
         layout.addWidget(self.label)
         layout.addWidget(self.remove_button)
 
-        self.remove_button.clicked.connect(self.on_remove_clicked)
+        self.remove_button.clicked.connect(self.remove)
 
-    def on_remove_clicked(self) -> None:
+    def remove(self) -> None:
         """
         Handle the remove button click.
 
@@ -367,7 +372,6 @@ class TagsElem(QtWidgets.QWidget):
         schedules this widget for deletion.
         """
         self.tags_widget.remove_tag(self)
-        self.deleteLater()
 
 
 class TagEditor(Display, QtWidgets.QWidget):
@@ -398,23 +402,23 @@ class TagEditor(Display, QtWidgets.QWidget):
     add_button: QtWidgets.QPushButton
     layout: QtWidgets.QHBoxLayout
 
-    def __init__(self, tag_options: List[str]) -> None:
+    def __init__(self, tag_strings: List[str]) -> None:
         """
         Initialize the TagEditor widget.
 
         Parameters
         ----------
-        tag_options : list of str
+        tag_strings : list of str
             A list of predefined tags to populate the combo box and its completer.
         """
         super().__init__()
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.predefined_tags = tag_options
-        self.add_button.clicked.connect(self.on_add_clicked)
+        self.tag_strings = tag_strings
+        self.add_button.clicked.connect(self.add_tag)
 
-        completer = QtWidgets.QCompleter(self.predefined_tags, self.input_line)
+        completer = QtWidgets.QCompleter(self.tag_strings, self.input_line)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         completer.setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
         completer.setFilterMode(QtCore.Qt.MatchContains)
@@ -426,12 +430,12 @@ class TagEditor(Display, QtWidgets.QWidget):
         font_metrics = QtGui.QFontMetrics(self.input_line.lineEdit().font())
         placeholder_width = font_metrics.horizontalAdvance(placeholder_text)
         self.input_line.setMinimumWidth(placeholder_width + 40)
-        self.input_line.addItems(self.predefined_tags)
+        self.input_line.addItems(self.tag_strings)
         self.input_line.lineEdit().clear()
         self.input_line.setCompleter(completer)
-        self.input_line.lineEdit().returnPressed.connect(self.on_add_clicked)
+        self.input_line.lineEdit().returnPressed.connect(self.add_tag)
 
-    def on_add_clicked(self) -> None:
+    def add_tag(self) -> None:
         """
         Handle the add action when the Add button is clicked or Return is pressed.
 
@@ -440,7 +444,7 @@ class TagEditor(Display, QtWidgets.QWidget):
         `tag_added` signal.
         """
         text = self.input_line.currentText().strip()
-        if text in self.predefined_tags:
+        if text in self.tag_strings:
             self.tag_added.emit(text)
 
 

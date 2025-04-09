@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Flag, IntEnum, auto
-from typing import ClassVar, List, Optional, Set, Union
+from typing import ClassVar, Dict, List, Optional, Union
 from uuid import UUID, uuid4
 
 import apischema
@@ -247,7 +247,7 @@ class Snapshot(Nestable, Entry):
     children: List[Union[UUID, Readback, Setpoint, Snapshot]] = field(
         default_factory=list
     )
-    tags: Set[Tag] = field(default_factory=set)
+    tags: List[Tag] = field(default_factory=list)
     meta_pvs: List[Readback] = field(default_factory=list)
 
     def swap_to_uuids(self) -> List[Union[Entry, UUID]]:
@@ -279,4 +279,4 @@ class Root:
     """Top level structure holding ``Entry``'s.  Denotes the top of the tree"""
     meta_id: UUID = _root_uuid
     entries: List[Entry] = field(default_factory=list)
-    all_tags: set[str] = field(default_factory=set)
+    all_tags: Dict[int, str] = field(default_factory=dict)
