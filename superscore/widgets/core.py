@@ -11,7 +11,7 @@ from pcdsutils.qt.designer_display import DesignerDisplay
 from qtpy import QtCore, QtGui, QtWidgets
 
 from superscore.client import Client
-from superscore.qt_helpers import QDataclassBridge, QDataclassList
+from superscore.qt_helpers import QDataclassBridge, QDataclassSet
 from superscore.type_hints import AnyDataclass, OpenPageSlot
 from superscore.utils import SUPERSCORE_SOURCE_PATH
 from superscore.widgets import get_window
@@ -211,7 +211,7 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
         tag_options = {string: index for index, string in tag_strings.items()}
 
         tags_list = TagsWidget(
-            data_list=self.bridge.tags,
+            tags=self.bridge.tags,
             tag_strings=tag_strings,
         )
 
@@ -239,7 +239,7 @@ class TagsWidget(QtWidgets.QWidget):
     ----------
     widgets : List[TagsElem]
         List of tag elements currently contained in the widget.
-    data_list : QDataclassList
+    tags : QDataclassSet
         A data structure that holds the underlying data for the tags.
     flow_layout : FlowLayout
         The layout that manages the arrangement of the tag elements.
@@ -250,7 +250,7 @@ class TagsWidget(QtWidgets.QWidget):
     def __init__(
         self,
         parent: Optional[QtWidgets.QWidget] = None,
-        data_list: Optional[QDataclassList] = None,
+        tags: Optional[QDataclassSet] = None,
         tag_strings: Dict[int, str] = None,
         *args: Any,
         **kwargs: Any,
@@ -262,9 +262,9 @@ class TagsWidget(QtWidgets.QWidget):
         ----------
         parent : QWidget, optional
             The parent widget, by default None.
-        data_list : QDataclassList, optional
-            An object that contains the initial list of tags. It is expected to
-            have a `get()`, `append()`, and `remove_index()` method.
+        tags : QDataclassSet, optional
+            An object that contains the initial set of tags. It is expected to
+            have a `get()`, `add()`, and `remove()` method.
         *args : Any
             Additional positional arguments passed to the base QWidget.
         **kwargs : Any
@@ -272,14 +272,14 @@ class TagsWidget(QtWidgets.QWidget):
         """
         super().__init__(*args, **kwargs)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self.data_list = data_list
+        self.tags = tags
         self.tag_strings = tag_strings if tag_strings else {}
         self.widgets = []
         self.flow_layout = FlowLayout(self, margin=0, spacing=5)
         self.setLayout(self.flow_layout)
 
-        if self.data_list is not None:
-            starting_list = self.data_list.get()
+        if self.tags is not None:
+            starting_list = self.tags.get()
             if starting_list is not None:
                 for starting_value in starting_list:
                     self.add_tag(starting_value, init=True)
@@ -290,7 +290,7 @@ class TagsWidget(QtWidgets.QWidget):
 
         This method creates a new TagsElem with the given starting value, sets up
         its signals, and adds it to the flow layout. If not during initialization,
-        the tag is also appended to the underlying data_list.
+        the tag is also appended to the underlying tags.
 
         Parameters
         ----------
@@ -307,26 +307,25 @@ class TagsWidget(QtWidgets.QWidget):
         TagsElem
             The newly created tag element.
         """
-        tag = TagsElem(self.tag_strings[tag_id], self)
+        tag = TagsElem(tag_id, self)
         self.widgets.append(tag)
-        if not init and self.data_list is not None:
-            self.data_list.append(tag_id)
+        if not init and self.tags is not None:
+            self.tags.add(tag_id)
         self.flow_layout.addWidget(tag)
         return tag
 
     def remove_tag(self, tag: TagsElem) -> None:
         """
-        Remove a tag element from the widget and update the underlying data_list.
+        Remove a tag element from the widget and update the underlying tags.
 
         Parameters
         ----------
         tag : TagsElem
             The tag element to remove.
         """
-        index = self.widgets.index(tag)
         self.widgets.remove(tag)
-        if self.data_list is not None:
-            self.data_list.remove_index(index)
+        if self.tags is not None:
+            self.tags.remove_value(tag.tag)
         tag.deleteLater()
 
 
@@ -347,11 +346,13 @@ class TagsElem(QtWidgets.QWidget):
     **kwargs : Any
         Additional keyword arguments to pass to the base QWidget.
     """
-    def __init__(self, start_text: str, tags_widget: TagsWidget, **kwargs: Any) -> None:
+    def __init__(self, tag: int, tags_widget: TagsWidget, **kwargs: Any) -> None:
+        # TODO: set parent instead of tags_widget attr?
         super().__init__(**kwargs)
         self.tags_widget: TagsWidget = tags_widget
+        self.tag = tag
 
-        self.label: QtWidgets.QLabel = QtWidgets.QLabel(start_text)
+        self.label: QtWidgets.QLabel = QtWidgets.QLabel(self.tags_widget.tag_strings[tag])
         self.remove_button: QtWidgets.QToolButton = QtWidgets.QToolButton()
         self.remove_button.setText("X")
         self.remove_button.setToolTip("Remove this tag")

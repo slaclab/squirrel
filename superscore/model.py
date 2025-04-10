@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Flag, IntEnum, auto
-from typing import ClassVar, Dict, List, Optional, Union
+from typing import ClassVar, Dict, List, Optional, Set, Union
 from uuid import UUID, uuid4
 
 import apischema
@@ -218,7 +218,7 @@ class Collection(Nestable, Entry):
 
     title: str = ""
     children: List[Union[UUID, Parameter, Collection]] = field(default_factory=list)
-    tags: List[Tag] = field(default_factory=list)
+    tags: Set[Tag] = field(default_factory=set)
 
     def swap_to_uuids(self) -> List[Entry]:
         ref_list = []
@@ -247,7 +247,7 @@ class Snapshot(Nestable, Entry):
     children: List[Union[UUID, Readback, Setpoint, Snapshot]] = field(
         default_factory=list
     )
-    tags: List[Tag] = field(default_factory=list)
+    tags: Set[Tag] = field(default_factory=set)
     meta_pvs: List[Readback] = field(default_factory=list)
 
     def swap_to_uuids(self) -> List[Union[Entry, UUID]]:
