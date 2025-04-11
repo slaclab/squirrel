@@ -44,15 +44,15 @@ def test_tags(qtbot, linac_backend, simple_snapshot_fixture):
     widget = NameDescTagsWidget(simple_snapshot_fixture, tag_options=linac_backend.get_tags())
     qtbot.addWidget(widget)
 
-    tags_list = widget.tags_content.itemAt(0).widget()
-    tag_editor = widget.tags_input.itemAt(0).widget()
+    tags_list = widget.tags_widget.flow_layout
+    tag_editor = widget.tags_widget.editor
 
-    assert len(tags_list.widgets) == 0
+    assert tags_list.count() == 0
     tag_editor.input_line.lineEdit().setText("HXR")
     tag_editor.add_button.click()
-    assert len(tags_list.widgets) == 1
-    assert tags_list.widgets[0].label.text() == "HXR"
+    assert tags_list.count() == 1
+    assert tags_list.itemAt(0).widget().label.text() == "HXR"
 
-    tag_chip = tags_list.widgets[0]
+    tag_chip = tags_list.itemAt(0).widget()
     tag_chip.remove_button.click()
-    assert len(tags_list.widgets) == 0
+    assert tags_list.count() == 0

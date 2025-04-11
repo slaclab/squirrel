@@ -4,7 +4,7 @@ Core widget classes for qt-based GUIs.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Collection, Dict, Optional
 from weakref import WeakValueDictionary
 
 from pcdsutils.qt.designer_display import DesignerDisplay
@@ -119,10 +119,7 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
     name_frame: QtWidgets.QFrame
     desc_edit: QtWidgets.QPlainTextEdit
     desc_frame: QtWidgets.QFrame
-    tags_content: QtWidgets.QHBoxLayout
-    tags_input: QtWidgets.QHBoxLayout
-    tags_frame: QtWidgets.QFrame
-    tags_input_field: QtWidgets.QFrame
+    tags_widget: TagsWidget
     extra_text_label: QtWidgets.QLabel
 
     def __init__(self, data: AnyDataclass, **kwargs):
@@ -145,8 +142,7 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
         try:
             self.bridge.tags
         except AttributeError:
-            self.tags_frame.hide()
-            self.tags_input_field.hide()
+            self.tags_widget.hide()
         else:
             self.init_tags(tag_strings)
 
@@ -210,21 +206,17 @@ class NameDescTagsWidget(Display, NameMixin, DataWidget):
         """
         tag_options = {string: index for index, string in tag_strings.items()}
 
-        tags_list = TagsWidget(
-            tags=self.bridge.tags,
-            tag_strings=tag_strings,
-        )
+        self.tags_widget.setObjectName("TagsWidget")
+        self.tags_widget.set_tag_strings(tag_strings)
+        self.tags_widget.set_tags(self.bridge.tags)
 
         def add_tag_to_container(string: str) -> None:
             tag = tag_options[string]
             if tag in self.bridge.tags.get():
                 return
-            tags_list.add_tag(tag)
+            self.tags_widget.add_tag(tag)
 
-        tag_editor = TagEditor(tag_options.keys())
-        tag_editor.tag_added.connect(add_tag_to_container)
-        self.tags_input.insertWidget(0, tag_editor)
-        self.tags_content.addWidget(tags_list)
+        self.tags_widget.editor.tag_added.connect(add_tag_to_container)
 
 
 class TagsWidget(QtWidgets.QWidget):
@@ -245,13 +237,10 @@ class TagsWidget(QtWidgets.QWidget):
         The layout that manages the arrangement of the tag elements.
     """
 
-    widgets: List["TagsElem"]
+    tagStringsSet = QtCore.Signal(object)
 
     def __init__(
         self,
-        parent: Optional[QtWidgets.QWidget] = None,
-        tags: Optional[QDataclassSet] = None,
-        tag_strings: Dict[int, str] = None,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -260,29 +249,46 @@ class TagsWidget(QtWidgets.QWidget):
 
         Parameters
         ----------
-        parent : QWidget, optional
-            The parent widget, by default None.
         tags : QDataclassSet, optional
             An object that contains the initial set of tags. It is expected to
             have a `get()`, `add()`, and `remove()` method.
+        tag_strings : Optional[Dict[int, str]]
+            A map from tag id to tag string
         *args : Any
             Additional positional arguments passed to the base QWidget.
         **kwargs : Any
             Additional keyword arguments passed to the base QWidget.
         """
         super().__init__(*args, **kwargs)
-        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self.tags = tags
-        self.tag_strings = tag_strings if tag_strings else {}
-        self.widgets = []
-        self.flow_layout = FlowLayout(self, margin=0, spacing=5)
-        self.setLayout(self.flow_layout)
 
-        if self.tags is not None:
-            starting_list = self.tags.get()
-            if starting_list is not None:
-                for starting_value in starting_list:
-                    self.add_tag(starting_value, init=True)
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding
+        )
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.setObjectName("TagsWidgetLayout")
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+
+        tag_chip_layout = QtWidgets.QHBoxLayout()
+        tag_chip_layout.setObjectName("TagChipLayout")
+        layout.addLayout(tag_chip_layout)
+        label = QtWidgets.QLabel()
+        label.setText("Tags:")
+        tag_chip_layout.addWidget(label)
+        self.flow_layout = FlowLayout(margin=0, spacing=5)
+        self.flow_layout.setObjectName("TagFlowLayout")
+        tag_chip_layout.addLayout(self.flow_layout)
+
+        tag_input_layout = QtWidgets.QHBoxLayout()
+        tag_input_layout.setObjectName("TagsWidgetInputLayout")
+        self.editor = TagEditor()
+        self.tagStringsSet.connect(lambda d: self.editor.set_tag_strings(d.values()))
+        layout.addWidget(self.editor)
+
+        self.tags = set()
+        self.tag_strings = {}
 
     def add_tag(self, tag_id: int, init: bool = False, **kwargs: Any) -> TagsElem:
         """
@@ -307,8 +313,7 @@ class TagsWidget(QtWidgets.QWidget):
         TagsElem
             The newly created tag element.
         """
-        tag = TagsElem(tag_id, self)
-        self.widgets.append(tag)
+        tag = TagsElem(tag_id, parent=self)
         if not init and self.tags is not None:
             self.tags.add(tag_id)
         self.flow_layout.addWidget(tag)
@@ -323,10 +328,22 @@ class TagsWidget(QtWidgets.QWidget):
         tag : TagsElem
             The tag element to remove.
         """
-        self.widgets.remove(tag)
         if self.tags is not None:
             self.tags.remove_value(tag.tag)
+        tag.setParent(None)
         tag.deleteLater()
+
+    def set_tags(self, tags: Optional[QDataclassSet]) -> None:
+        self.tags = tags
+        if self.tags is not None:
+            starting_set = self.tags.get()
+            if starting_set is not None:
+                for starting_value in starting_set:
+                    self.add_tag(starting_value, init=True)
+
+    def set_tag_strings(self, tag_strings: Dict[int, str]) -> None:
+        self.tag_strings = tag_strings
+        self.tagStringsSet.emit(self.tag_strings)
 
 
 class TagsElem(QtWidgets.QWidget):
@@ -341,18 +358,15 @@ class TagsElem(QtWidgets.QWidget):
     ----------
     start_text : str
         The starting text for this tag.
-    tags_widget : TagsWidget
-        A reference to the TagsWidget that contains this widget.
     **kwargs : Any
         Additional keyword arguments to pass to the base QWidget.
     """
-    def __init__(self, tag: int, tags_widget: TagsWidget, **kwargs: Any) -> None:
-        # TODO: set parent instead of tags_widget attr?
+    def __init__(self, tag: int, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        self.tags_widget: TagsWidget = tags_widget
+
         self.tag = tag
 
-        self.label: QtWidgets.QLabel = QtWidgets.QLabel(self.tags_widget.tag_strings[tag])
+        self.label: QtWidgets.QLabel = QtWidgets.QLabel(self.parent().tag_strings[tag])
         self.remove_button: QtWidgets.QToolButton = QtWidgets.QToolButton()
         self.remove_button.setText("X")
         self.remove_button.setToolTip("Remove this tag")
@@ -372,10 +386,10 @@ class TagsElem(QtWidgets.QWidget):
         This slot notifies the parent TagsWidget to remove this tag element and then
         schedules this widget for deletion.
         """
-        self.tags_widget.remove_tag(self)
+        self.parent().remove_tag(self)
 
 
-class TagEditor(Display, QtWidgets.QWidget):
+class TagEditor(QtWidgets.QWidget):
     """
     TagEditor widget for managing tags.
 
@@ -397,44 +411,37 @@ class TagEditor(Display, QtWidgets.QWidget):
         The layout managing the arrangement of the widgets.
     """
     tag_added = QtCore.Signal(str)
-    filename: str = 'tag_editor.ui'
 
-    input_line: QtWidgets.QComboBox
-    add_button: QtWidgets.QPushButton
-    layout: QtWidgets.QHBoxLayout
-
-    def __init__(self, tag_strings: List[str]) -> None:
+    def __init__(self) -> None:
         """
         Initialize the TagEditor widget.
-
-        Parameters
-        ----------
-        tag_strings : list of str
-            A list of predefined tags to populate the combo box and its completer.
         """
         super().__init__()
-        self.layout.setSpacing(0)
-        self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tag_strings = tag_strings
+        self.tag_strings = set()
+
+        layout = QtWidgets.QHBoxLayout()
+        layout.setObjectName("TagEditorLayout")
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+
+        self.add_button = QtWidgets.QPushButton("Add")
         self.add_button.clicked.connect(self.add_tag)
+        layout.addWidget(self.add_button)
 
-        completer = QtWidgets.QCompleter(self.tag_strings, self.input_line)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        completer.setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
-        completer.setFilterMode(QtCore.Qt.MatchContains)
-
-        placeholder_text = "Add tag..."
+        self.input_line = QtWidgets.QComboBox()
+        layout.addWidget(self.input_line)
 
         self.input_line.setEditable(True)
-        self.input_line.lineEdit().setPlaceholderText(placeholder_text)
         font_metrics = QtGui.QFontMetrics(self.input_line.lineEdit().font())
+        placeholder_text = "Add tag..."
         placeholder_width = font_metrics.horizontalAdvance(placeholder_text)
+        self.input_line.lineEdit().setPlaceholderText(placeholder_text)
         self.input_line.setMinimumWidth(placeholder_width + 40)
-        self.input_line.addItems(self.tag_strings)
         self.input_line.lineEdit().clear()
-        self.input_line.setCompleter(completer)
         self.input_line.lineEdit().returnPressed.connect(self.add_tag)
+
+        layout.addStretch()
 
     def add_tag(self) -> None:
         """
@@ -447,6 +454,19 @@ class TagEditor(Display, QtWidgets.QWidget):
         text = self.input_line.currentText().strip()
         if text in self.tag_strings:
             self.tag_added.emit(text)
+
+    def set_tag_strings(self, strings: Collection[str]) -> None:
+        self.tag_strings = strings
+
+        self.input_line.clear()
+        self.input_line.addItems(strings)
+        self.input_line.lineEdit().clear()
+
+        completer = QtWidgets.QCompleter(strings, self.input_line)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        completer.setCompletionMode(QtWidgets.QCompleter.PopupCompletion)
+        completer.setFilterMode(QtCore.Qt.MatchContains)
+        self.input_line.setCompleter(completer)
 
 
 class QtSingleton(type(QtCore.QObject), type):
@@ -535,7 +555,7 @@ class FlowLayout(QtWidgets.QLayout):
     wraps them to the next line. This layout is useful for creating a tag cloud,
     button groups, or any interface where items should wrap automatically.
     """
-    def __init__(self, parent=None, margin=0, spacing=-1):
+    def __init__(self, margin=0, spacing=-1, **kwargs):
         """
         Initialize the FlowLayout.
 
@@ -548,8 +568,8 @@ class FlowLayout(QtWidgets.QLayout):
         spacing : int, optional
             The spacing between items. Default is -1, which means use the default spacing.
         """
-        super().__init__(parent)
-        if parent is not None:
+        super().__init__(**kwargs)
+        if self.parent() is not None:
             self.setContentsMargins(margin, margin, margin, margin)
         self.setSpacing(spacing)
         self.itemList = []
