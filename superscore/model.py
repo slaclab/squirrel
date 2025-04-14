@@ -5,14 +5,14 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Flag, IntEnum, auto
+from enum import IntEnum, auto
 from typing import ClassVar, Dict, List, Optional, Set, Union
 from uuid import UUID, uuid4
 
 import apischema
 
 from superscore.serialization import as_tagged_union
-from superscore.type_hints import AnyEpicsType
+from superscore.type_hints import AnyEpicsType, Tag
 from superscore.utils import utcnow
 
 logger = logging.getLogger(__name__)
@@ -49,10 +49,6 @@ class Status(IntEnum):
     SIMM = auto()
     READ_ACCESS = auto()
     WRITE_ACCESS = auto()
-
-
-class Tag(Flag):
-    pass
 
 
 @as_tagged_union
