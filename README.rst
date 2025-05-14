@@ -23,10 +23,14 @@ Installation
 
 ::
 
-  $ pip install .
+  $ conda create --name superscore
+  $ conda activate superscore
+  $ pip install .  # install statically, and only include packages necessary to run
+  $ #or
+  $ pip install -e .[test]  # install as editable package, and include packages for development and testing
 
 Running the Tests
 -----------------
 ::
 
-  $ pytest -v
+  $ pytest
