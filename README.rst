@@ -23,7 +23,7 @@ Installation
 
 ::
 
-  $ conda create --name superscore
+  $ conda create --name superscore pip
   $ conda activate superscore
   $ pip install .  # install statically, and only include packages necessary to run
   $ #or
