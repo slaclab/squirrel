@@ -38,6 +38,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
 
     def setup_ui(self) -> None:
         self.init_view_snapshot_page()
+        self.init_snapshot_details_page()
         self.init_pv_browser_page()
 
         navigation_panel = NavigationPanel()
@@ -76,6 +77,29 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         header_view.setSectionResizeMode(1, header_view.Stretch)
         view_snapshot_layout.addWidget(snapshot_table)
 
+    def init_snapshot_details_page(self) -> None:
+        self.snapshot_details_page = QtWidgets.QWidget()
+        snapshot_details_layout = QtWidgets.QVBoxLayout()
+        snapshot_details_layout.setContentsMargins(0, 11, 0, 0)
+        self.snapshot_details_page.setLayout(snapshot_details_layout)
+
+        # Create a snapshot details model, populated with first snapshot for initialization
+        first_snapshot = self.snapshot_model.index_to_snapshot(self.snapshot_model.index(0, 0))
+        snapshot_details_model = PVTableModel(first_snapshot.uuid, self.client)
+        self.live_models.add(snapshot_details_model)
+
+        self.snapshot_details_table = QtWidgets.QTableView()
+        self.snapshot_details_table.setModel(snapshot_details_model)
+        self.snapshot_details_table.setShowGrid(False)
+        self.snapshot_details_table.verticalHeader().hide()
+        header_view = self.snapshot_details_table.horizontalHeader()
+        header_view.setSectionResizeMode(header_view.Stretch)
+        header_view.setSectionResizeMode(PV_HEADER.CHECKBOX.value, header_view.ResizeToContents)
+        header_view.setSectionResizeMode(PV_HEADER.SEVERITY.value, header_view.ResizeToContents)
+        header_view.setSectionResizeMode(PV_HEADER.DEVICE.value, header_view.ResizeToContents)
+        header_view.setSectionResizeMode(PV_HEADER.PV.value, header_view.ResizeToContents)
+        snapshot_details_layout.addWidget(self.snapshot_details_table)
+
     def init_pv_browser_page(self) -> None:
         """Initialize the PV browser page with the PV browser table."""
         pv_browser_model = PVBrowserTableModel(self.client)
@@ -108,25 +132,25 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         header_view.setStretchLastSection(True)
         pv_browser_layout.addWidget(self.pv_browser_table)
 
-    def open_snapshot_details(self, index: QtCore.QModelIndex) -> None:
-        snapshot = self.snapshot_model.index_to_snapshot(index)
+    @QtCore.Slot(QtCore.QModelIndex)
+    def open_snapshot_details(self, snapshot_index: QtCore.QModelIndex) -> None:
+        if not snapshot_index.isValid():
+            logger.warning("Invalid index passed to open_snapshot_details")
+            return
+
+        try:
+            self.snapshot_details_table.model().close()
+        except AttributeError:
+            pass
+
+        snapshot = self.snapshot_model.index_to_snapshot(snapshot_index)
         snapshot_details_model = PVTableModel(snapshot.uuid, self.client)
+        self.snapshot_details_table.setModel(snapshot_details_model)
         self.live_models.add(snapshot_details_model)
 
-        snapshot_details_table = QtWidgets.QTableView()
-        snapshot_details_table.setModel(snapshot_details_model)
-        snapshot_details_table.destroyed.connect(snapshot_details_model.close)
-        snapshot_details_table.setShowGrid(False)
-        snapshot_details_table.verticalHeader().hide()
-        header_view = snapshot_details_table.horizontalHeader()
-        header_view.setSectionResizeMode(header_view.Stretch)
-        header_view.setSectionResizeMode(PV_HEADER.CHECKBOX.value, header_view.ResizeToContents)
-        header_view.setSectionResizeMode(PV_HEADER.SEVERITY.value, header_view.ResizeToContents)
-        header_view.setSectionResizeMode(PV_HEADER.DEVICE.value, header_view.ResizeToContents)
-        header_view.setSectionResizeMode(PV_HEADER.PV.value, header_view.ResizeToContents)
+        self.open_page(self.snapshot_details_page)
 
-        self.open_page(snapshot_details_table)
-
+    @QtCore.Slot(object)
     def open_page(self, page: QtWidgets.QWidget) -> None:
         """Open a page in the main window."""
         curr_widget = self.splitter.widget(1)
