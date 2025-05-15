@@ -49,3 +49,9 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
         if orientation == QtCore.Qt.Horizontal:
             if role == QtCore.Qt.DisplayRole:
                 return HEADER[section]
+
+    def index_to_snapshot(self, index: QtCore.QModelIndex) -> Snapshot:
+        """Convert a QModelIndex to a Snapshot object."""
+        if not (index and index.isValid()):
+            return None
+        return self._data[index.row()]
