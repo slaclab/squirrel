@@ -83,6 +83,34 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         snapshot_details_layout.setContentsMargins(0, 11, 0, 0)
         self.snapshot_details_page.setLayout(snapshot_details_layout)
 
+        header_layout = QtWidgets.QHBoxLayout()
+        back_button = QtWidgets.QPushButton()
+        back_button.setIcon(qta.icon("ph.arrow-left"))
+        back_button.setIconSize(QtCore.QSize(24, 24))
+        back_button.setStyleSheet("border: none")
+        back_button.clicked.connect(lambda: self.open_page(self.view_snapshot_page))
+        header_layout.addWidget(back_button)
+
+        snapshot_label = QtWidgets.QLabel()
+        snapshot_label.setText("Snapshot")
+        header_layout.addWidget(snapshot_label)
+        spacer_label1 = QtWidgets.QLabel()
+        spacer_label1.setText("|")
+        spacer_label1.setStyleSheet("font: bold 18px")
+        header_layout.addWidget(spacer_label1)
+        self.snapshot_title_label = QtWidgets.QLabel()
+        header_layout.addWidget(self.snapshot_title_label)
+        spacer_label2 = QtWidgets.QLabel()
+        spacer_label2.setText("|")
+        spacer_label2.setStyleSheet("font: bold 18px")
+        header_layout.addWidget(spacer_label2)
+        self.snapshot_time_label = QtWidgets.QLabel()
+        self.snapshot_time_label.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Preferred,)
+        header_layout.addWidget(self.snapshot_time_label)
+        snapshot_details_layout.addLayout(header_layout)
+
         # Create a snapshot details model, populated with first snapshot for initialization
         first_snapshot = self.snapshot_model.index_to_snapshot(self.snapshot_model.index(0, 0))
         snapshot_details_model = PVTableModel(first_snapshot.uuid, self.client)
@@ -144,6 +172,10 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             pass
 
         snapshot = self.snapshot_model.index_to_snapshot(snapshot_index)
+
+        self.snapshot_title_label.setText(snapshot.title)
+        self.snapshot_time_label.setText(snapshot.creation_time.strftime("%Y-%m-%d %H:%M:%S"))
+
         snapshot_details_model = PVTableModel(snapshot.uuid, self.client)
         self.snapshot_details_table.setModel(snapshot_details_model)
         self.live_models.add(snapshot_details_model)
