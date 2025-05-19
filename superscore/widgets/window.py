@@ -12,9 +12,10 @@ from qtpy.QtGui import QCloseEvent
 
 from superscore.client import Client
 from superscore.widgets.core import QtSingleton
+from superscore.widgets.page.page import Page
+from superscore.widgets.page.snapshot_details import SnapshotDetailsPage
 from superscore.widgets.pv_browser_table import (PVBrowserFilterProxyModel,
                                                  PVBrowserTableModel)
-from superscore.widgets.pv_table import PV_HEADER, PVTableModel
 from superscore.widgets.snapshot_table import SnapshotTableModel
 from superscore.widgets.views import DiffDispatcher
 
@@ -33,7 +34,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             self.client = client
         else:
             self.client = Client.from_config()
-        self.live_models: set[PVTableModel] = set()
+        self.pages: set[Page] = set()
         self.setup_ui()
 
     def setup_ui(self) -> None:
@@ -78,55 +79,11 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         view_snapshot_layout.addWidget(snapshot_table)
 
     def init_snapshot_details_page(self) -> None:
-        self.snapshot_details_page = QtWidgets.QWidget()
-        snapshot_details_layout = QtWidgets.QVBoxLayout()
-        snapshot_details_layout.setContentsMargins(0, 11, 0, 0)
-        self.snapshot_details_page.setLayout(snapshot_details_layout)
-
-        header_layout = QtWidgets.QHBoxLayout()
-        back_button = QtWidgets.QPushButton()
-        back_button.setIcon(qta.icon("ph.arrow-left"))
-        back_button.setIconSize(QtCore.QSize(24, 24))
-        back_button.setStyleSheet("border: none")
-        back_button.clicked.connect(lambda: self.open_page(self.view_snapshot_page))
-        header_layout.addWidget(back_button)
-
-        snapshot_label = QtWidgets.QLabel()
-        snapshot_label.setText("Snapshot")
-        header_layout.addWidget(snapshot_label)
-        spacer_label1 = QtWidgets.QLabel()
-        spacer_label1.setText("|")
-        spacer_label1.setStyleSheet("font: bold 18px")
-        header_layout.addWidget(spacer_label1)
-        self.snapshot_title_label = QtWidgets.QLabel()
-        header_layout.addWidget(self.snapshot_title_label)
-        spacer_label2 = QtWidgets.QLabel()
-        spacer_label2.setText("|")
-        spacer_label2.setStyleSheet("font: bold 18px")
-        header_layout.addWidget(spacer_label2)
-        self.snapshot_time_label = QtWidgets.QLabel()
-        self.snapshot_time_label.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding,
-            QtWidgets.QSizePolicy.Preferred,)
-        header_layout.addWidget(self.snapshot_time_label)
-        snapshot_details_layout.addLayout(header_layout)
-
-        # Create a snapshot details model, populated with first snapshot for initialization
+        """Initialize the snapshot details page with the first snapshot in the snapshot_model."""
         first_snapshot = self.snapshot_model.index_to_snapshot(self.snapshot_model.index(0, 0))
-        snapshot_details_model = PVTableModel(first_snapshot.uuid, self.client)
-        self.live_models.add(snapshot_details_model)
-
-        self.snapshot_details_table = QtWidgets.QTableView()
-        self.snapshot_details_table.setModel(snapshot_details_model)
-        self.snapshot_details_table.setShowGrid(False)
-        self.snapshot_details_table.verticalHeader().hide()
-        header_view = self.snapshot_details_table.horizontalHeader()
-        header_view.setSectionResizeMode(header_view.Stretch)
-        header_view.setSectionResizeMode(PV_HEADER.CHECKBOX.value, header_view.ResizeToContents)
-        header_view.setSectionResizeMode(PV_HEADER.SEVERITY.value, header_view.ResizeToContents)
-        header_view.setSectionResizeMode(PV_HEADER.DEVICE.value, header_view.ResizeToContents)
-        header_view.setSectionResizeMode(PV_HEADER.PV.value, header_view.ResizeToContents)
-        snapshot_details_layout.addWidget(self.snapshot_details_table)
+        self.snapshot_details_page = SnapshotDetailsPage(self, self.client, first_snapshot)
+        self.snapshot_details_page.back_to_main_signal.connect(lambda: self.open_page(self.view_snapshot_page))
+        self.pages.add(self.snapshot_details_page)
 
     def init_pv_browser_page(self) -> None:
         """Initialize the PV browser page with the PV browser table."""
@@ -166,19 +123,8 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             logger.warning("Invalid index passed to open_snapshot_details")
             return
 
-        try:
-            self.snapshot_details_table.model().close()
-        except AttributeError:
-            pass
-
-        snapshot = self.snapshot_model.index_to_snapshot(snapshot_index)
-
-        self.snapshot_title_label.setText(snapshot.title)
-        self.snapshot_time_label.setText(snapshot.creation_time.strftime("%Y-%m-%d %H:%M:%S"))
-
-        snapshot_details_model = PVTableModel(snapshot.uuid, self.client)
-        self.snapshot_details_table.setModel(snapshot_details_model)
-        self.live_models.add(snapshot_details_model)
+        new_snapshot = self.snapshot_model.index_to_snapshot(snapshot_index)
+        self.snapshot_details_page.set_snapshot(new_snapshot)
 
         self.open_page(self.snapshot_details_page)
 
@@ -192,8 +138,11 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         self.splitter.setStretchFactor(1, 1)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        for model in self.live_models:
-            model.close()
+        for page in self.pages:
+            try:
+                page.close()
+            except AttributeError:
+                logger.warning("Error closing page: %s", page)
         super().closeEvent(a0)
 
 
