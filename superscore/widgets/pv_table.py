@@ -60,10 +60,12 @@ class PVTableModel(LivePVTableModel):
 
     def __init__(self, snapshot_id: UUID, client, parent=None):
         self.client = client
-        self._data = list(self.client.search(
-            ("ancestor", "eq", snapshot_id),
-            ("entry_type", "eq", (Setpoint, Readback)),
-        ))
+        self._data = list(
+            self.client.search(
+                ("ancestor", "eq", snapshot_id),
+                ("entry_type", "eq", (Setpoint, Readback)),
+            )
+        )
         self._checked = set()
         super().__init__(client=client, entries=self._data, parent=parent)
 
@@ -74,10 +76,7 @@ class PVTableModel(LivePVTableModel):
         return len(PV_HEADER)
 
     def headerData(
-        self,
-        section: int,
-        orientation: QtCore.Qt.Orientation,
-        role: QtCore.Qt.ItemDataRole = QtCore.Qt.DisplayRole
+        self, section: int, orientation: QtCore.Qt.Orientation, role: QtCore.Qt.ItemDataRole = QtCore.Qt.DisplayRole
     ):
         if orientation == QtCore.Qt.Horizontal:
             if role == QtCore.Qt.DisplayRole:
@@ -90,11 +89,7 @@ class PVTableModel(LivePVTableModel):
         else:
             return super().flags(index)
 
-    def data(
-        self,
-        index: QtCore.QModelIndex,
-        role: QtCore.Qt.ItemDataRole = QtCore.Qt.DisplayRole
-    ):
+    def data(self, index: QtCore.QModelIndex, role: QtCore.Qt.ItemDataRole = QtCore.Qt.DisplayRole):
         entry = self._data[index.row()]
         column = PV_HEADER(index.column())
         if role == QtCore.Qt.DisplayRole:
@@ -110,11 +105,11 @@ class PVTableModel(LivePVTableModel):
                 elif column == PV_HEADER.SETPOINT:
                     return entry.data
                 elif column == PV_HEADER.LIVE_SETPOINT:
-                    return self._get_live_data_field(entry, 'data')
+                    return self._get_live_data_field(entry, "data")
                 elif column == PV_HEADER.READBACK:
                     return entry.readback.data if entry.readback else None
                 elif column == PV_HEADER.LIVE_READBACK:
-                    return self._get_live_data_field(entry.readback, 'data') if entry.readback else None
+                    return self._get_live_data_field(entry.readback, "data") if entry.readback else None
                 elif column == PV_HEADER.CONFIG:
                     return None
                 else:
@@ -133,7 +128,7 @@ class PVTableModel(LivePVTableModel):
                 elif column == PV_HEADER.READBACK:
                     return entry.data
                 elif column == PV_HEADER.LIVE_READBACK:
-                    return self._get_live_data_field(entry, 'data')
+                    return self._get_live_data_field(entry, "data")
                 elif column == PV_HEADER.CONFIG:
                     return None
                 else:
@@ -146,12 +141,12 @@ class PVTableModel(LivePVTableModel):
                 icon = SEVERITY_ICONS[entry.status]
             return icon
         elif role == QtCore.Qt.ForegroundRole and column in [PV_HEADER.LIVE_SETPOINT, PV_HEADER.LIVE_READBACK]:
-            return QtGui.QColor(superscore.color.BLUE)
+            return QtGui.QColor(superscore.color.TEXT_LIVE_VALUE)
         elif role == QtCore.Qt.BackgroundRole and column == PV_HEADER.LIVE_SETPOINT:
-            stored_data = getattr(entry, 'data', None)
+            stored_data = getattr(entry, "data", None)
             is_close = self.is_close(entry, stored_data)
             if stored_data is not None and not is_close:
-                return QtGui.QColor(superscore.color.RED)
+                return QtGui.QColor(superscore.color.TABLE_SELECTED)
             else:
                 return None
         elif role == QtCore.Qt.TextAlignmentRole and column not in [PV_HEADER.DEVICE, PV_HEADER.PV]:
