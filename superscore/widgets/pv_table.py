@@ -146,7 +146,7 @@ class PVTableModel(LivePVTableModel):
             stored_data = getattr(entry, "data", None)
             is_close = self.is_close(entry, stored_data)
             if stored_data is not None and not is_close:
-                return QtGui.QColor(superscore.color.TABLE_SELECTED)
+                return QtGui.QColor(superscore.color.TABLE_HIGHLIGHTED)
             else:
                 return None
         elif role == QtCore.Qt.TextAlignmentRole and column not in [PV_HEADER.DEVICE, PV_HEADER.PV]:
