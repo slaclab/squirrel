@@ -266,16 +266,13 @@ class TagsWidget(QtWidgets.QWidget):
             Additional keyword arguments passed to the base QWidget.
         """
         super().__init__(*args, **kwargs)
-        self.tag_groups = tag_groups
-
-        self.setEnabled(enabled)
-
-        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
 
         self.setLayout(FlowLayout(margin=0, spacing=5))
         self.layout().setObjectName("TagChipFlowLayout")
+        self.set_tag_groups(tag_groups)
 
-        self.set_tag_groups(self.tag_groups)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        self.setEnabled(enabled)
 
     def emitTagSetChanged(self) -> None:
         """Emits the tagSetChanged signal with the widget's current TagSet"""
@@ -299,10 +296,14 @@ class TagsWidget(QtWidgets.QWidget):
     def set_tags(self, tag_set: TagSet) -> None:
         """Sets the child TagChips according to the provided TagSet"""
         self.clear_tags()
-        for tag_group in tag_set:
+        for tag_group, tags in tag_set.items():
             chip = self.get_group_chip(tag_group)
             if isinstance(chip, TagChip):
-                chip.set_tags(tag_set[tag_group])
+                chip.set_tags(tags)
+                if len(tags) == 0:
+                    chip.hide()
+                else:
+                    chip.show()
 
     def get_tag_set(self) -> TagSet:
         """Constructs the TagSet representation of the child TagChips"""
@@ -319,3 +320,12 @@ class TagsWidget(QtWidgets.QWidget):
             if chip.tag_group == tag_group:
                 return chip
         return None
+
+    def setEnabled(self, enabled: bool = False):
+        super().setEnabled(enabled)
+        for i in range(self.layout().count()):
+            chip = self.layout().itemAt(i).widget()
+            if not enabled and len(chip.tags) == 0:
+                chip.hide()
+            else:
+                chip.show()
