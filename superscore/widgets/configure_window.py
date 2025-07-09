@@ -11,6 +11,7 @@ from qtpy.QtWidgets import (QAbstractItemView, QDialog, QFrame, QHBoxLayout,
                             QWidget)
 
 from superscore.permission_manager import PermissionManager
+from superscore.widgets.tag import TagChip
 
 logger = logging.getLogger(__name__)
 
@@ -289,8 +290,6 @@ class TagGroupsWindow(QWidget):
 
         self.groups_data: dict[int, list[Union[str, str, dict[int, str]]]] = {}
 
-        # self.setStyleSheet("background-color: #252525;")
-
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -305,7 +304,6 @@ class TagGroupsWindow(QWidget):
         header_layout.setContentsMargins(4, 4, 4, 4)
 
         title_label = QLabel("Tag Groups")
-        # title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #e0e0e0; margin-bottom: 0px;")
         header_layout.addWidget(title_label)
         header_layout.addStretch()
 
@@ -329,7 +327,6 @@ class TagGroupsWindow(QWidget):
 
         self.table = QTableWidget()
         self.table.setColumnCount(3)
-        # self.table.setStyleSheet('QTableView::item {border-right: 1px solid #d6d9dc;}')
 
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionMode(QTableWidget.SingleSelection)
@@ -356,18 +353,6 @@ class TagGroupsWindow(QWidget):
 
         main_layout.addWidget(main_frame)
 
-        '''
-        self.table.setStyleSheet("""
-            QTableWidget {
-                gridline-color: #ddd;
-            }
-            QTableWidget::item {
-                padding: 5px;
-            }
-            alternate-background-color: #f0f0f0;
-        """)
-        '''
-
         self.table.setShowGrid(False)
         self.original_edit_triggers = QTableWidget.NoEditTriggers
 
@@ -388,8 +373,8 @@ class TagGroupsWindow(QWidget):
         str
             The group name displayed in that row
         """
-        group_button = self.table.cellWidget(row, 0)
-        return group_button.text() if group_button else f"New Group {row + 1}"
+        tag_chip = self.table.cellWidget(row, 0)
+        return tag_chip.tag_name if tag_chip else f"New Group {row + 1}"
 
     def get_description_from_row(self, row: int) -> str:
         """
@@ -497,12 +482,8 @@ class TagGroupsWindow(QWidget):
 
         self.groups_data[current_row] = [group_name, description, {}]
 
-        group_button = QPushButton(group_name)
-        '''
-        group_button.setStyleSheet(
-            "text-align: center; background-color: #f0f0f0; border-radius: 10px;")
-        '''
-        self.table.setCellWidget(current_row, 0, group_button)
+        tag_chip = TagChip(None, {}, group_name)
+        self.table.setCellWidget(current_row, 0, tag_chip)
 
         count_item = QTableWidgetItem("0 Tags")
         count_item.setFlags(count_item.flags() & ~Qt.ItemIsEditable)
@@ -561,8 +542,8 @@ class TagGroupsWindow(QWidget):
         if not is_editing:
             self.table.setEditTriggers(QTableWidget.AllEditTriggers)
 
-            group_button = self.table.cellWidget(current_row, 0)
-            group_name = group_button.text() if group_button else "Group"
+            tag_chip = self.table.cellWidget(current_row, 0)
+            group_name = tag_chip.tag_name if tag_chip else "Group"
 
             button.setProperty("original_name", group_name)
 
@@ -608,12 +589,8 @@ class TagGroupsWindow(QWidget):
             self.update_group_data(current_row, new_name, description)
 
             self.table.removeCellWidget(current_row, 0)
-            group_button = QPushButton(new_name)
-            '''
-            group_button.setStyleSheet(
-                "text-align: center; background-color: #f0f0f0; border-radius: 10px;")
-            '''
-            self.table.setCellWidget(current_row, 0, group_button)
+            tag_chip = TagChip(None, {}, new_name)
+            self.table.setCellWidget(current_row, 0, tag_chip)
 
             if desc_item:
                 desc_item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
@@ -735,12 +712,8 @@ class TagGroupsWindow(QWidget):
             self.table.insertRow(row_idx)
             self.table.setRowHeight(row_idx, 50)
 
-            group_button = QPushButton(group_name)
-            '''
-            group_button.setStyleSheet(
-                "text-align: center; background-color: #f0f0f0; border-radius: 10px;")
-            '''
-            self.table.setCellWidget(row_idx, 0, group_button)
+            tag_chip = TagChip(None, {}, group_name)
+            self.table.setCellWidget(row_idx, 0, tag_chip)
 
             tag_count: int = len(tag_dict)
             count_text: str = f"{tag_count} {'Tags' if tag_count != 1 else 'Tag'}"
@@ -809,9 +782,9 @@ class TagGroupsWindow(QWidget):
             def save_group_data(new_name: str, new_desc: str, tags_dict: Dict[int, str]) -> None:
                 self.update_group_data(row, new_name, new_desc, tags_dict)
 
-                group_button = self.table.cellWidget(row, 0)
-                if group_button:
-                    group_button.setText(new_name)
+                tag_chip = self.table.cellWidget(row, 0)
+                if tag_chip:
+                    tag_chip.tag_name = new_name
 
                 desc_item = self.table.item(row, 2)
                 if desc_item:
