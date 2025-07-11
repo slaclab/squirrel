@@ -3,30 +3,31 @@
 from __future__ import annotations
 
 import logging
+from copy import deepcopy
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import IntEnum, auto
-from typing import ClassVar, Dict, List, Optional, Set, Union
+from enum import Enum, auto
+from typing import List, Optional, Sequence, Union
 from uuid import UUID, uuid4
 
 import apischema
 
 from superscore.serialization import as_tagged_union
-from superscore.type_hints import AnyEpicsType, Tag
+from superscore.type_hints import AnyEpicsType, TagDef, TagSet
 from superscore.utils import utcnow
 
 logger = logging.getLogger(__name__)
 _root_uuid = _root_uuid = UUID("a28cd77d-cc92-46cc-90cb-758f0f36f041")
 
 
-class Severity(IntEnum):
+class Severity(Enum):
     NO_ALARM = 0
     MINOR = auto()
     MAJOR = auto()
     INVALID = auto()
 
 
-class Status(IntEnum):
+class Status(Enum):
     NO_ALARM = 0
     READ = auto()
     WRITE = auto()
@@ -100,7 +101,7 @@ class Parameter(Entry):
     pv_name: str = ""
     abs_tolerance: Optional[float] = None
     rel_tolerance: Optional[float] = None
-    tags: Set[Tag] = field(default_factory=set)
+    tags: TagSet = field(default_factory=dict)
     readback: Optional[Parameter] = None
     read_only: bool = False
 
@@ -116,7 +117,7 @@ class Setpoint(Entry):
     data: Optional[AnyEpicsType] = None
     status: Status = Status.UDF
     severity: Severity = Severity.INVALID
-    tags: Set[Tag] = field(default_factory=set)
+    tags: TagSet = field(default_factory=dict)
     readback: Optional[Readback] = None
 
     @classmethod
@@ -126,15 +127,17 @@ class Setpoint(Entry):
         data: AnyEpicsType,
         status: Status = Status.UDF,
         severity: Severity = Severity.INVALID,
+        readback: Optional[Readback] = None,
     ) -> Setpoint:
 
         return cls(
             pv_name=origin.pv_name,
-            tags=origin.tags,
+            description=origin.description,
+            tags=deepcopy(origin.tags),
             data=data,
             status=status,
             severity=severity,
-            readback=origin.readback,
+            readback=readback,
         )
 
     def validate(self, toplevel: bool = True) -> bool:
@@ -161,7 +164,7 @@ class Readback(Entry):
     abs_tolerance: Optional[float] = None
     rel_tolerance: Optional[float] = None
     timeout: Optional[float] = None
-    tags: Set[Tag] = field(default_factory=set)
+    tags: TagSet = field(default_factory=dict)
 
     @classmethod
     def from_parameter(
@@ -175,7 +178,8 @@ class Readback(Entry):
 
         return cls(
             pv_name=origin.pv_name,
-            tags=origin.tags,
+            description=origin.description,
+            tags=deepcopy(origin.tags),
             data=data,
             status=status,
             severity=severity,
@@ -215,11 +219,9 @@ class Nestable:
 @dataclass
 class Collection(Nestable, Entry):
     """Nestable group of Parameters and Collections"""
-    meta_pvs: ClassVar[List[Parameter]] = []
-
     title: str = ""
     children: List[Union[UUID, Parameter, Collection]] = field(default_factory=list)
-    tags: Set[Tag] = field(default_factory=set)
+    tags: TagSet = field(default_factory=dict)
 
     def swap_to_uuids(self) -> List[Entry]:
         # TODO: remove ref_list? copies .children by value, breaks refs?
@@ -249,7 +251,7 @@ class Snapshot(Nestable, Entry):
     children: List[Union[UUID, Readback, Setpoint, Snapshot]] = field(
         default_factory=list
     )
-    tags: Set[Tag] = field(default_factory=set)
+    tags: TagSet = field(default_factory=dict)
     meta_pvs: List[Readback] = field(default_factory=list)
 
     def swap_to_uuids(self) -> List[Union[Entry, UUID]]:
@@ -281,4 +283,5 @@ class Root:
     """Top level structure holding ``Entry``'s.  Denotes the top of the tree"""
     meta_id: UUID = _root_uuid
     entries: List[Entry] = field(default_factory=list)
-    all_tags: Dict[int, str] = field(default_factory=dict)
+    tag_groups: TagDef = field(default_factory=dict)
+    meta_pvs: Sequence[Parameter] = field(default_factory=list)

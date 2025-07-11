@@ -24,7 +24,8 @@ from superscore.widgets.window import Window
 # expose fixtures and helpers from other files in conftest so they will be gathered
 from .conftest_data import (linac_data, linac_with_comparison_snapshot,  # NOQA
                             parameter_with_readback, sample_database,
-                            setpoint_with_readback, simple_snapshot)
+                            setpoint_with_readback, simple_comparison_snapshot,
+                            simple_snapshot)
 
 
 @pytest.fixture(scope='function')
@@ -51,6 +52,11 @@ def parameter_with_readback_fixture() -> Parameter:
 @pytest.fixture(scope='function')
 def simple_snapshot_fixture() -> Collection:
     return simple_snapshot()
+
+
+@pytest.fixture(scope='function')
+def simple_comparison_snapshot_fixture() -> Collection:
+    return simple_comparison_snapshot()
 
 
 @pytest.fixture(scope='function')
@@ -176,12 +182,12 @@ def test_data(request: pytest.FixtureRequest) -> Root:
             fpath = user_path if user_path.is_absolute() else Path(__file__).parent / user_path
             with open(fpath) as fp:
                 serialized = json.load(fp)
-            data = apischema.deserialize(Root, serialized)
+            data = apischema.deserialize(Root, serialized, coerce=True)
 
         if isinstance(data, Root):
             for entry in data.entries:
                 new_root.entries.append(entry)
-            new_root.all_tags.update(data.all_tags)
+            new_root.tag_groups.update(data.tag_groups)
         elif isinstance(data, Entry):
             new_root.entries.append(data)
 
@@ -244,7 +250,7 @@ def test_backend(
 
     for entry in test_data.entries:
         backend.save_entry(entry)
-        backend.set_tags(test_data.all_tags)
+        backend.set_tags(test_data.tag_groups)
 
     return backend
 

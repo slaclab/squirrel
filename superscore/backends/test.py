@@ -2,13 +2,14 @@
 Backend that manipulates Entries in-memory for testing purposes.
 """
 from copy import deepcopy
-from typing import Dict, Union
+from typing import Dict, Sequence, Union
 from uuid import UUID
 
 from superscore.backends.core import SearchTermType, _Backend
 from superscore.errors import (BackendError, EntryExistsError,
                                EntryNotFoundError)
-from superscore.model import Entry, Nestable, Root
+from superscore.model import Entry, Nestable, Parameter, Root
+from superscore.type_hints import TagDef
 
 
 class TestBackend(_Backend):
@@ -99,8 +100,14 @@ class TestBackend(_Backend):
             if all(conditions):
                 yield entry
 
-    def get_tags(self) -> dict[int, str]:
-        return self._root.all_tags
+    def get_tags(self) -> TagDef:
+        return self._root.tag_groups
 
-    def set_tags(self, tags: dict[int, str]) -> None:
-        self._root.all_tags = tags
+    def set_tags(self, tags: TagDef) -> None:
+        self._root.tag_groups = tags
+
+    def get_meta_pvs(self) -> Sequence[Parameter]:
+        return self._root.meta_pvs
+
+    def set_meta_pvs(self, meta_pvs: Sequence[Parameter]) -> None:
+        self._root.meta_pvs = meta_pvs

@@ -17,8 +17,11 @@ from superscore.widgets.page.diff import DiffPage
 from superscore.widgets.page.entry import (BaseParameterPage, CollectionPage,
                                            ParameterPage, ReadbackPage,
                                            SetpointPage, SnapshotPage)
-from superscore.widgets.page.restore import RestoreDialog, RestorePage
 from superscore.widgets.page.search import SearchPage
+from superscore.widgets.page.snapshot_comparison import SnapshotComparisonPage
+from superscore.widgets.page.snapshot_details import SnapshotDetailsPage
+from superscore.widgets.pv_table import PV_HEADER
+from superscore.widgets.snapshot_comparison_table import COMPARE_HEADER
 
 
 @pytest.fixture(scope='function')
@@ -85,18 +88,6 @@ def collection_builder_page(qtbot: QtBot, test_client: Client):
     qtbot.waitUntil(lambda: page.sub_pv_table_view._model._poll_thread.isFinished())
 
 
-@pytest.fixture(scope="function")
-def restore_page(
-    qtbot: QtBot,
-    test_client: Client,
-    simple_snapshot_fixture: Snapshot
-):
-    page = RestorePage(data=simple_snapshot_fixture, client=test_client)
-    qtbot.addWidget(page)
-    yield page
-    page.close()
-
-
 @pytest.fixture
 def diff_page(qtbot: QtBot, test_client: Client):
     l_snapshot = Snapshot(
@@ -136,7 +127,6 @@ def diff_page(qtbot: QtBot, test_client: Client):
         "snapshot_page",
         "search_page",
         "collection_builder_page",
-        "restore_page",
         "diff_page",
     ]
 )
@@ -273,44 +263,120 @@ def test_stored_widget_swap(
         )
 
 
-def test_restore_page_toggle_live(qtbot: QtBot, restore_page):
-    tableView = restore_page.tableView
-    live_columns = tableView.live_headers
-    toggle_live_button = restore_page.compareLiveButton
-
-    toggle_live_button.click()
-    qtbot.waitUntil(lambda: tableView._model._poll_thread.running)
-    qtbot.waitUntil(lambda: all((not tableView.isColumnHidden(column) for column in live_columns)))
-
-    toggle_live_button.click()
-    qtbot.waitUntil(lambda: all((tableView.isColumnHidden(column) for column in live_columns)))
-
-
 @setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
-def test_restore_dialog_restore(
+def test_restore_all(
+    qtbot,
     test_client: Client,
     simple_snapshot_fixture: Snapshot,
 ):
+    test_client.save(simple_snapshot_fixture)
     put_mock = test_client.cl.put
-    dialog = RestoreDialog(test_client, simple_snapshot_fixture)
-    dialog.restore()
-    assert put_mock.call_args.args == test_client._gather_data(simple_snapshot_fixture)
+    detail_page = SnapshotDetailsPage(None, test_client, simple_snapshot_fixture)
+    qtbot.add_widget(detail_page)
+    detail_page.restore_from_table()
+
+    table_model = detail_page.snapshot_details_table.model()
+    all_pv_names = [
+        table_model.data(table_model.index(row, PV_HEADER.PV.value), role=QtCore.Qt.DisplayRole) for row in range(table_model.rowCount())
+    ]
+    assert put_mock.call_args.args[0] == all_pv_names
+
+    table_model.close()
+    qtbot.wait_until(lambda: not table_model._poll_thread.isRunning(), timeout=10000)
 
 
 @setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
-def test_restore_dialog_remove_pv(
+def test_restore_selected(
+    qtbot,
     test_client: Client,
     simple_snapshot_fixture: Snapshot
 ):
-    dialog = RestoreDialog(test_client, simple_snapshot_fixture)
-    tableWidget = dialog.tableWidget
-    assert tableWidget.rowCount() == len(simple_snapshot_fixture.children)
+    test_client.save(simple_snapshot_fixture)
+    put_mock = test_client.cl.put
+    detail_page = SnapshotDetailsPage(None, test_client, simple_snapshot_fixture)
+    qtbot.add_widget(detail_page)
+    table_model = detail_page.snapshot_details_model
+    assert table_model.rowCount() == len(simple_snapshot_fixture.children)
 
-    PV_COLUMN = 0
-    REMOVE_BUTTON_COLUMN = 2
-    item_to_remove = tableWidget.item(1, PV_COLUMN)
-    tableWidget.setCurrentCell(1, REMOVE_BUTTON_COLUMN)
-    dialog.delete_row()
-    assert tableWidget.rowCount() == len(simple_snapshot_fixture.children) - 1
-    items_left = [tableWidget.item(row, PV_COLUMN) for row in range(tableWidget.rowCount())]
-    assert item_to_remove not in items_left
+    checkstate_index = table_model.index(0, PV_HEADER.CHECKBOX.value)
+    table_model.setData(checkstate_index, QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
+    detail_page.restore_from_table()
+    pv_index = table_model.index(0, PV_HEADER.PV.value)
+    assert put_mock.call_args.args[0] == [table_model.data(pv_index, role=QtCore.Qt.DisplayRole)]
+
+    table_model.close()
+    qtbot.wait_until(lambda: not table_model._poll_thread.isRunning(), timeout=10000)
+
+
+@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+def test_snapshot_comparison_page_set_main(
+    test_client: Client,
+    simple_snapshot_fixture: Snapshot,
+):
+    page = SnapshotComparisonPage(
+        client=test_client,
+    )
+    page.set_main_snapshot(simple_snapshot_fixture)
+
+    # Check that the comparison table model is empty
+    assert page.comparison_table_model.rowCount() == 0
+
+    assert page.main_snapshot == simple_snapshot_fixture
+    assert page.main_snapshot_title_label.text() == simple_snapshot_fixture.title
+    assert page.main_snapshot_time_label.text() == simple_snapshot_fixture.creation_time.strftime("%Y-%m-%d %H:%M:%S")
+
+
+@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+def test_snapshot_comparison_page_set_comp(
+    test_client: Client,
+    simple_snapshot_fixture: Snapshot,
+):
+    page = SnapshotComparisonPage(
+        client=test_client,
+    )
+    page.set_comparison_snapshot(simple_snapshot_fixture)
+
+    # Check that the comparison table model is empty
+    assert page.comparison_table_model.rowCount() == 0
+
+    # Check that the comparison snapshot is set correctly
+    assert page.comparison_snapshot == simple_snapshot_fixture
+    assert page.comp_snapshot_title_label.text() == simple_snapshot_fixture.title
+    assert page.comp_snapshot_time_label.text() == simple_snapshot_fixture.creation_time.strftime("%Y-%m-%d %H:%M:%S")
+
+
+@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+def test_snapshot_comparison_page_set_both(
+    test_client: Client,
+    simple_snapshot_fixture: Snapshot,
+    simple_comparison_snapshot_fixture: Snapshot
+):
+    # Setup the test backend and model
+    test_client.backend.save_entry(simple_snapshot_fixture)
+    test_client.backend.save_entry(simple_comparison_snapshot_fixture)
+
+    page = SnapshotComparisonPage(
+        client=test_client,
+    )
+    page.set_main_snapshot(simple_snapshot_fixture)
+    page.set_comparison_snapshot(simple_comparison_snapshot_fixture)
+
+    compare_model = page.comparison_table_model
+    assert compare_model.rowCount() == 4
+
+    # Setup the data expected from the model
+    expected_data = [["MY:FLOAT", None, "--"],
+                     ["MY:INT", None, 1],
+                     ["MY:ENUM", None, None],
+                     ["MY:NEW:ENUM", "--", None]]
+
+    # Check that the model data matches the expected data
+    actual_data = []
+    for row in range(len(expected_data)):
+        actual_row = []
+        for column_header in (COMPARE_HEADER.PV, COMPARE_HEADER.SETPOINT, COMPARE_HEADER.COMPARE_SETPOINT):
+            col = column_header.value
+            index = compare_model.index(row, col)
+            actual_row.append(compare_model.data(index, QtCore.Qt.DisplayRole))
+        actual_data.append(actual_row)
+    assert actual_data == expected_data
