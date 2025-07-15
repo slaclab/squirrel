@@ -195,9 +195,14 @@ class PVTableModel(LivePVTableModel):
         return True
 
     def set_snapshot(self, snapshot: Union[UUID, Snapshot]) -> None:
-        try:
-            self._data = snapshot.children
-        except AttributeError:
+        if isinstance(snapshot, Snapshot):
+            self._data = []
+            for entry in snapshot.children:
+                if isinstance(entry, (Setpoint, Readback)):
+                    self._data.append(entry)
+                elif isinstance(entry, UUID):
+                    self._data.append(self.client.backend.get_entry(entry))
+        elif isinstance(snapshot, UUID):
             self._data = list(self.client.search(
                 ("ancestor", "eq", snapshot),
                 ("entry_type", "eq", (Setpoint, Readback)),
