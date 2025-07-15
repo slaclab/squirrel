@@ -217,7 +217,10 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         dest_snapshot = Snapshot()
         dialog = self.metadata_dialog(dest_snapshot)
         dialog.accepted.connect(partial(self.open_snapshot, dest_snapshot))
-        dialog.accepted.connect(partial(self.client.snap, dest=dest_snapshot))
+        dialog.accepted.connect(partial(self.client.snap,
+                                        dest=dest_snapshot,
+                                        entry_callback=self.snapshot_details_page.entry_snapped_signal.emit,
+                                        progress_callback=self.snapshot_details_page.snap_progress_signal.emit))
         dialog.accepted.connect(partial(self.client.save, dest_snapshot))
         dialog.accepted.connect(self.snapshot_table.model().fetch)
 

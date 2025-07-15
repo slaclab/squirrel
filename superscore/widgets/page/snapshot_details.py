@@ -14,6 +14,8 @@ class SnapshotDetailsPage(Page):
 
     back_to_main_signal = QtCore.Signal()
     comparison_signal = QtCore.Signal(object, object)
+    entry_snapped_signal = QtCore.Signal(object)
+    snap_progress_signal = QtCore.Signal(int)
 
     def __init__(self, parent: QtWidgets.QWidget, client: Client, init_snapshot: Snapshot):
         """Initialize the snapshot details page.
@@ -32,6 +34,8 @@ class SnapshotDetailsPage(Page):
         self.snapshot = init_snapshot
 
         self.init_ui()
+
+        self.snap_progress_signal.connect(self.progress_bar.setValue)
 
     def init_ui(self) -> None:
         """Initialize the UI for the snapshot details page."""
@@ -106,6 +110,11 @@ class SnapshotDetailsPage(Page):
         header_view.setSectionResizeMode(PV_HEADER.PV.value, header_view.ResizeMode.Fixed)
         self.snapshot_details_table.resizeColumnsToContents()
         snapshot_details_layout.addWidget(self.snapshot_details_table)
+
+        self.progress_bar = QtWidgets.QProgressBar(self)
+        self.progress_bar.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        self.progress_bar.setFormat("Saving Snapshot... %p%")
+        snapshot_details_layout.addWidget(self.progress_bar)
 
     def set_snapshot(self, snapshot: Snapshot) -> None:
         """Set the snapshot to be displayed in the details page."""
