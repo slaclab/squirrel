@@ -807,6 +807,7 @@ class TagGroupsWindow(QWidget):
         if count_item:
             count_item.setText(count_text)
 
+        self.table.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.client.backend.set_tags(self.groups_data)
 
     def update_admin_status(self, is_admin: bool) -> None:
