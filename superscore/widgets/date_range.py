@@ -36,6 +36,7 @@ class DateRangeWidget(QtWidgets.QWidget):
         self.layout().addLayout(layout)
 
         self.calendar = QtWidgets.QCalendarWidget()
+        self.calendar.setWindowModality(QtCore.Qt.ApplicationModal)
 
     @QtCore.Slot()
     def open_calendar(self):
