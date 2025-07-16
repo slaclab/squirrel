@@ -207,9 +207,9 @@ class SnapshotDetailsPage(Page):
             self.progress_bar.setMaximum(progress[1])
             self.progress_bar.show()
 
-        # if self.progress_bar.value() >= self.progress_bar.maximum():
-        #     self.progress_bar.hide()
-        #     self.progress_bar.setValue(0)
+        if self.progress_bar.value() >= self.progress_bar.maximum():
+            self.progress_bar.hide()
+            self.progress_bar.setValue(0)
 
 
 class SnapshotComparisonDialog(QtWidgets.QDialog):
