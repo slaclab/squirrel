@@ -5,6 +5,7 @@ Top-level window widget that contains other widgets
 from __future__ import annotations
 
 import logging
+import asyncio
 from functools import partial
 from typing import Optional
 
@@ -214,15 +215,32 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         Save a new snapshot for the entry connected to this page. Also opens the
         new snapshot.
         """
+        def dialog_accept():
+            entry_callback = self.snapshot_details_page.entry_snapped_signal.emit
+            progress_callback = self.snapshot_details_page.snap_progress_signal.emit
+            # async_thread = AsyncSnapWorker(
+            #     client=self.client,
+            #     dest_snapshot=dest_snapshot,
+            #     entry_callback=entry_callback,
+            #     progress_callback=progress_callback,
+            # )
+
+            self.open_snapshot(dest_snapshot)
+            # asyncio.run(self.client.snap_async(dest_snapshot, entry_callback, progress_callback))
+
+            # asyncio.get_running_loop().run_until_complete(
+            #     self.client.snap_async(
+            #         dest_snapshot,
+            #         entry_callback,
+            #         progress_callback,
+            #     )
+            # )
+            self.client.save(dest_snapshot)
+            self.snapshot_table.model().fetch()
+
         dest_snapshot = Snapshot()
         dialog = self.metadata_dialog(dest_snapshot)
-        dialog.accepted.connect(partial(self.open_snapshot, dest_snapshot))
-        dialog.accepted.connect(partial(self.client.snap,
-                                        dest=dest_snapshot,
-                                        entry_callback=self.snapshot_details_page.entry_snapped_signal.emit,
-                                        progress_callback=self.snapshot_details_page.snap_progress_signal.emit))
-        dialog.accepted.connect(partial(self.client.save, dest_snapshot))
-        dialog.accepted.connect(self.snapshot_table.model().fetch)
+        dialog.accepted.connect(dialog_accept)
 
         dialog.open()
         return dest_snapshot
@@ -297,6 +315,27 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             except AttributeError:
                 logger.warning("Error closing page: %s", page)
         super().closeEvent(a0)
+
+
+class AsyncSnapWorker(QtCore.QThread):
+    def __init__(self, client: Client, dest_snapshot: Snapshot, entry_callback, progress_callback):
+        super().__init__()
+        self.client = client
+        self.dest_snapshot = dest_snapshot
+        self.entry_callback = entry_callback
+        self.progress_callback = progress_callback
+
+    def run(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(
+            self.client.snap_async(
+                self.dest_snapshot,
+                entry_callback=self.entry_callback,
+                progress_callback=self.progress_callback,
+            )
+        )
+        loop.close()
 
 
 class NavigationPanel(QtWidgets.QWidget):
