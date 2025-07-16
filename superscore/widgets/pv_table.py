@@ -7,6 +7,7 @@ from qtpy import QtCore, QtGui
 import superscore.color
 from superscore.model import Readback, Setpoint, Snapshot
 from superscore.widgets import SEVERITY_ICONS
+from superscore.errors import EntryNotFoundError
 from superscore.widgets.views import LivePVTableModel
 
 
@@ -194,21 +195,32 @@ class PVTableModel(LivePVTableModel):
             self.dataChanged.emit(index, index)
         return True
 
+    def append_entry(self, entry: Union[UUID, Setpoint, Readback]) -> None:
+        """Append a new entry to the model and update the data cache."""
+        if isinstance(entry, UUID):
+            entry = self.client.backend.get_entry(entry)
+
+        if isinstance(entry, (Setpoint, Readback)):
+            self._data.append(entry)
+            self._data_cache[entry.pv_name] = None
+            self.layoutChanged.emit()
+        else:
+            raise TypeError(f"Unsupported entry type: {type(entry)}")
+
     def set_snapshot(self, snapshot: Union[UUID, Snapshot]) -> None:
         if isinstance(snapshot, Snapshot):
-            self._data = []
-            for entry in snapshot.children:
-                if isinstance(entry, (Setpoint, Readback)):
-                    self._data.append(entry)
-                elif isinstance(entry, UUID):
-                    self._data.append(self.client.backend.get_entry(entry))
-        elif isinstance(snapshot, UUID):
+            snapshot = snapshot.uuid
+
+        self._checked = set()
+        try:
             self._data = list(self.client.search(
                 ("ancestor", "eq", snapshot),
                 ("entry_type", "eq", (Setpoint, Readback)),
             ))
-        self._checked = set()
-        self.set_entries(self._data)
+            self.set_entries(self._data)
+        except EntryNotFoundError:
+            self._data = []
+            self.set_entries([])
 
     def get_selected_pvs(self) -> Iterable[Setpoint]:
         """Return the Setpoints corresponding to checked rows in the table"""
