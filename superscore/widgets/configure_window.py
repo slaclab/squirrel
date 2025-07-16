@@ -1,9 +1,9 @@
 import json
 import logging
-from typing import Callable, Dict, Optional, Union
+from typing import Dict, Optional, Union
 
 import qtawesome as qta
-from qtpy.QtCore import QModelIndex, Qt
+from qtpy.QtCore import QModelIndex, Qt, Signal
 from qtpy.QtWidgets import (QAbstractItemView, QDialog, QFrame, QHBoxLayout,
                             QHeaderView, QInputDialog, QLabel, QLineEdit,
                             QMessageBox, QPushButton, QSizePolicy, QSpacerItem,
@@ -25,12 +25,13 @@ class TagsDialog(QDialog):
     2. Read-only mode: Just viewing the group information without editing
     """
 
+    dataSaved = Signal(int, str, str, dict)
+
     def __init__(self,
                  group_name: str,
                  description: str,
                  tags_dict: Optional[Dict[int, str]] = None,
                  parent: Optional[QWidget] = None,
-                 save_callback: Optional[Callable[[str, str, Dict[int, str]], None]] = None,
                  is_admin: bool = False,
                  row_index: Optional[int] = None) -> None:
         super().__init__(parent)
@@ -40,7 +41,6 @@ class TagsDialog(QDialog):
         self.original_group_name = group_name
         self.original_row = row_index
         self.tags_dict = tags_dict or {}
-        self.save_callback = save_callback
         self.is_admin = is_admin
 
         layout: QVBoxLayout = QVBoxLayout(self)
@@ -118,7 +118,8 @@ class TagsDialog(QDialog):
         if self.is_admin:
             save_button = QPushButton("Save")
             save_button.setFixedWidth(80)
-            save_button.clicked.connect(self.save_changes)
+            save_button.clicked.connect(self.accept)
+            self.accepted.connect(self.save)
             button_layout.addWidget(save_button)
         else:
             close_button = QPushButton("Close")
@@ -239,7 +240,7 @@ class TagsDialog(QDialog):
             del self.tags_dict[key]
             self.populate_tag_list()
 
-    def save_changes(self) -> None:
+    def save(self) -> None:
         """
         Save all changes and close the dialog.
         """
@@ -256,10 +257,7 @@ class TagsDialog(QDialog):
             QMessageBox.warning(self, "Duplicate Name", f"A group with the name '{new_name}' already exists.")
             return
 
-        if self.save_callback:
-            self.save_callback(new_name, new_desc, self.tags_dict)
-
-        self.accept()
+        self.dataSaved.emit(self.original_row, new_name, new_desc, self.tags_dict)
 
 
 class TagGroupsWindow(QWidget):
@@ -779,30 +777,37 @@ class TagGroupsWindow(QWidget):
         is_admin = self.permission_manager.is_admin()
 
         if is_admin:
-            def save_group_data(new_name: str, new_desc: str, tags_dict: Dict[int, str]) -> None:
-                self.update_group_data(row, new_name, new_desc, tags_dict)
-
-                tag_chip = self.table.cellWidget(row, 0)
-                if tag_chip:
-                    tag_chip.tag_name = new_name
-
-                desc_item = self.table.item(row, 2)
-                if desc_item:
-                    desc_item.setText(new_desc)
-
-                tag_count: int = len(tags_dict)
-                count_text: str = f"{tag_count} {'Tags' if tag_count != 1 else 'Tag'}"
-                count_item = self.table.item(row, 1)
-                if count_item:
-                    count_item.setText(count_text)
-
-                self.client.backend.set_tags(self.groups_data)
-
-            dialog: TagsDialog = TagsDialog(group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, self, save_group_data, is_admin=True, row_index=row)
+            dialog = TagsDialog(group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=True, row_index=row)
+            dialog.dataSaved.connect(self.save_group_data)
         else:
-            dialog: TagsDialog = TagsDialog(group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, self, is_admin=False, row_index=row)
+            dialog = TagsDialog(group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=False, row_index=row)
 
         dialog.exec_()
+
+    def save_group_data(
+        self,
+        row: int,
+        new_name: str,
+        new_desc: str,
+        tags_dict: Dict[int, str]
+    ) -> None:
+        self.update_group_data(row, new_name, new_desc, tags_dict)
+
+        tag_chip = self.table.cellWidget(row, 0)
+        if tag_chip:
+            tag_chip.tag_name = new_name
+
+        desc_item = self.table.item(row, 2)
+        if desc_item:
+            desc_item.setText(new_desc)
+
+        tag_count: int = len(tags_dict)
+        count_text: str = f"{tag_count} {'Tags' if tag_count != 1 else 'Tag'}"
+        count_item = self.table.item(row, 1)
+        if count_item:
+            count_item.setText(count_text)
+
+        self.client.backend.set_tags(self.groups_data)
 
     def update_admin_status(self, is_admin: bool) -> None:
         """
