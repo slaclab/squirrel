@@ -1,1 +1,5 @@
+sphinx >= 6
+docs-versions-menu
+numpydoc
+recommonmark
 sphinx_rtd_theme
