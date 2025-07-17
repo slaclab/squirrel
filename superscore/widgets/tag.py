@@ -55,6 +55,14 @@ class TagChip(QtWidgets.QFrame):
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
+        margins = self.contentsMargins()
+        if event.rect().width() > self.sizeHint().width():
+            margins.setLeft((event.rect().width() - self.sizeHint().width()) // 2)
+            margins.setRight((event.rect().width() - self.sizeHint().width()) // 2)
+        if event.rect().height() > self.sizeHint().height():
+            margins.setTop((event.rect().height() - self.sizeHint().height()) // 2)
+            margins.setBottom((event.rect().height() - self.sizeHint().height()) // 2)
+        self.setContentsMargins(margins)
         self.paint(painter)
 
     def paint(self, painter):
@@ -74,6 +82,7 @@ class TagChip(QtWidgets.QFrame):
 
         border_rect = self.contentsRect() - QtCore.QMargins(pen.width(), pen.width(), pen.width(), pen.width())
         painter.drawRoundedRect(border_rect, border_rect.height() / 2, border_rect.height() / 2)
+        painter.translate(self.contentsRect().topLeft())
 
         painter.setPen(QtCore.Qt.NoPen)
         self.button_rect = QtCore.QRectF((rect.height() / 2) - spacing, (rect.height() / 2) - spacing, spacing * 2, spacing * 2)

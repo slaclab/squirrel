@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 from pathlib import Path
 from typing import Dict, List, Union
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from qtpy.QtCore import QModelIndex, Qt
@@ -80,7 +80,6 @@ def _dlg(
         description="Desc",
         tags_dict=tags or {0: "one", 1: "two"},
         parent=parent,
-        save_callback=None,
         is_admin=True,
         row_index=0,
     )
@@ -130,6 +129,7 @@ def test_tagsdialog_remove_tag(monkeypatch: pytest.MonkeyPatch, app: QApplicatio
     assert dlg.tag_list.rowCount() == 1
 
 
+@patch("superscore.widgets.configure_window.TagsDialog.save")
 def test_tagsdialog_save_changes(monkeypatch: pytest.MonkeyPatch, app: QApplication) -> None:
     """`save_changes` invokes callback when the name is unique."""
 
@@ -145,13 +145,12 @@ def test_tagsdialog_save_changes(monkeypatch: pytest.MonkeyPatch, app: QApplicat
         assert name == "Group B"
 
     dlg = _dlg(parent=parent)
-    dlg.save_callback = _cb
     dlg.name_input.setText("Group B")
 
     monkeypatch.setattr(QMessageBox, "warning", lambda *_a, **_k: None)
-    dlg.save_changes()
+    dlg.accept()
 
-    assert called["ok"] is True
+    assert dlg.save.call_count == 1
 
 
 # ---------------------------------------------------------------------------#
@@ -269,8 +268,9 @@ def test_handle_double_click(monkeypatch: pytest.MonkeyPatch, window: TagGroupsW
     """Double-click creates a (patched) dialog and executes it modally."""
     made = {"done": False}
 
-    class _FakeDialog:
+    class _FakeDialog(TagsDialog):
         def __init__(self, *a, **kw) -> None:
+            super().__init__(*a, **kw)
             made["done"] = True
 
         def exec_(self) -> int:  # noqa: D401
