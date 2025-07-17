@@ -15,7 +15,7 @@ Welcome to superscore's documentation!
    :caption: Links
    :hidden:
 
-   Github Repository <https://github.com/pcdshub/superscore>
+   Github Repository <https://github.com/slaclab/superscore>
 
 
 
