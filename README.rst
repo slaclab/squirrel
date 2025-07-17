@@ -2,14 +2,14 @@
 superscore
 ===============================
 
-.. image:: https://github.com/pcdshub/superscore/actions/workflows/standard.yml/badge.svg
-        :target: https://github.com/pcdshub/superscore/actions/workflows/standard.yml
+.. image:: https://github.com/slaclab/superscore/actions/workflows/standard.yml/badge.svg
+        :target: https://github.com/slaclab/superscore/actions/workflows/standard.yml
 
 .. image:: https://img.shields.io/pypi/v/superscore.svg
         :target: https://pypi.python.org/pypi/superscore
 
 
-`Documentation <https://pcdshub.github.io/superscore/>`_
+`Documentation <https://slaclab.github.io/superscore/>`_
 
 Configuration Management for EPICS PVs
 
