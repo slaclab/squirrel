@@ -12,6 +12,7 @@ from typing import Optional
 import qtawesome as qta
 from qtpy import QtCore, QtWidgets
 from qtpy.QtGui import QCloseEvent
+import PySide6.QtAsyncio as QtAsyncio
 
 import superscore.color
 from superscore.client import Client
@@ -218,23 +219,10 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         def dialog_accept():
             entry_callback = self.snapshot_details_page.entry_snapped_signal.emit
             progress_callback = self.snapshot_details_page.snap_progress_signal.emit
-            # async_thread = AsyncSnapWorker(
-            #     client=self.client,
-            #     dest_snapshot=dest_snapshot,
-            #     entry_callback=entry_callback,
-            #     progress_callback=progress_callback,
-            # )
 
             self.open_snapshot(dest_snapshot)
-            # asyncio.run(self.client.snap_async(dest_snapshot, entry_callback, progress_callback))
+            QtAsyncio.run(self.client.snap_async(dest_snapshot, entry_callback, progress_callback))
 
-            # asyncio.get_running_loop().run_until_complete(
-            #     self.client.snap_async(
-            #         dest_snapshot,
-            #         entry_callback,
-            #         progress_callback,
-            #     )
-            # )
             self.client.save(dest_snapshot)
             self.snapshot_table.model().fetch()
 
@@ -315,27 +303,6 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             except AttributeError:
                 logger.warning("Error closing page: %s", page)
         super().closeEvent(a0)
-
-
-class AsyncSnapWorker(QtCore.QThread):
-    def __init__(self, client: Client, dest_snapshot: Snapshot, entry_callback, progress_callback):
-        super().__init__()
-        self.client = client
-        self.dest_snapshot = dest_snapshot
-        self.entry_callback = entry_callback
-        self.progress_callback = progress_callback
-
-    def run(self):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(
-            self.client.snap_async(
-                self.dest_snapshot,
-                entry_callback=self.entry_callback,
-                progress_callback=self.progress_callback,
-            )
-        )
-        loop.close()
 
 
 class NavigationPanel(QtWidgets.QWidget):

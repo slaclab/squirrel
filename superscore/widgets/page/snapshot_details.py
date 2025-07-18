@@ -115,6 +115,7 @@ class SnapshotDetailsPage(Page):
         progress_bar_layout = QtWidgets.QHBoxLayout()
         progress_bar_layout.addSpacerItem(QtWidgets.QSpacerItem(1, 1, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum))
         self.progress_bar = QtWidgets.QProgressBar(self)
+        self.progress_bar.setTextVisible(True)
         self.progress_bar.setFormat("Saving Snapshot... %p% (%v / %m)")
         snapshot_details_layout.addWidget(self.progress_bar)
         progress_bar_layout.addSpacerItem(QtWidgets.QSpacerItem(1, 1, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum))
