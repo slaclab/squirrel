@@ -23,7 +23,6 @@ from superscore.widgets.page.page import Page
 from superscore.widgets.page.pv_browser import PVBrowserPage
 from superscore.widgets.page.snapshot_comparison import SnapshotComparisonPage
 from superscore.widgets.page.snapshot_details import SnapshotDetailsPage
-from superscore.widgets.pv_browser_table import PVBrowserFilterProxyModel
 from superscore.widgets.pv_details_components import PVDetails, PVDetailsPopup
 from superscore.widgets.pv_table import PVTableModel
 from superscore.widgets.snapshot_table import (SnapshotFilterModel,
@@ -283,7 +282,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             logger.warning("Invalid index passed to open_pv_details")
             return
         data: Parameter | Setpoint | Readback
-        if isinstance(index.model(), PVBrowserFilterProxyModel):
+        if isinstance(index.model(), QtCore.QSortFilterProxyModel):
             source_model = index.model().sourceModel()
             source_index = index.model().mapToSource(index)
             data = source_model._data[source_index.row()]
