@@ -132,7 +132,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         self.snapshot_table = SquirrelTableView()
         snapshot_model = SnapshotTableModel(self.client)
         proxy_model = SnapshotFilterModel()
-        proxy_model.setFilterCaseSensitivity(False)
+        proxy_model.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
         proxy_model.setSourceModel(snapshot_model)
         self.snapshot_table.setModel(proxy_model)
         self.snapshot_table.doubleClicked.connect(self.open_snapshot_index)
