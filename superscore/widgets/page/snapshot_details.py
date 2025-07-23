@@ -100,7 +100,7 @@ class SnapshotDetailsPage(Page):
         proxy_model = QtCore.QSortFilterProxyModel()
         proxy_model.setSourceModel(self.snapshot_details_model)
         proxy_model.setFilterKeyColumn(PV_HEADER.PV.value)
-        proxy_model.setFilterCaseSensitivity(False)
+        proxy_model.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.snapshot_details_table.setModel(proxy_model)
         header_view = self.snapshot_details_table.horizontalHeader()
         header_view.setSectionResizeMode(header_view.ResizeMode.Stretch)
