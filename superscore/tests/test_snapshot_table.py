@@ -1,6 +1,8 @@
 from datetime import datetime
-from qtpy import QtCore
 from unittest.mock import Mock
+
+from qtpy import QtCore
+
 from superscore.model import Readback
 from superscore.widgets.snapshot_table import SnapshotFilterModel
 

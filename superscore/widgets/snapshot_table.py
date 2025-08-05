@@ -1,4 +1,5 @@
 import operator
+
 from qtpy import QtCore
 
 from superscore.model import Snapshot
@@ -95,7 +96,7 @@ class SnapshotFilterModel(QtCore.QSortFilterProxyModel):
         self.setFilterKeyColumn(1)
         self.since = QtCore.QDate.currentDate().addYears(-1)
         self.until = QtCore.QDate.currentDate()
-        self.filters = [] # List that contains: [{column, operator, value}]
+        self.filters = []  # List that contains: [{column, operator, value}]
 
     def filterAcceptsRow(self, row: int, parent: QtCore.QModelIndex) -> bool:
         datetime = self.sourceModel()._data[row].creation_time

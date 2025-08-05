@@ -16,10 +16,10 @@ import superscore.color
 from superscore.client import Client
 from superscore.control_layers._base_shim import EpicsData
 from superscore.model import Parameter, Readback, Setpoint, Snapshot
-from superscore.widgets.filter_bar import FilterBar
 from superscore.widgets.configure_window import TagGroupsWindow
 from superscore.widgets.core import NameDescTagsWidget, QtSingleton
 from superscore.widgets.date_range import DateRangeWidget
+from superscore.widgets.filter_bar import FilterBar
 from superscore.widgets.page.page import Page
 from superscore.widgets.page.pv_browser import PVBrowserPage
 from superscore.widgets.page.snapshot_comparison import SnapshotComparisonPage
