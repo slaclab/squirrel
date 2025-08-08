@@ -30,7 +30,7 @@ Installation
   $ pip install .
   $ #or
   $ conda install --file requirements.txt --file dev-requirements.txt # include packages for development and testing
-  $ pip install -e .  # install as editable package 
+  $ pip install -e .  # install as editable package
 
 Running the Tests
 -----------------
