@@ -158,7 +158,7 @@ class PVTableModel(LivePVTableModel):
             return icon
         elif role == QtCore.Qt.ForegroundRole and column in [PV_HEADER.LIVE_SETPOINT, PV_HEADER.LIVE_READBACK]:
             return QtGui.QColor(superscore.color.BLUE)
-        if role in [QtCore.Qt.BackgroundRole, QtCore.Qt.FontRole] and column == PV_HEADER.LIVE_SETPOINT:
+        elif role in [QtCore.Qt.BackgroundRole, QtCore.Qt.FontRole] and column == PV_HEADER.LIVE_SETPOINT:
             stored_data = getattr(entry, 'data', None)
             is_close = self.is_close(entry, stored_data)
             if stored_data is not None and not is_close:
