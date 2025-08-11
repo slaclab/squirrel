@@ -1,13 +1,47 @@
 from operator import attrgetter
 from typing import Any
+from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
+from qtpy import QtCore, QtGui
 from pytestqt.qtbot import QtBot
 
-from superscore.model import Collection
+from superscore.backends.filestore import FilestoreBackend
+from superscore.client import Client
+from superscore.color import LIVE_SETPOINT_HIGHLIGHT
+from superscore.control_layers import EpicsData
+from superscore.model import Collection, Snapshot
+from superscore.tests.conftest import setup_test_stack
 from superscore.widgets import TagsWidget
 from superscore.widgets.core import DataWidget
+from superscore.widgets.pv_table import PVTableModel, PV_HEADER
+
+
+@pytest.fixture(scope='function')
+def pv_table_model(
+    test_client: Client,
+    simple_snapshot_fixture: Snapshot,
+    qtbot: QtBot
+):
+    for i in range(3):
+        simple_snapshot_fixture.children[i].data = i + 1
+    test_client.backend.save_entry(simple_snapshot_fixture)
+
+    """Minimal PVTableModel"""
+    model = PVTableModel(
+        snapshot_id=simple_snapshot_fixture.uuid,
+        client=test_client,
+    )
+
+    # Make sure we never actually call EPICS. Second child has different live data
+    model.client.cl.get = MagicMock(side_effect=[EpicsData(1), EpicsData(1), EpicsData(3)])
+    qtbot.wait_until(lambda: model._poll_thread.running)
+    yield model
+
+    model.stop_polling()
+
+    qtbot.wait_until(lambda: not model._poll_thread.isRunning())
 
 
 @pytest.mark.parametrize(
@@ -81,3 +115,44 @@ def test_tags_widget(qtbot):
     assert len(chip.tags) == 0
     assert 0 not in chip.tags
     assert 1 not in chip.tags
+
+
+def test_pv_table_model(qtmodeltester, pv_table_model: PVTableModel):
+    qtmodeltester.check(pv_table_model, force_py=True)
+
+
+@setup_test_stack(sources=['db/filestore.json'], backend_type=FilestoreBackend)
+def test_pv_table_model_data(test_client, pv_table_model: PVTableModel):
+    # Expected model data based on the pv_table_model setup
+    expected_data = [[None, None, None, 'MY:FLOAT', 1, 1, None, None, None],
+                     [None, None, None, 'MY:INT', 2, 1, None, None, None],
+                     [None, None, None, 'MY:ENUM', 3, 3, None, None, None]]
+
+    actual_data = []
+    for row, expected in enumerate(expected_data):
+        actual_row = []
+        for col in range(len(expected)):
+            index = pv_table_model.index(row, col)
+            data = pv_table_model.data(index)
+            actual_row.append(data)
+        actual_data.append(actual_row)
+    assert actual_data == expected_data
+
+
+@setup_test_stack(sources=['db/filestore.json'], backend_type=FilestoreBackend)
+def test_pv_table_model_color(test_client: Client, pv_table_model: PVTableModel):
+    # Expected model colors based on the pv_table_model setup
+    diff_color = QtGui.QColor(LIVE_SETPOINT_HIGHLIGHT)
+    expected_color = [[None, None, None, None, None, None, None, None, None],
+                      [None, None, None, None, None, diff_color, None, None, None],
+                      [None, None, None, None, None, None, None, None, None]]
+
+    actual_colors = []
+    for row, expected in enumerate(expected_color):
+        actual_row = []
+        for col in range(len(expected)):
+            index = pv_table_model.index(row, col)
+            color = pv_table_model.data(index, QtCore.Qt.BackgroundRole)
+            actual_row.append(color)
+        actual_colors.append(actual_row)
+    assert actual_colors == expected_color
