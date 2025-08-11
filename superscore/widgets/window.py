@@ -82,14 +82,6 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         central_widget.layout().setContentsMargins(0, 0, 0, 0)
         self.setCentralWidget(central_widget)
 
-        self.setStyleSheet(
-            "SquirrelTableView::item {"
-            "    border: 0px;"
-            f"    border-top: 1px solid {superscore.color.TABLE_GRID};"
-            f"    border-bottom: 1px solid {superscore.color.TABLE_GRID};"
-            "}"
-        )
-
     def init_nav_panel(self) -> NavigationPanel:
         navigation_panel = NavigationPanel()
         navigation_panel.sigViewSnapshots.connect(self.open_view_snapshot_page)
