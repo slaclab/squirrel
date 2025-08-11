@@ -39,20 +39,6 @@ PV_HEADER._strings = {
 }
 
 
-# Must be added outside class def to avoid processing as an enum member
-PV_HEADER._strings = {
-    PV_HEADER.CHECKBOX: "",
-    PV_HEADER.SEVERITY: "",
-    PV_HEADER.DEVICE: "Device",
-    PV_HEADER.PV: "PV Name",
-    PV_HEADER.SETPOINT: "Saved Value",
-    PV_HEADER.LIVE_SETPOINT: "Live Value",
-    PV_HEADER.READBACK: "Saved Readback",
-    PV_HEADER.LIVE_READBACK: "Live Readback",
-    PV_HEADER.CONFIG: "CON",
-}
-
-
 class PVTableModel(LivePVTableModel):
     """
     A table model for representing PV data within a Snapshot. Includes live data and checkboxes
@@ -85,6 +71,9 @@ class PVTableModel(LivePVTableModel):
                 return PV_HEADER(section).display_string()
 
     def flags(self, index) -> QtCore.Qt.ItemFlags:
+        if not index.isValid():
+            return
+
         column = PV_HEADER(index.column())
         if column == PV_HEADER.CHECKBOX:
             return (
