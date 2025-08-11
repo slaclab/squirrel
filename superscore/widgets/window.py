@@ -12,7 +12,6 @@ import qtawesome as qta
 from qtpy import QtCore, QtWidgets
 from qtpy.QtGui import QCloseEvent
 
-import superscore.color
 from superscore.client import Client
 from superscore.control_layers._base_shim import EpicsData
 from superscore.model import Parameter, Readback, Setpoint, Snapshot
