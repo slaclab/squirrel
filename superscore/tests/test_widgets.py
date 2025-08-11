@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 import pytest
-from qtpy import QtCore, QtGui
 from pytestqt.qtbot import QtBot
+from qtpy import QtCore, QtGui
 
 from superscore.backends.filestore import FilestoreBackend
 from superscore.client import Client
@@ -15,7 +15,7 @@ from superscore.model import Collection, Snapshot
 from superscore.tests.conftest import setup_test_stack
 from superscore.widgets import TagsWidget
 from superscore.widgets.core import DataWidget
-from superscore.widgets.pv_table import PVTableModel, PV_HEADER
+from superscore.widgets.pv_table import PVTableModel
 
 
 @pytest.fixture(scope='function')

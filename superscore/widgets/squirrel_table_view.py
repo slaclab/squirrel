@@ -1,4 +1,4 @@
-from qtpy import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 import superscore.color
 
@@ -43,4 +43,3 @@ class SquirrelTableGridDelegate(QtWidgets.QStyledItemDelegate):
         # Draw the top & bottom borders
         painter.drawLine(option.rect.topLeft(), option.rect.topRight())
         painter.drawLine(option.rect.bottomLeft(), option.rect.bottomRight())
-
