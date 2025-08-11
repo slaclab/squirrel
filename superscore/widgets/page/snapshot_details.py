@@ -173,7 +173,7 @@ class SnapshotDetailsPage(Page):
         dialog.layout().addWidget(button_box)
         button_box.accepted.connect(dialog.accept)
         button_box.rejected.connect(dialog.reject)
-        selected_pvs = self.snapshot_details_table.model().get_selected_pvs()
+        selected_pvs = self.snapshot_details_model.get_selected_pvs()
         if len(selected_pvs) == 0:
             dialog.setWindowTitle("Restore all PVs?")
         else:
