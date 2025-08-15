@@ -12,7 +12,6 @@ import qtawesome as qta
 from qtpy import QtCore, QtWidgets
 from qtpy.QtGui import QCloseEvent
 
-import superscore.color
 from superscore.client import Client
 from superscore.control_layers._base_shim import EpicsData
 from superscore.model import Parameter, Readback, Setpoint, Snapshot
@@ -81,14 +80,6 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         central_widget.layout().setSpacing(0)
         central_widget.layout().setContentsMargins(0, 0, 0, 0)
         self.setCentralWidget(central_widget)
-
-        self.setStyleSheet(
-            "SquirrelTableView::item {"
-            "    border: 0px;"
-            f"    border-top: 1px solid {superscore.color.TABLE_GRID};"
-            f"    border-bottom: 1px solid {superscore.color.TABLE_GRID};"
-            "}"
-        )
 
     def init_nav_panel(self) -> NavigationPanel:
         navigation_panel = NavigationPanel()

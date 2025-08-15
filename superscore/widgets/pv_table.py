@@ -39,20 +39,6 @@ PV_HEADER._strings = {
 }
 
 
-# Must be added outside class def to avoid processing as an enum member
-PV_HEADER._strings = {
-    PV_HEADER.CHECKBOX: "",
-    PV_HEADER.SEVERITY: "",
-    PV_HEADER.DEVICE: "Device",
-    PV_HEADER.PV: "PV Name",
-    PV_HEADER.SETPOINT: "Saved Value",
-    PV_HEADER.LIVE_SETPOINT: "Live Value",
-    PV_HEADER.READBACK: "Saved Readback",
-    PV_HEADER.LIVE_READBACK: "Live Readback",
-    PV_HEADER.CONFIG: "CON",
-}
-
-
 class PVTableModel(LivePVTableModel):
     """
     A table model for representing PV data within a Snapshot. Includes live data and checkboxes
@@ -85,6 +71,9 @@ class PVTableModel(LivePVTableModel):
                 return PV_HEADER(section).display_string()
 
     def flags(self, index) -> QtCore.Qt.ItemFlags:
+        if not index.isValid():
+            return
+
         column = PV_HEADER(index.column())
         if column == PV_HEADER.CHECKBOX:
             return (
@@ -169,26 +158,20 @@ class PVTableModel(LivePVTableModel):
             return icon
         elif role == QtCore.Qt.ForegroundRole and column in [PV_HEADER.LIVE_SETPOINT, PV_HEADER.LIVE_READBACK]:
             return QtGui.QColor(superscore.color.BLUE)
-        elif role == QtCore.Qt.BackgroundRole and column == PV_HEADER.LIVE_SETPOINT:
+        elif role in [QtCore.Qt.BackgroundRole, QtCore.Qt.FontRole] and column == PV_HEADER.LIVE_SETPOINT:
             stored_data = getattr(entry, 'data', None)
             is_close = self.is_close(entry, stored_data)
             if stored_data is not None and not is_close:
-                return QtGui.QColor(superscore.color.LIVE_SETPOINT_HIGHLIGHT)
-            else:
-                return None
-        elif role == QtCore.Qt.FontRole and column == PV_HEADER.LIVE_SETPOINT:
-            stored_data = getattr(entry, 'data', None)
-            is_close = self.is_close(entry, stored_data)
-            if stored_data is not None and not is_close:
-                font = QtGui.QFont()
-                font.setBold(True)
-                return font
-            else:
-                return None
+                if role == QtCore.Qt.BackgroundRole:
+                    return QtGui.QColor(superscore.color.LIVE_SETPOINT_HIGHLIGHT)
+                elif role == QtCore.Qt.FontRole:
+                    font = QtGui.QFont()
+                    font.setBold(True)
+                    return font
+            return None
         elif role == QtCore.Qt.TextAlignmentRole and column not in [PV_HEADER.DEVICE, PV_HEADER.PV]:
             return QtCore.Qt.AlignCenter
-        else:
-            return None
+        return None
 
     def setData(self, index, value, role) -> bool:
         if role == QtCore.Qt.CheckStateRole and PV_HEADER(index.column()) == PV_HEADER.CHECKBOX:

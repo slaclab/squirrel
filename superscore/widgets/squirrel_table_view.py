@@ -1,10 +1,13 @@
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
+
+import superscore.color
 
 
 class SquirrelTableView(QtWidgets.QTableView):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setShowGrid(False)
+        self.setItemDelegate(SquirrelTableGridDelegate())
         self.verticalHeader().hide()
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
@@ -22,3 +25,21 @@ class SquirrelTableView(QtWidgets.QTableView):
         else:
             mode = clipboard.Clipboard
         clipboard.setText(text, mode=mode)
+
+
+class SquirrelTableGridDelegate(QtWidgets.QStyledItemDelegate):
+    """Styled Item Delegate for showing the horizontal grid lines in a
+    table view. To be used by the SquirrelTableView class.
+    """
+    def paint(self, painter, option, index):
+        # Draw the default item
+        super().paint(painter, option, index)
+
+        # Construct the QPen for the grid lines
+        grid_color = QtGui.QColor(superscore.color.TABLE_GRID)
+        border_pen = QtGui.QPen(grid_color)
+        painter.setPen(border_pen)
+
+        # Draw the top & bottom borders
+        painter.drawLine(option.rect.topLeft(), option.rect.topRight())
+        painter.drawLine(option.rect.bottomLeft(), option.rect.bottomRight())
