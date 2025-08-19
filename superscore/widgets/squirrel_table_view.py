@@ -21,9 +21,9 @@ class SquirrelTableView(QtWidgets.QTableView):
         text = self.model().data(index, QtCore.Qt.ToolTipRole)
         clipboard = QtWidgets.QApplication.clipboard()
         if clipboard.supportsSelection():
-            mode = clipboard.Selection
+            mode = clipboard.Mode.Selection
         else:
-            mode = clipboard.Clipboard
+            mode = clipboard.Mode.Clipboard
         clipboard.setText(text, mode=mode)
 
 
