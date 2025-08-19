@@ -40,60 +40,40 @@ def parse_csv_to_dict(csv_file_path: str) -> List[Dict[str, Any]]:
     with open(csv_file_path, 'r', newline='', encoding='utf-8') as csvfile:
         csvfile.seek(0)
 
-        reader = csv.reader(csvfile)
-        headers = next(reader)
+        reader = csv.DictReader(csvfile)
+        cleaned_headers = [h.strip() for h in reader.fieldnames if h and h.strip()]
 
-        cleaned_headers = []
-        header_mapping = {}
-
-        for i, header in enumerate(headers):
-            cleaned_header = str(header).strip()
-            if cleaned_header:
-                cleaned_headers.append(cleaned_header)
-                header_mapping[cleaned_header] = i
-
-        pv_column = 'PV' if 'PV' in cleaned_headers else None
-        description_column = 'Description' if 'Description' in cleaned_headers else None
-
-        if pv_column is None:
+        if 'PV' not in cleaned_headers:
             raise ValueError(f"No 'PV' column found. Available columns: {cleaned_headers}")
 
-        if description_column is None:
+        if 'Description' not in cleaned_headers:
             raise ValueError(f"No 'Description' column found. Available columns: {cleaned_headers}")
 
-        group_columns = [col for col in cleaned_headers if col not in [pv_column, description_column]]
+        group_columns = [col for col in cleaned_headers if col not in ['PV', 'Description']]
 
         for row_num, row in enumerate(reader, start=2):
-            try:
-                pv_index = header_mapping[pv_column]
-                pv_value = row[pv_index].strip() if pv_index < len(row) else ''
+            pv_value = (row.get('PV') or '').strip()
 
-                if not pv_value:
-                    continue
-
-                desc_index = header_mapping[description_column]
-                desc_value = row[desc_index].strip() if desc_index < len(row) else ''
-
-                row_dict = {
-                    'PV': pv_value,
-                    'Description': desc_value,
-                    'groups': {}
-                }
-
-                for group_name in group_columns:
-                    group_index = header_mapping[group_name]
-                    cell_value = row[group_index].strip() if group_index < len(row) else ''
-
-                    if cell_value and cell_value.lower() not in ['nan', 'none']:
-                        values = [val.strip() for val in cell_value.split(',') if val.strip()]
-                        row_dict['groups'][group_name] = values
-                    else:
-                        row_dict['groups'][group_name] = []
-
-                result.append(row_dict)
-
-            except (IndexError, KeyError) as e:
-                print(f"Warning: Could not process row {row_num}: {e}")
+            if not pv_value:
                 continue
+
+            desc_value = (row.get('Description') or '').strip()
+
+            row_dict = {
+                'PV': pv_value,
+                'Description': desc_value,
+                'groups': {}
+            }
+
+            for group_name in group_columns:
+                cell_value = (row.get(group_name) or '').strip()
+
+                if cell_value and cell_value.lower() not in ['nan', 'none']:
+                    values = [val.strip() for val in cell_value.split(',') if val.strip()]
+                    row_dict['groups'][group_name] = values
+                else:
+                    row_dict['groups'][group_name] = []
+
+            result.append(row_dict)
 
     return result
