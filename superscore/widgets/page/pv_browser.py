@@ -31,7 +31,7 @@ class PVBrowserPage(Page):
         """Initialize the PV browser page with the PV browser table."""
 
         pv_browser_layout = QtWidgets.QVBoxLayout()
-        pv_browser_layout.setContentsMargins(0, 11, 0, 0)
+        pv_browser_layout.setContentsMargins(0, 11, 11, 0)
         self.setLayout(pv_browser_layout)
 
         self.search_bar = QtWidgets.QLineEdit(self)
@@ -46,7 +46,7 @@ class PVBrowserPage(Page):
         search_bar_lyt.addWidget(self.search_bar)
         search_bar_lyt.addSpacerItem(spacer)
 
-        self.import_pvs = QtWidgets.QPushButton("import pvs")
+        self.import_pvs = QtWidgets.QPushButton("Import PVs")
         self.import_pvs.setFixedWidth(100)
         self.import_pvs.clicked.connect(self.select_file)
 

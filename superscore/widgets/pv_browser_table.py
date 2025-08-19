@@ -225,10 +225,10 @@ class CSVTableModel(QtCore.QAbstractTableModel):
             if csv_group_name in backend_group_names:
                 backend_id = backend_group_names[csv_group_name]
                 filtered_tag_def[backend_id] = self.backend_tag_def[backend_id]
-                logger.debug(f"ACCEPTED CSV group '{csv_group_name}' -> backend group_id {backend_id}")
+                logger.debug(f"Accepted CSV group '{csv_group_name}' -> backend group_id {backend_id}")
             else:
                 self.rejected_groups.append(csv_group_name)
-                logger.debug(f"REJECTED CSV group '{csv_group_name}' - not found in backend")
+                logger.warn(f"Rejected CSV group '{csv_group_name}' - not found in backend")
 
         return filtered_tag_def
 
@@ -250,11 +250,11 @@ class CSVTableModel(QtCore.QAbstractTableModel):
                     for tag_id, tag_name in choices.items():
                         if tag_name == csv_value:
                             tag_ids.add(tag_id)
-                            logger.debug(f"ACCEPTED value '{csv_value}' -> tag_id {tag_id}")
+                            logger.debug(f"Accepted value '{csv_value}' -> tag_id {tag_id}")
                             break
                 else:
                     rejected_values_for_group.append(csv_value)
-                    logger.debug(f"REJECTED value '{csv_value}' (not in backend choices)")
+                    logger.warn(f"Rejected value '{csv_value}' (not in backend choices)")
 
             if rejected_values_for_group:
                 if group_name not in self.rejected_values:

@@ -311,8 +311,6 @@ class TagsWidget(QtWidgets.QWidget):
         return None
 
     def paint(self, painter):
-        if not self.layout().itemAt(0):
-            return
         painter.translate(self.layout().itemAt(0).widget().pos())
         for i in range(self.layout().count()):
             chip = self.layout().itemAt(i).widget()
