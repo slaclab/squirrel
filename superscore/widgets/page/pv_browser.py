@@ -235,31 +235,27 @@ class CSVTableDialog(QtWidgets.QDialog):
         Import rows into the backend.
         Returns: (success_count, error_count, error_list)
         """
-        success_count = 0
-        error_count = 0
-        errors = []
+        parameters = []
 
-        for i, row_data in enumerate(rows_to_import):
-            try:
-                parameter = self._create_parameter_from_row(row_data)
+        for row_data in rows_to_import:
+            parameter = self._create_parameter_from_row(row_data)
+            parameters.append(parameter)
 
-                if self.parent_page and hasattr(self.parent_page, 'client'):
-                    self.parent_page.client.add(parameter)
-                    success_count += 1
-                    print(f"Successfully imported: {row_data['PV']}")
-                else:
-                    raise Exception("No client connection available")
+        parent = getattr(self, "parent_page", None)
+        client = getattr(parent, "client", None)
+        backend = getattr(client, "backend", None)
+        if backend is None:
+            return 0, len(rows_to_import), ["No client connection available"]
+        try:
+            backend.add_multiple_pvs(parameters)
+        except Exception as e:
+            print(f"Failed to import rows: {str(e)}")
+            return 0, len(rows_to_import), [str(e)]
 
-            except Exception as e:
-                error_count += 1
-                error_msg = f"Row {i+1} ({row_data.get('PV', 'Unknown')}): {str(e)}"
-                errors.append(error_msg)
-                print(f"Failed to import: {error_msg}")
+        if parent is not None:
+            parent.refresh_table()
 
-        if success_count > 0 and self.parent_page:
-            self.parent_page.refresh_table()
-
-        return success_count, error_count, errors
+        return len(rows_to_import), 0, []
 
     def _create_parameter_from_row(self, row_data: Dict[str, Any]):
         """Create a Parameter object from CSV row data with proper tag handling"""
@@ -316,7 +312,7 @@ class CSVTableDialog(QtWidgets.QDialog):
                 self,
                 "Import Failed",
                 f"Failed to import any entries.\n\n"
-                f"First few errors:\n{error_details}"
+                f"Error:\n{error_details}"
             )
         else:
             error_details = "\n".join(errors[:3])
