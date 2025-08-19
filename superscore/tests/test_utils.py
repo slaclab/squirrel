@@ -7,12 +7,12 @@ from superscore.utils import parse_csv_to_dict
 
 def write_csv(tmp_path, headers, rows, name="input.csv"):
     """Create a test csv file and return the path to it. Will automatically clean itself up after the test is run."""
-    p = tmp_path / name
-    with p.open("w", encoding="utf-8", newline="") as f:
+    file_path = tmp_path / name
+    with file_path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(headers)
         writer.writerows(rows)
-    return p
+    return file_path
 
 
 def test_parse_correctly_formatted_csv_file(tmp_path):

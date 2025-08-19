@@ -33,7 +33,8 @@ def build_abs_path(basedir: str, path: str) -> str:
 
 def parse_csv_to_dict(csv_file_path: str) -> List[Dict[str, Any]]:
     """
-    Parse CSV using the csv module with better column handling.
+    Parse CSV file representing PV data into a form that can be bulk-imported by the backend. Each row represents
+    a PV and its associated meta-data.
     """
     result = []
 

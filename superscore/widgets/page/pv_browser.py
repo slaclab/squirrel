@@ -46,9 +46,6 @@ class PVBrowserPage(Page):
         search_bar_lyt.addWidget(self.search_bar)
         search_bar_lyt.addSpacerItem(spacer)
 
-        # clear_icon = qta.icon("ph.x-circle-fill", color=superscore.color.GREY, scale_factor=1.1)
-        # self.clear_button.setIcon(clear_icon)
-
         self.import_pvs = QtWidgets.QPushButton("import pvs")
         self.import_pvs.setFixedWidth(100)
         self.import_pvs.clicked.connect(self.select_file)
@@ -162,10 +159,6 @@ class CSVTableDialog(QtWidgets.QDialog):
 
         button_layout = QtWidgets.QHBoxLayout()
 
-        # import_selected_btn = QtWidgets.QPushButton("Import Selected Rows")
-        # import_selected_btn.clicked.connect(self.import_selected_data)
-        # button_layout.addWidget(import_selected_btn)
-
         import_all_btn = QtWidgets.QPushButton("Import Data")
         import_all_btn.clicked.connect(self.import_data)
         button_layout.addWidget(import_all_btn)
@@ -175,44 +168,6 @@ class CSVTableDialog(QtWidgets.QDialog):
         button_layout.addWidget(cancel_btn)
 
         layout.addLayout(button_layout)
-
-    '''
-    def import_selected_data(self) -> None:
-        """Import only selected rows into backend"""
-        print("import selected data")
-
-        # Get selected rows
-        selected_indexes = self.table_view.selectionModel().selectedRows()
-
-        if not selected_indexes:
-            QtWidgets.QMessageBox.warning(self, "Warning", "Please select rows to import.")
-            return
-
-        # Extract selected row data
-        selected_data = []
-        for index in selected_indexes:
-            row_data = self.model.data(index, QtCore.Qt.UserRole)
-            if row_data:
-                selected_data.append(row_data)
-
-        if not selected_data:
-            QtWidgets.QMessageBox.warning(self, "Warning", "No valid data selected.")
-            return
-
-        try:
-            # Import selected rows
-            success_count, error_count, errors = self._import_rows(selected_data)
-
-            # Show results and close dialog
-            self._show_import_results(success_count, error_count, errors, len(selected_data))
-
-            if success_count > 0:
-                self.accept()  # Close dialog with success
-
-        except Exception as e:
-            QtWidgets.QMessageBox.critical(self, "Import Error", f"Failed to import selected data: {str(e)}")
-            print(f"Import failed: {e}")
-    '''
 
     def import_data(self) -> None:
         """Import all data into backend"""
