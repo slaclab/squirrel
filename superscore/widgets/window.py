@@ -244,7 +244,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             self.navigation_panel.set_nav_button_selected(self.navigation_panel.configure_tags_button)
 
     @QtCore.Slot(QtCore.QModelIndex)
-    def open_snapshot_index(self, index: QtCore.QModelIndex) -> None:
+    def open_snapshot_index(self, proxy_index: QtCore.QModelIndex) -> None:
         """
         Opens the snapshot stored at the selected index. A widget representing the
         snapshot is created if necessary and set as the current view in the stack.
@@ -252,13 +252,14 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         Args:
             index (QtCore.Qt.QModelIndex): table index of the snapshot to open
         """
-        if not index.isValid():
+        if not proxy_index.isValid():
             logger.warning("Invalid index passed to open_snapshot_details")
             return
 
         # Set new_snapshot in the details page
-        new_snapshot = self.snapshot_table.model().sourceModel().index_to_snapshot(index)
-        self.open_snapshot(new_snapshot)
+        source_index = self.snapshot_table.model().mapToSource(proxy_index)
+        to_open = self.snapshot_table.model().sourceModel().index_to_snapshot(source_index)
+        self.open_snapshot(to_open)
 
     def toggle_filter_popup(self) -> None:
         """Show or hide the popup that includes the meta pv filters."""
