@@ -68,11 +68,13 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
 
     def fetch(self):
         """Fetch all snapshots from the backend"""
+        self.beginResetModel()
         self._data = sorted(
             self.client.search(("entry_type", "eq", Snapshot)),
             key=lambda s: s.creation_time,
             reverse=True,
         )
+        self.endResetModel()
 
     def index_to_snapshot(self, index: QtCore.QModelIndex) -> Snapshot:
         """Convert a QModelIndex to a Snapshot object."""
