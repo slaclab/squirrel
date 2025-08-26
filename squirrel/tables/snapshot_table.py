@@ -27,7 +27,7 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
         return len(self._data)
 
     def columnCount(self, parent=None):
-        meta_pvs = self.client.backend.get_meta_pvs()
+        meta_pvs = self.client.meta_pvs
         return len(self.HEADER) + len(meta_pvs)
 
     def data(
@@ -44,13 +44,13 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
                 return snapshot.title
             else:
                 try:
-                    return snapshot.meta_pvs[column - len(self.HEADER)].data
+                    return snapshot.meta_pvs[column - len(self.HEADER)].readback_data.data
                 except IndexError:
                     return None
         elif role == QtCore.Qt.ToolTipRole and column >= 2:
             snapshot = self._data[index.row()]
             try:
-                return snapshot.meta_pvs[column - len(self.HEADER)].pv_name
+                return snapshot.meta_pvs[column - len(self.HEADER)].readback
             except IndexError:
                 return None
         else:
@@ -67,7 +67,7 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
                 try:
                     return self.HEADER[section]
                 except IndexError:
-                    meta_pvs = self.client.backend.get_meta_pvs()
+                    meta_pvs = self.client.meta_pvs
                     return meta_pvs[section - len(self.HEADER)].description
 
     def fetch(self):
