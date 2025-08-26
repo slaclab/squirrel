@@ -41,11 +41,6 @@ class MongoBackend(_Backend):
 
         .. deprecated
 
-        Returns
-        -------
-        TagDef
-            Full tag definition received from the backend
-
         Raises
         ------
         BackendError
@@ -510,24 +505,6 @@ class MongoBackend(_Backend):
         method is potentially valuable for limiting how much data is sent by the
         backend at once."""
         raise NotImplementedError
-
-    def get_meta_pvs(self) -> Iterable[PV]:
-        """
-        Dummy method that does nothing, but is required for
-        compatibility with the current Client
-
-        .. deprecated
-        """
-        return []
-
-    def set_meta_pvs(self, meta_pvs: Iterable[PV]) -> None:
-        """
-        Dummy method that does nothing, but is required for
-        compatibility with the current Client
-
-        .. deprecated
-        """
-        return
 
     @staticmethod
     def _raise_for_status(response):
