@@ -7,6 +7,12 @@ Welcome to superscore's documentation!
 ===========================================================
 
 .. toctree::
+   :maxdepth: 1
+   :caption: User Documentation
+
+   config.rst
+
+.. toctree::
    :maxdepth: 2
    :caption: Developer Documentation
 
