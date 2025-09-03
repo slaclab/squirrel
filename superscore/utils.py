@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-SUPERSCORE_SOURCE_PATH = Path(__file__).parent
+SQUIRREL_SOURCE_PATH = Path(__file__).parent
 
 
 def utcnow():
