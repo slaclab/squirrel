@@ -10,6 +10,7 @@ Welcome to superscore's documentation!
    :maxdepth: 1
    :caption: User Documentation
 
+   navigating.rst
    config.rst
 
 .. toctree::
