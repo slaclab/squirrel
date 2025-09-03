@@ -4,10 +4,6 @@ Navigating
 The left side of the app contains the control panel, which has buttons to open
 three pages:
 
-* Snapshot table
-* PV table
-* Tag configuration
-
 Snapshot Table
 --------------
 This table lists all snapshots in reverse chronological order. Each snapshot has
