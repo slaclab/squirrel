@@ -1,8 +1,8 @@
 ========
 Backends
 ========
-.. automodule:: superscore.backends.core
+.. automodule:: squirrel.backends.core
    :members:
 
-.. automodule:: superscore.backends.mongo
+.. automodule:: squirrel.backends.mongo
    :members:
