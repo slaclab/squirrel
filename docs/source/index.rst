@@ -36,7 +36,7 @@ Welcome to squirrel's documentation!
    :caption: Links
    :hidden:
 
-   Github Repository <https://github.com/slaclab/superscore>
+   Github Repository <https://github.com/slaclab/squirrel>
 
 
 
