@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upcoming Changes &mdash; superscore  documentation</title>
+  <title>Alpha Testing &mdash; superscore  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -20,7 +20,9 @@
       <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Widgets" href="widgets/index.html" />
+    <link rel="prev" title="Config" href="config.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,11 +45,16 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="saving.html">Saving Snapshots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="navigating.html">Navigating</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alpha_test.html">Alpha Testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Alpha Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#accessing-the-test-environment">Accessing the Test Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#feedback">Feedback</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Documentation</span></p>
 <ul>
@@ -75,9 +82,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Upcoming Changes</li>
+      <li class="breadcrumb-item active">Alpha Testing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/upcoming_changes.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/alpha_test.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -85,16 +92,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="upcoming-changes">
-<h1>Upcoming Changes<a class="headerlink" href="#upcoming-changes" title="Permalink to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-</div>
+  <section id="alpha-testing">
+<h1>Alpha Testing<a class="headerlink" href="#alpha-testing" title="Permalink to this heading"></a></h1>
+<section id="accessing-the-test-environment">
+<h2>Accessing the Test Environment<a class="headerlink" href="#accessing-the-test-environment" title="Permalink to this heading"></a></h2>
+<p>Squirrel is available for testing from a conda environment on the <code class="docutils literal notranslate"><span class="pre">dev-srv09</span></code> filesystem.</p>
+<ol class="arabic simple" start="0">
+<li><p>If you do not have conda installed, follow <a class="reference external" href="https://s3df.slac.stanford.edu/#/reference?id=conda">S3DF’s instructions</a>.</p></li>
+<li><p>In your <code class="docutils literal notranslate"><span class="pre">.condarc</span></code>, add <code class="docutils literal notranslate"><span class="pre">/sdf/group/ad/eed/swapps/conda/envs</span></code> under <code class="docutils literal notranslate"><span class="pre">env_dirs</span></code>.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">info</span> <span class="pre">--envs</span></code> to confirm <code class="docutils literal notranslate"><span class="pre">squirrel-alpha</span></code> is an option.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">squirrel-alpha</span></code> to activate the environment, and <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">deactivate</span></code> to leave the environment.</p></li>
+</ol>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h2>
+<p>This test environment uses a shared backend, so any changes such as PVs edits
+and new snapshots will be available to other testers.</p>
+<p>To enable fetching real PV values on a dev server, source
+<code class="docutils literal notranslate"><span class="pre">/afs/slac/g/lcls/epics/setup/envSet_prodOnDev.bash</span></code>. Live values can then be disabled by
+sourcing <code class="docutils literal notranslate"><span class="pre">/afs/slac/g/lcls/epics/setup/envSet_dev.bash</span></code> or loading a new session.</p>
+</section>
+<section id="feedback">
+<h2>Feedback<a class="headerlink" href="#feedback" title="Permalink to this heading"></a></h2>
+<p>Bug reports and feature requests can be made by filling out <a class="reference external" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=Wq7yzmYmFkebYOiOKuv0mhonqK7sP55ItMgN_T_cXr5URjRWWE42T0FTOElSNEk5RzhWTkRFT1pMSyQlQCN0PWcu">this form</a>.</p>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-left" title="Config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="widgets/index.html" class="btn btn-neutral float-right" title="Widgets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
