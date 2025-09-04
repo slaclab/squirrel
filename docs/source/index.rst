@@ -13,6 +13,7 @@ Welcome to superscore's documentation!
    saving.rst
    navigating.rst
    config.rst
+   alpha_test.rst
 
 .. toctree::
    :maxdepth: 2
