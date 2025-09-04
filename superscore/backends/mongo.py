@@ -314,7 +314,9 @@ class MongoBackend(_Backend):
         for pv in pvs:
             body.append(
                 {
-                    "setpointAddress": pv.setpoint,
+                    "setpointAddress": pv.setpoint or None,
+                    "readbackAddress": pv.readback or None,
+                    "configAddress": pv.config or None,
                     "description": pv.description,
                     "absTolerance": pv.abs_tolerance,
                     "relTolerance": pv.rel_tolerance,
