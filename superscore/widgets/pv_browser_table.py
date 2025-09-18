@@ -102,7 +102,7 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
 
     def add_pvs(self, pvs: Iterable[PV]):
         start = len(self._data)
-        self.beginInsertRows(QtCore.QModelIndex(), start, len(pvs))
+        self.beginInsertRows(QtCore.QModelIndex(), start, start + len(pvs) - 1)
         self._data.extend(pvs)
         self.endInsertRows()
 
