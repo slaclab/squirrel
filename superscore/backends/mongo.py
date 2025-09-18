@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 ENDPOINTS = {
     "TAGS": "/v1/tags",
     "PVS": "/v1/pvs",
+    "SNAPSHOTS": "/v1/snapshots",
 }
 
 
@@ -378,7 +379,7 @@ class MongoBackend(_Backend):
         ------
         BackendError
         """
-        r = requests.get(self.address + "/v1/pvs")
+        r = requests.get(self.address + ENDPOINTS["PVS"])
         self._raise_for_status(r)
         return [self._unpack_pv(d) for d in r.json()["payload"]]
 
@@ -395,7 +396,7 @@ class MongoBackend(_Backend):
         BackendError
         """
         r = requests.post(
-            self.address + "/v1/snapshots",
+            self.address + ENDPOINTS["SNAPSHOTS"],
             json=self._pack_snapshot(snapshot)
         )
         self._raise_for_status(r)
@@ -425,7 +426,7 @@ class MongoBackend(_Backend):
         BackendError
         """
         if uuid:
-            r = requests.get(self.address + f"/v1/snapshots/{uuid}")
+            r = requests.get(self.address + ENDPOINTS["SNAPSHOTS"] + f"/{uuid}")
             self._raise_for_status(r)
             snapshot_dict = r.json()["payload"]
             return self._unpack_snapshot(snapshot_dict)
@@ -433,7 +434,7 @@ class MongoBackend(_Backend):
         tags = tags or {}
         meta_pvs = meta_pvs or []
         r = requests.get(
-            self.address + "/v1/snapshots",
+            self.address + ENDPOINTS["SNAPSHOTS"],
             params={
                 "title": title,
                 "tags": tags,
@@ -452,7 +453,7 @@ class MongoBackend(_Backend):
         BackendError
         """
         r = requests.delete(
-            self.address + f"/v1/snapshots/{snapshot.uuid}",
+            self.address + ENDPOINTS["SNAPSHOTS"] + f"/{snapshot.uuid}",
             params={
                 "deleteData": False,
             }
