@@ -13,8 +13,8 @@ from squirrel.backends.directory import DirectoryBackend
 from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
-from squirrel.control_layers._base_shim import _BaseShim
-from squirrel.control_layers.core import ControlLayer
+from squirrel.control_layer._base_shim import _BaseShim
+from squirrel.control_layer.core import ControlLayer
 from squirrel.model import (Collection, Entry, Nestable, Parameter, Root,
                             Setpoint)
 from squirrel.tests.ioc import IOCFactory

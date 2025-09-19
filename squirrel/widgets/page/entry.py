@@ -9,7 +9,7 @@ import qtawesome as qta
 from qtpy import QtWidgets
 from qtpy.QtGui import QCloseEvent
 
-from squirrel.control_layers._base_shim import EpicsData
+from squirrel.control_layer._base_shim import EpicsData
 from squirrel.model import (Collection, Nestable, Parameter, Readback,
                             Setpoint, Severity, Snapshot, Status)
 from squirrel.type_hints import AnyEpicsType

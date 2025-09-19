@@ -8,7 +8,7 @@ from collections.abc import Iterable
 from functools import singledispatchmethod
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from squirrel.control_layers.status import TaskStatus
+from squirrel.control_layer.status import TaskStatus
 from squirrel.errors import CommunicationError
 from squirrel.model import EpicsData
 

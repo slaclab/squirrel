@@ -8,7 +8,7 @@ from qtpy import QtCore, QtWidgets
 
 from squirrel.backends.filestore import FilestoreBackend
 from squirrel.client import Client
-from squirrel.control_layers._base_shim import EpicsData
+from squirrel.control_layer._base_shim import EpicsData
 from squirrel.model import Collection, Parameter, Readback, Setpoint, Snapshot
 from squirrel.tests.conftest import setup_test_stack
 from squirrel.widgets.page.collection_builder import CollectionBuilderPage

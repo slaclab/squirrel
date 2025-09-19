@@ -10,7 +10,7 @@ from qtpy import QtCore, QtWidgets
 
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
-from squirrel.control_layers import EpicsData
+from squirrel.control_layer import EpicsData
 from squirrel.model import (Collection, Nestable, Parameter, Root, Severity,
                             Status)
 from squirrel.tests.conftest import setup_test_stack

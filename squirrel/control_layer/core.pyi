@@ -1,6 +1,6 @@
 from typing import Any, Callable, Optional, overload
 
-from squirrel.control_layers.status import TaskStatus
+from squirrel.control_layer.status import TaskStatus
 
 class ControlLayer:
     @overload

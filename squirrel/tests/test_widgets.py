@@ -10,7 +10,7 @@ from qtpy import QtCore, QtGui
 from squirrel.backends.filestore import FilestoreBackend
 from squirrel.client import Client
 from squirrel.color import LIVE_SETPOINT_HIGHLIGHT
-from squirrel.control_layers import EpicsData
+from squirrel.control_layer import EpicsData
 from squirrel.model import Collection, Snapshot
 from squirrel.tests.conftest import setup_test_stack
 from squirrel.widgets import TagsWidget
