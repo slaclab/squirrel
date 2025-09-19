@@ -26,10 +26,8 @@ from squirrel.widgets.page.snapshot_comparison import SnapshotComparisonPage
 from squirrel.widgets.page.snapshot_details import SnapshotDetailsPage
 from squirrel.widgets.pv_details_components import (PVDetails, PVDetailsPopup,
                                                     PVDetailsPopupEditable)
-from squirrel.widgets.pv_table import PVTableModel
-from squirrel.widgets.snapshot_table import (SnapshotFilterModel,
-                                             SnapshotTableModel)
-from squirrel.widgets.squirrel_table_view import SquirrelTableView
+from squirrel.widgets.tables import (PVTableModel, SnapshotFilterModel,
+                                     SnapshotTableModel, SquirrelTableView)
 from squirrel.widgets.views import DiffDispatcher
 
 logger = logging.getLogger(__name__)

@@ -15,7 +15,7 @@ from squirrel.model import Collection, Snapshot
 from squirrel.tests.conftest import setup_test_stack
 from squirrel.widgets import TagsWidget
 from squirrel.widgets.core import DataWidget
-from squirrel.widgets.pv_table import PVTableModel
+from squirrel.widgets.tables import PVTableModel
 
 
 @pytest.fixture(scope='function')

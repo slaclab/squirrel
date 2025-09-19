@@ -19,8 +19,7 @@ from squirrel.widgets.page.entry import (BaseParameterPage, CollectionPage,
 from squirrel.widgets.page.search import SearchPage
 from squirrel.widgets.page.snapshot_comparison import SnapshotComparisonPage
 from squirrel.widgets.page.snapshot_details import SnapshotDetailsPage
-from squirrel.widgets.pv_table import PV_HEADER
-from squirrel.widgets.snapshot_comparison_table import COMPARE_HEADER
+from squirrel.widgets.tables import COMPARE_HEADER, PV_HEADER
 
 
 @pytest.fixture(scope='function')

@@ -7,7 +7,7 @@ from qtpy import QtWidgets
 from squirrel.backends import FilestoreBackend
 from squirrel.client import Client
 from squirrel.tests.conftest import setup_test_stack
-from squirrel.widgets.pv_browser_table import PVBrowserTableModel
+from squirrel.widgets.tables import PVBrowserTableModel
 from squirrel.widgets.tag import TagsWidget
 from squirrel.widgets.window import Window
 
