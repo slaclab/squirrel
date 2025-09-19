@@ -10,7 +10,7 @@ from qtpy.QtCore import QModelIndex, Qt
 from qtpy.QtWidgets import (QApplication, QInputDialog, QMessageBox,
                             QPushButton, QWidget)
 
-from squirrel.widgets.page.tag import TagPage, TagsDialog
+from squirrel.pages import TagPage, TagsDialog
 
 # ---------------------------------------------------------------------------#
 #                    ----------  stubs & fixtures  ----------                 #

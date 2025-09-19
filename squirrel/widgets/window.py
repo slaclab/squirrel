@@ -15,15 +15,12 @@ from qtpy.QtGui import QCloseEvent
 
 from squirrel.client import Client
 from squirrel.model import PV, EpicsData, Snapshot
+from squirrel.pages import (Page, PVBrowserPage, SnapshotComparisonPage,
+                            SnapshotDetailsPage, TagPage)
 from squirrel.permission_manager import PermissionManager
 from squirrel.widgets.core import NameDescTagsWidget, QtSingleton
 from squirrel.widgets.date_range import DateRangeWidget
 from squirrel.widgets.filter_bar import FilterBar
-from squirrel.widgets.page.page import Page
-from squirrel.widgets.page.pv_browser import PVBrowserPage
-from squirrel.widgets.page.snapshot_comparison import SnapshotComparisonPage
-from squirrel.widgets.page.snapshot_details import SnapshotDetailsPage
-from squirrel.widgets.page.tag import TagPage
 from squirrel.widgets.pv_details_components import (PVDetails, PVDetailsPopup,
                                                     PVDetailsPopupEditable)
 from squirrel.widgets.tables import (PVTableModel, SnapshotFilterModel,

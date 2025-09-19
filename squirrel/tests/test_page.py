@@ -10,15 +10,12 @@ from squirrel.backends import FilestoreBackend
 from squirrel.client import Client
 from squirrel.control_layer import EpicsData
 from squirrel.model import Collection, Parameter, Readback, Setpoint, Snapshot
+from squirrel.pages import (BaseParameterPage, CollectionBuilderPage,
+                            CollectionPage, DiffPage, ParameterPage,
+                            ReadbackPage, SearchPage, SetpointPage,
+                            SnapshotComparisonPage, SnapshotDetailsPage,
+                            SnapshotPage)
 from squirrel.tests.conftest import setup_test_stack
-from squirrel.widgets.page.collection_builder import CollectionBuilderPage
-from squirrel.widgets.page.diff import DiffPage
-from squirrel.widgets.page.entry import (BaseParameterPage, CollectionPage,
-                                         ParameterPage, ReadbackPage,
-                                         SetpointPage, SnapshotPage)
-from squirrel.widgets.page.search import SearchPage
-from squirrel.widgets.page.snapshot_comparison import SnapshotComparisonPage
-from squirrel.widgets.page.snapshot_details import SnapshotDetailsPage
 from squirrel.widgets.tables import COMPARE_HEADER, PV_HEADER
 
 
@@ -213,7 +210,7 @@ def test_open_page_slot(
     page_fixture: str,
     request: pytest.FixtureRequest,
 ):
-    with patch("squirrel.widgets.page.entry.BaseParameterPage.open_page_slot",
+    with patch("squirrel.pages.entry.BaseParameterPage.open_page_slot",
                new_callable=PropertyMock):
         page: BaseParameterPage = request.getfixturevalue(page_fixture)
         page.open_rbv_button.clicked.emit()
