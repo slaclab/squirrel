@@ -4,7 +4,7 @@ import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtWidgets
 
-from squirrel.backends.filestore import FilestoreBackend
+from squirrel.backends import FilestoreBackend
 from squirrel.client import Client
 from squirrel.tests.conftest import setup_test_stack
 from squirrel.widgets.pv_browser_table import PVBrowserTableModel

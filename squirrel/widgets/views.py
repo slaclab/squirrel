@@ -16,7 +16,7 @@ from weakref import WeakValueDictionary
 import numpy as np
 from qtpy import QtCore, QtGui, QtWidgets
 
-from squirrel.backends.core import SearchTerm
+from squirrel.backends import SearchTerm
 from squirrel.client import Client
 from squirrel.errors import EntryNotFoundError
 from squirrel.model import PV, EpicsData, Severity, Snapshot, Status

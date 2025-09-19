@@ -7,7 +7,7 @@ import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtCore, QtGui
 
-from squirrel.backends.filestore import FilestoreBackend
+from squirrel.backends import FilestoreBackend
 from squirrel.client import Client
 from squirrel.color import LIVE_SETPOINT_HIGHLIGHT
 from squirrel.control_layer import EpicsData

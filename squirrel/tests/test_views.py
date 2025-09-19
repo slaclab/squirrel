@@ -8,7 +8,7 @@ import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtCore, QtWidgets
 
-from squirrel.backends.test import TestBackend
+from squirrel.backends import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import EpicsData
 from squirrel.model import (Collection, Nestable, Parameter, Root, Severity,

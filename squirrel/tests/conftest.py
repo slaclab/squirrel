@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 import apischema
 import pytest
 
-from squirrel.backends.core import _Backend
+from squirrel.backends import _Backend
 from squirrel.backends.directory import DirectoryBackend
 from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend

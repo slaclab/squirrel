@@ -5,10 +5,8 @@ from uuid import uuid4
 
 import pytest
 
-from squirrel.backends.core import SearchTerm
-from squirrel.backends.directory import DirectoryBackend
-from squirrel.backends.filestore import FilestoreBackend
-from squirrel.backends.test import TestBackend
+from squirrel.backends import (DirectoryBackend, FilestoreBackend, SearchTerm,
+                               TestBackend)
 from squirrel.client import Client
 from squirrel.control_layer import EpicsData
 from squirrel.errors import CommunicationError, EntryNotFoundError

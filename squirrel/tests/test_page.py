@@ -6,7 +6,7 @@ import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtCore, QtWidgets
 
-from squirrel.backends.filestore import FilestoreBackend
+from squirrel.backends import FilestoreBackend
 from squirrel.client import Client
 from squirrel.control_layer import EpicsData
 from squirrel.model import Collection, Parameter, Readback, Setpoint, Snapshot

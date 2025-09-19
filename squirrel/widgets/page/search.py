@@ -8,7 +8,7 @@ import qtawesome as qta
 from dateutil import tz
 from qtpy import QtCore, QtWidgets
 
-from squirrel.backends.core import SearchTerm
+from squirrel.backends import SearchTerm
 from squirrel.model import Collection, Entry, Readback, Setpoint, Snapshot
 from squirrel.widgets import ICON_MAP
 from squirrel.widgets.core import Display, WindowLinker
