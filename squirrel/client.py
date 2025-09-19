@@ -9,8 +9,7 @@ from uuid import UUID
 
 from squirrel.backends import get_backend
 from squirrel.backends.core import SearchTerm, SearchTermType, _Backend
-from squirrel.control_layer import ControlLayer, EpicsData
-from squirrel.control_layer.status import TaskStatus
+from squirrel.control_layer import ControlLayer, EpicsData, TaskStatus
 from squirrel.model import PV, Snapshot
 from squirrel.utils import build_abs_path
 
