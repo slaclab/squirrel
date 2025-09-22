@@ -4,4 +4,3 @@ from .pv_table import PV_HEADER, PVTableModel  # noqa
 from .snapshot_comparison_table import COMPARE_HEADER  # noqa
 from .snapshot_comparison_table import SnapshotComparisonTableModel  # noqa
 from .snapshot_table import SnapshotFilterModel, SnapshotTableModel  # noqa
-from .squirrel_table_view import SquirrelTableView  # noqa

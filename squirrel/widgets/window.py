@@ -18,13 +18,14 @@ from squirrel.model import PV, EpicsData, Snapshot
 from squirrel.pages import (Page, PVBrowserPage, SnapshotComparisonPage,
                             SnapshotDetailsPage, TagPage)
 from squirrel.permission_manager import PermissionManager
+from squirrel.tables import (PVTableModel, SnapshotFilterModel,
+                             SnapshotTableModel)
+from squirrel.widgets import SquirrelTableView
 from squirrel.widgets.core import NameDescTagsWidget, QtSingleton
 from squirrel.widgets.date_range import DateRangeWidget
 from squirrel.widgets.filter_bar import FilterBar
 from squirrel.widgets.pv_details_components import (PVDetails, PVDetailsPopup,
                                                     PVDetailsPopupEditable)
-from squirrel.widgets.tables import (PVTableModel, SnapshotFilterModel,
-                                     SnapshotTableModel, SquirrelTableView)
 from squirrel.widgets.views import DiffDispatcher
 
 logger = logging.getLogger(__name__)

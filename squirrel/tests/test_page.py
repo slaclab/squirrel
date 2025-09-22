@@ -15,8 +15,8 @@ from squirrel.pages import (BaseParameterPage, CollectionBuilderPage,
                             ReadbackPage, SearchPage, SetpointPage,
                             SnapshotComparisonPage, SnapshotDetailsPage,
                             SnapshotPage)
+from squirrel.tables import COMPARE_HEADER, PV_HEADER
 from squirrel.tests.conftest import setup_test_stack
-from squirrel.widgets.tables import COMPARE_HEADER, PV_HEADER
 
 
 @pytest.fixture(scope='function')

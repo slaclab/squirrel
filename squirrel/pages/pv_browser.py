@@ -8,10 +8,10 @@ from squirrel.client import Client
 from squirrel.model import PV
 from squirrel.pages import Page
 from squirrel.permission_manager import PermissionManager
+from squirrel.tables import (PV_BROWSER_HEADER, CSVTableModel,
+                             PVBrowserFilterProxyModel, PVBrowserTableModel)
 from squirrel.utils import parse_csv_to_dict
-from squirrel.widgets.tables import (PV_BROWSER_HEADER, CSVTableModel,
-                                     PVBrowserFilterProxyModel,
-                                     PVBrowserTableModel, SquirrelTableView)
+from squirrel.widgets import SquirrelTableView
 from squirrel.widgets.tag import TagDelegate, TagsWidget
 
 logger = logging.getLogger(__file__)

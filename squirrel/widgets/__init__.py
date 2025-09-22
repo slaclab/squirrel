@@ -4,6 +4,7 @@ import squirrel.color
 from squirrel.model import Severity, Status
 
 from .flow_layout import FlowLayout
+from .squirrel_table_view import SquirrelTableView  # noqa
 from .tag import TagChip, TagsWidget
 
 __all__ = [

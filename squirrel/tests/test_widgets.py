@@ -12,10 +12,10 @@ from squirrel.client import Client
 from squirrel.color import LIVE_SETPOINT_HIGHLIGHT
 from squirrel.control_layer import EpicsData
 from squirrel.model import Collection, Snapshot
+from squirrel.tables import PVTableModel
 from squirrel.tests.conftest import setup_test_stack
 from squirrel.widgets import TagsWidget
 from squirrel.widgets.core import DataWidget
-from squirrel.widgets.tables import PVTableModel
 
 
 @pytest.fixture(scope='function')

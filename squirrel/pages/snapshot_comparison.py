@@ -4,9 +4,8 @@ from qtpy import QtCore, QtWidgets
 from squirrel.client import Client
 from squirrel.model import Snapshot
 from squirrel.pages import Page
-from squirrel.widgets.tables import (COMPARE_HEADER,
-                                     SnapshotComparisonTableModel,
-                                     SquirrelTableView)
+from squirrel.tables import COMPARE_HEADER, SnapshotComparisonTableModel
+from squirrel.widgets import SquirrelTableView
 
 
 class SnapshotComparisonPage(Page):
