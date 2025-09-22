@@ -20,8 +20,7 @@ from squirrel.pages import (Page, PVBrowserPage, SnapshotComparisonPage,
 from squirrel.permission_manager import PermissionManager
 from squirrel.tables import (PVTableModel, SnapshotFilterModel,
                              SnapshotTableModel)
-from squirrel.widgets import SquirrelTableView
-from squirrel.widgets.core import NameDescTagsWidget, QtSingleton
+from squirrel.widgets import NameDescTagsWidget, QtSingleton, SquirrelTableView
 from squirrel.widgets.date_range import DateRangeWidget
 from squirrel.widgets.filter_bar import FilterBar
 from squirrel.widgets.pv_details_components import (PVDetails, PVDetailsPopup,
