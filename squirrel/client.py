@@ -382,13 +382,3 @@ class Client:
         if value is None or not isinstance(value, EpicsData):
             return EpicsData(data=None)
         return value
-
-    def validate(self, entry: Entry):
-        """
-        Validate ``entry`` is properly formed and able to be inserted into
-        the backend.  Includes checks the following:
-        - dataclass is valid
-        - reachable from root
-        - references are not cyclical, and type-correct
-        """
-        raise NotImplementedError
