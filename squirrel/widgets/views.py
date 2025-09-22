@@ -21,7 +21,7 @@ from squirrel.client import Client
 from squirrel.errors import EntryNotFoundError
 from squirrel.model import PV, EpicsData, Severity, Snapshot, Status
 from squirrel.qt_helpers import QDataclassBridge
-from squirrel.widgets import QtSingleton, WindowLinker, get_window
+from squirrel.widgets import QtSingleton, get_window
 
 logger = logging.getLogger(__name__)
 

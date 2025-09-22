@@ -10,7 +10,6 @@ from .namedesctags import NameDescTagsWidget  # noqa
 from .qsingleton import QtSingleton  # noqa
 from .squirrel_table_view import SquirrelTableView  # noqa
 from .tag import TagChip, TagsWidget
-from .window_linker import WindowLinker  # noqa
 
 __all__ = [
     "FlowLayout",
