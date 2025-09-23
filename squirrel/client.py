@@ -8,8 +8,8 @@ from typing import Any, Generator, Iterable, List, Optional, Union
 from uuid import UUID
 
 from squirrel.backends import SearchTerm, SearchTermType, _Backend, get_backend
-from squirrel.control_layer import ControlLayer, EpicsData, TaskStatus
-from squirrel.model import PV, Snapshot
+from squirrel.control_layer import ControlLayer, TaskStatus
+from squirrel.model import PV, EpicsData, Snapshot
 from squirrel.utils import build_abs_path
 
 logger = logging.getLogger(__name__)
