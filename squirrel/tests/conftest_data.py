@@ -8,95 +8,95 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 from copy import deepcopy
 from uuid import UUID
 
-from squirrel.model import (Parameter, Readback, Root, Setpoint, Severity,
+from squirrel.model import (PV, EpicsData, Readback, Root, Setpoint, Severity,
                             Snapshot, Status)
 
 
 def linac_data() -> Root:
-    lasr_gunb_pv1 = Parameter(
+    lasr_gunb_pv1 = PV(
         uuid="5544c58f-88b6-40aa-9076-f180a44908f5",
-        pv_name="LASR:GUNB:TEST1",
+        setpoint="LASR:GUNB:TEST1",
         description="First LASR pv in GUNB",
         tags={0: {0, 1}, 2: {2}, 3: {0, 1}},
     )
 
     now = lasr_gunb_pv1.creation_time
 
-    lasr_gunb_pv2 = Parameter(
+    lasr_gunb_pv2 = PV(
         uuid="7cb3760c-793c-4974-a8ae-778e5d491e4a",
-        pv_name="LASR:GUNB:TEST2",
+        setpoint="LASR:GUNB:TEST2",
         description="Second LASR pv in GUNB",
         creation_time=now,
         tags={0: {0, 1}, 2: {2}, 3: {0, 1}},
     )
 
-    mgnt_gunb_pv = Parameter(
+    mgnt_gunb_pv = PV(
         uuid="930b137f-5ae2-470e-8b82-c4b4eb7e639e",
-        pv_name="MGNT:GUNB:TEST0",
+        setpoint="MGNT:GUNB:TEST0",
         description="Only MGNT pv in GUNB",
         creation_time=now,
         tags={0: {0, 1}, 2: {0}, 3: {0, 1}},
     )
 
-    vac_gunb_pv1 = Parameter(
+    vac_gunb_pv1 = PV(
         uuid="8f3ac401-68f8-4def-b65a-3c8116c80ba7",
-        pv_name="VAC:GUNB:TEST1",
+        setpoint="VAC:GUNB:TEST1",
         description="First VAC pv in GUNB",
         creation_time=now,
         tags={0: {0, 1}, 2: {3}, 3: {0, 1}},
     )
 
-    vac_gunb_pv2 = Parameter(
+    vac_gunb_pv2 = PV(
         uuid="06448272-cd38-4bb4-9b8d-292673a497e9",
-        pv_name="VAC:GUNB:TEST2",
+        setpoint="VAC:GUNB:TEST2",
         description="Second VAC pv in GUNB",
         creation_time=now,
         tags={0: {0, 1}, 2: {3}, 3: {0, 1}},
     )
 
-    vac_l0b_pv = Parameter(
+    vac_l0b_pv = PV(
         uuid="5ec33c74-7f4c-4905-a106-44fbfe138140",
-        pv_name="VAC:L0B:TEST0",
+        setpoint="VAC:L0B:TEST0",
         description="Only VAC pv in L0B",
         creation_time=now,
         tags={2: {3}, 3: {0, 1}},
     )
 
-    vac_bsy_pv = Parameter(
+    vac_bsy_pv = PV(
         uuid="030786df-153b-4d29-bc1f-66deeb116724",
-        pv_name="VAC:BSY:TEST0",
+        setpoint="VAC:BSY:TEST0",
         description="Only VAC pv in BSY",
         creation_time=now,
         tags={0: {1}, 2: {3}, 3: {0, 1}},
     )
 
-    vac_li10_pv = Parameter(
+    vac_li10_pv = PV(
         uuid="2c83a9be-bec6-4436-8233-79df300af670",
-        pv_name="VAC:LI10:TEST0",
+        setpoint="VAC:LI10:TEST0",
         description="Only VAC pv in LI10",
         creation_time=now,
         tags={2: {3}, 3: {0, 1}},
     )
 
-    lasr_in10_pv = Parameter(
+    lasr_in10_pv = PV(
         uuid="f802dee1-569b-4c6b-a32f-c213af10ecec",
-        pv_name="LASR:IN10:TEST0",
+        setpoint="LASR:IN10:TEST0",
         description="Only laser pv in IN10",
         creation_time=now,
         tags={2: {2}, 3: {0, 1}},
     )
 
-    lasr_in20_pv = Parameter(
+    lasr_in20_pv = PV(
         uuid="a13ef8a5-b8df-4caa-80f5-395b16eaa5f1",
-        pv_name="LASR:IN20:TEST0",
+        setpoint="LASR:IN20:TEST0",
         description="Only laser pv in IN20",
         creation_time=now,
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
 
-    vac_li21_pv = Parameter(
+    vac_li21_pv = PV(
         uuid="8dba63d5-98e8-4647-ae44-ff0a38a4805d",
-        pv_name="VAC:LI21:TEST0",
+        setpoint="VAC:LI21:TEST0",
         description="Only VAC pv in LI21",
         creation_time=now,
         tags={0: {1}, 2: {3}, 3: {0, 1}},
@@ -295,36 +295,32 @@ def linac_data() -> Root:
         ],
     }
 
-    hxr_pulse = Parameter(
+    hxr_pulse = PV(
         uuid="653cf3f8-56d1-4409-b8d2-a31be09a9a20",
-        pv_name="DEST:HXR:PLSI",
+        readback="DEST:HXR:PLSI",
         description="HXR Pulse Intensity",
         creation_time=now,
-        read_only=True,
     )
 
-    sxr_pulse = Parameter(
+    sxr_pulse = PV(
         uuid="3ed979c7-50ed-402f-9b6e-f3e5ebc1a18c",
-        pv_name="DEST:SXR:PLSI",
+        readback="DEST:SXR:PLSI",
         description="SXR Pulse Intensity",
         creation_time=now,
-        read_only=True,
     )
 
-    hxr_edes = Parameter(
+    hxr_edes = PV(
         uuid="006cbc48-5ead-4da7-9b3c-d4f4792c3bad",
-        pv_name="DEST:HXR:EDES",
+        readback="DEST:HXR:EDES",
         description="HXR Energy Target",
         creation_time=now,
-        read_only=True,
     )
 
-    sxr_edes = Parameter(
+    sxr_edes = PV(
         uuid="51179e2b-53e1-417a-b6a9-4f20605d19bb",
-        pv_name="DEST:SXR:EDES",
+        readback="DEST:SXR:EDES",
         description="SXR Energy Target",
         creation_time=now,
-        read_only=True,
     )
 
     hxr_pulse_readback = Readback(
@@ -471,23 +467,17 @@ def setpoint_with_readback() -> Setpoint:
     return setpoint
 
 
-def parameter_with_readback() -> Parameter:
+def parameter_with_readback() -> PV:
     """
     A simple setpoint-readback parameter pair
     """
-    readback = Parameter(
+    pv = PV(
         uuid="64772c61-c117-445b-b0c8-4c17fd1625d9",
-        pv_name="RBV",
-        description="A readback PV",
-        read_only=True,
+        setpoint="SET",
+        readback="RBV",
+        description="A PV with a setpoint and a readback",
     )
-    setpoint = Parameter(
-        uuid="b508344d-1fe9-473b-8d43-9499d0e8e23f",
-        pv_name="SET",
-        description="A setpoint PV",
-        readback=readback,
-    )
-    return setpoint
+    return pv
 
 
 def simple_snapshot() -> Snapshot:
@@ -513,31 +503,33 @@ def sample_database() -> Root:
     motor record
     """
     root = Root()
-    param_1 = Parameter(
+    param_1 = PV(
         description='parameter 1 in root',
-        pv_name='MY:MOTOR:mtr1.ACCL'
+        setpoint='MY:MOTOR:mtr1.ACCL'
     )
     root.entries.append(param_1)
-    value_1 = Setpoint.from_parameter(
-        origin=param_1,
-        data=2,
+    value_1 = PV(
+        setpoint=param_1.setpoint,
+        description=param_1.description,
+        data=EpicsData(2),
     )
     root.entries.append(value_1)
     snap_1 = Snapshot(
         title='snapshot 1',
         description='Snapshot 1 created from collection 1',
     )
-    for fld, data in zip(['ACCL', 'VELO', 'PREC'], [2, 2, 6]):  # Defaults[1, 1, 3]
-        sub_param = Parameter(
+    for fld, value in zip(['ACCL', 'VELO', 'PREC'], [2, 2, 6]):  # Defaults[1, 1, 3]
+        sub_param = PV(
             description=f'motor field {fld}',
-            pv_name=f'MY:PREFIX:mtr1.{fld}'
+            setpoint=f'MY:PREFIX:mtr1.{fld}'
         )
-        sub_value = Setpoint.from_parameter(
-            origin=sub_param,
-            data=data,
+        sub_value = PV(
+            setpoint=sub_param.setpoint,
+            description=sub_param.description,
+            setpoint_data=EpicsData(value),
         )
         snap_1.children.append(sub_value)
-    root.entries.append(sub_param)
+        root.entries.append(sub_param)
     root.entries.append(snap_1)
 
     return root

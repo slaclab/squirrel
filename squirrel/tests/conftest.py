@@ -14,7 +14,7 @@ from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
-from squirrel.model import Parameter, Root, Setpoint, Snapshot
+from squirrel.model import PV, Root, Setpoint, Snapshot
 from squirrel.tests.ioc import IOCFactory
 from squirrel.widgets.window import Window
 
@@ -42,7 +42,7 @@ def setpoint_with_readback_fixture() -> Setpoint:
 
 
 @pytest.fixture(scope='function')
-def parameter_with_readback_fixture() -> Parameter:
+def parameter_with_readback_fixture() -> PV:
     return parameter_with_readback()
 
 
