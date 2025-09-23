@@ -8,8 +8,7 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 from copy import deepcopy
 from uuid import UUID
 
-from squirrel.model import (PV, EpicsData, Readback, Root, Severity, Snapshot,
-                            Status)
+from squirrel.model import PV, EpicsData, Root, Severity, Snapshot, Status
 
 
 def linac_data() -> Root:
@@ -233,20 +232,22 @@ def linac_data() -> Root:
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
 
-    vac_li21_readback = Readback(
+    vac_li21_readback = PV(
         uuid="de66d08e-09c3-4c45-8978-900e51d00248",
-        pv_name=vac_li21_pv.pv_name,
+        readback=vac_li21_pv.readback,
         description=vac_li21_pv.description,
         creation_time=now,
-        data=0.0,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        readback_data=EpicsData(
+            data=0.0,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
 
     vac_li21_setpoint = PV(
         uuid="4bffe9a5-f198-41d8-90ab-870d1b5a325b",
-        pv_name=vac_li21_pv.pv_name,
+        readback=vac_li21_pv.readback,
         description=vac_li21_pv.description,
         creation_time=now,
         setpoint_data=EpicsData(
@@ -254,7 +255,6 @@ def linac_data() -> Root:
             status=Status.NO_ALARM,
             severity=Severity.NO_ALARM,
         ),
-        readback=vac_li21_readback,
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
 
@@ -345,40 +345,48 @@ def linac_data() -> Root:
         creation_time=now,
     )
 
-    hxr_pulse_readback = Readback(
+    hxr_pulse_readback = PV(
         uuid="40451e72-575a-4069-a953-2d21af45c95f",
-        pv_name=hxr_pulse.pv_name,
+        readback=hxr_pulse.readback,
         description=hxr_pulse.description,
-        data=9.829,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        readback_data=EpicsData(
+            data=9.829,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
     )
 
-    sxr_pulse_readback = Readback(
+    sxr_pulse_readback = PV(
         uuid="60819a50-db1b-415c-acf3-c57a2df6e5fe",
-        pv_name=sxr_pulse.pv_name,
+        readback=sxr_pulse.readback,
         description=sxr_pulse.description,
-        data=3.5,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        readback_data=EpicsData(
+            data=3.5,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
     )
 
-    hxr_edes_readback = Readback(
+    hxr_edes_readback = PV(
         uuid="8df5c8f7-9dc9-4555-9b17-d089551dafcc",
-        pv_name=hxr_edes.pv_name,
+        readback=hxr_edes.readback,
         description=hxr_edes.description,
-        data=9.829,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        readback_data=EpicsData(
+            data=9.829,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
     )
 
-    sxr_edes_readback = Readback(
+    sxr_edes_readback = PV(
         uuid="61d3311b-fb72-40b7-bfac-9746e787abc9",
-        pv_name=sxr_edes.pv_name,
+        readback=sxr_edes.readback,
         description=sxr_edes.description,
-        data=3.5,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        readback_data=EpicsData(
+            data=3.5,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
     )
 
     all_snapshot.meta_pvs = [
