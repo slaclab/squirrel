@@ -190,38 +190,6 @@ class Client:
         # check for references to ``entry`` in other objects?
         self.backend.delete_entry(entry)
 
-    def fill(self, entry: Union[Entry, UUID], fill_depth: Optional[int] = None) -> None:
-        """
-        Walk through ``entry`` and replace UUIDs with corresponding Entry's.
-        Does nothing if ``entry`` is a PV or UUID.
-        Filling happens "in-place", modifying ``entry``.
-
-        Parameters
-        ----------
-        entry : Union[Entry, UUID]
-            Entry that may contain UUIDs to be filled with full Entry's
-        fill_depth : Optional[int], by default None
-            The depth to fill.  (value of 1 will fill just ``entry``'s children)
-            If None, fill until there is no filling left
-        """
-        if fill_depth is not None:
-            fill_depth -= 1
-            if fill_depth <= 0:
-                return
-
-        if isinstance(entry, Snapshot):
-            new_children = []
-            for child in entry.pvs:
-                if isinstance(child, UUID):
-                    search_condition = SearchTerm('uuid', 'eq', child)
-                    filled_child = list(self.search(search_condition))[0]
-                    self.fill(filled_child, fill_depth)
-                    new_children.append(filled_child)
-                else:
-                    new_children.append(child)
-
-            entry.pvs = new_children
-
     def snap(self, dest: Optional[Snapshot] = None) -> Snapshot:
         """
         Asyncronously read data for all PVs under ``entry``, and store in a

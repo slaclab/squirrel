@@ -12,8 +12,7 @@ from squirrel.control_layer import EpicsData
 from squirrel.errors import CommunicationError, EntryNotFoundError
 from squirrel.model import (Collection, Entry, Nestable, Parameter, Readback,
                             Root, Setpoint, Snapshot)
-from squirrel.tests.conftest import (MockTaskStatus, nest_depth,
-                                     setup_test_stack)
+from squirrel.tests.conftest import MockTaskStatus, setup_test_stack
 from squirrel.type_hints import UUID
 
 SAMPLE_CFG = Path(__file__).parent / 'demo.cfg'
@@ -178,49 +177,6 @@ def uuids_in_entry(entry: Entry):
                 return True
 
     return False
-
-
-@pytest.mark.parametrize("entry_uuid", [
-    "a9f289d4-3421-4107-8e7f-2fe0daab77a5",
-    "ffd668d3-57d9-404e-8366-0778af7aee61",
-])
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
-def test_fill(test_client: Client, entry_uuid: str):
-    entry = list(test_client.search(
-        ("uuid", "eq", UUID(entry_uuid))
-    ))[0]
-
-    # often entries have uuids in children, but ensure they're all uuids
-    entry.swap_to_uuids()
-    assert uuids_in_entry(entry)
-
-    test_client.fill(entry)
-    assert not uuids_in_entry(entry)
-
-
-@pytest.mark.parametrize("fill_depth,", list(range(1, 11)))
-def test_fill_depth(fill_depth: int):
-    deep_coll = Collection()
-    prev_coll = deep_coll
-    # Be sure more depth exists than the requested depth
-    for i in range(20):
-        child_coll = Collection(title=f"collection {i}")
-        prev_coll.children.append(child_coll)
-        prev_coll = child_coll
-    bknd = TestBackend(Root(entries=[deep_coll]))
-    client = Client(backend=bknd)
-
-    assert nest_depth(deep_coll) == 20
-    deep_coll.swap_to_uuids()
-    # for this test we want everything to be UUIDS
-    for entry in bknd._entry_cache.values():
-        entry.swap_to_uuids()
-
-    assert nest_depth(deep_coll) == 1
-
-    client.fill(deep_coll, fill_depth)
-
-    assert nest_depth(deep_coll) == fill_depth
 
 
 @setup_test_stack(
