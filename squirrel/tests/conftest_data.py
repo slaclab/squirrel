@@ -1,5 +1,5 @@
 """
-Home for functions that return an Entry or Root
+Home for functions that return database entries or a Root
 
 Do not place pytest fixtures here, as these callables may be used in running
 demo instances.  Instead create corresponding fixtures in conftest.py directly
@@ -508,7 +508,7 @@ def simple_comparison_snapshot() -> Snapshot:
 
 def sample_database() -> Root:
     """
-    A sample squirrel database, including all the Entry types.
+    A sample squirrel database, including all the entry types.
     Corresponds to a caproto.ioc_examples.fake_motor_record, which mimics an IMS
     motor record
     """

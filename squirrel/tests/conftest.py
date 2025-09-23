@@ -14,7 +14,7 @@ from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
-from squirrel.model import Entry, Parameter, Root, Setpoint, Snapshot
+from squirrel.model import Parameter, Root, Setpoint, Snapshot
 from squirrel.tests.ioc import IOCFactory
 from squirrel.widgets.window import Window
 
@@ -119,7 +119,8 @@ def test_data(request: pytest.FixtureRequest) -> Root:
 
     Supports fixtures and callables that resolve to:
     * Root
-    * Entry
+    * Snapshot
+    * PV
 
     To use alone, parametrize the fixture with a string that exactly matches a
     fixture or function accessible from the conftest.py namespace
@@ -129,7 +130,7 @@ def test_data(request: pytest.FixtureRequest) -> Root:
         @pytest.mark.parametrize(test_data, [
             {"sources": ["parameter_with_readback"]}
         ], indirect=True)
-        def my_test(test_data: Entry):
+        def my_test(test_data):
             assert isinstance(test_data, Root)
     """
     print(">> test_data fixture setup")
@@ -157,7 +158,7 @@ def test_data(request: pytest.FixtureRequest) -> Root:
             for entry in data.entries:
                 new_root.entries.append(entry)
             new_root.tag_groups.update(data.tag_groups)
-        elif isinstance(data, Entry):
+        else:
             new_root.entries.append(data)
 
     return new_root
@@ -187,7 +188,7 @@ def test_backend(
         @pytest.mark.parametrize("test_backend", [
             {"backend_type": FilestoreBackend}
         ], indirect=True)
-        def my_test(test_backend: Entry):
+        def my_test(test_backend):
             assert isinstance(test_backend, FilestoreBackend)
 
     You can also specify which data to include in the backend, even if test_data
