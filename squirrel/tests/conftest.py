@@ -14,7 +14,7 @@ from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
-from squirrel.model import PV, Root, Setpoint, Snapshot
+from squirrel.model import PV, Root, Snapshot
 from squirrel.tests.ioc import IOCFactory
 from squirrel.widgets.window import Window
 
@@ -37,7 +37,7 @@ def linac_with_comparison_snapshot_fixture() -> Root:
 
 
 @pytest.fixture(scope='function')
-def setpoint_with_readback_fixture() -> Setpoint:
+def setpoint_with_readback_fixture() -> PV:
     return setpoint_with_readback()
 
 
@@ -199,7 +199,7 @@ def test_backend(
         @pytest.mark.parametrize("test_data,test_backend", [
             ({"sources": ["setpoint_with_readback"]}, {"backend_type": TestBackend})
         ], indirect=True)
-        def test_set_backend_and_data(test_backend: _Backend, setpoint_with_readback: Setpoint):
+        def test_set_backend_and_data(test_backend: _Backend, setpoint_with_readback: PV):
             assert isinstance(test_backend, TestBackend)
             assert test_backend.root.entries[0] is setpoint_with_readback
     """

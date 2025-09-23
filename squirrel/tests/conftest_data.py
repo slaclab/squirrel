@@ -8,8 +8,8 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 from copy import deepcopy
 from uuid import UUID
 
-from squirrel.model import (PV, EpicsData, Readback, Root, Setpoint, Severity,
-                            Snapshot, Status)
+from squirrel.model import (PV, EpicsData, Readback, Root, Severity, Snapshot,
+                            Status)
 
 
 def linac_data() -> Root:
@@ -102,114 +102,134 @@ def linac_data() -> Root:
         tags={0: {1}, 2: {3}, 3: {0, 1}},
     )
 
-    lasr_gunb_value1 = Setpoint(
+    lasr_gunb_value1 = PV(
         uuid="927ef6cb-e45f-4175-aa5f-6c6eec1f3ae4",
-        pv_name=lasr_gunb_pv1.pv_name,
+        setpoint=lasr_gunb_pv1.setpoint,
         description=lasr_gunb_pv1.description,
-        data="Off",
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data="Off",
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {0, 1}, 2: {2}, 3: {0, 1}},
     )
 
     now = lasr_gunb_value1.creation_time
 
-    lasr_gunb_value2 = Setpoint(
+    lasr_gunb_value2 = PV(
         uuid="a221f6fa-6bc1-40ad-90fb-2041c29a5f67",
-        pv_name=lasr_gunb_pv2.pv_name,
+        setpoint=lasr_gunb_pv2.setpoint,
         description=lasr_gunb_pv2.description,
         creation_time=now,
-        data=5,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=5,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {0, 1}, 2: {2}, 3: {0, 1}},
     )
 
-    mgnt_gunb_value = Setpoint(
+    mgnt_gunb_value = PV(
         uuid="502d9fc3-455a-47ea-8c48-e1a26d4d3350",
-        pv_name=mgnt_gunb_pv.pv_name,
+        setpoint=mgnt_gunb_pv.setpoint,
         description=mgnt_gunb_pv.description,
         creation_time=now,
-        data=True,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=True,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {0, 1}, 2: {0}, 3: {0, 1}},
     )
 
-    vac_gunb_value1 = Setpoint(
+    vac_gunb_value1 = PV(
         uuid="cc187dbf-fa41-49d7-8c7b-49c8989c6a2f",
-        pv_name=vac_gunb_pv1.pv_name,
+        setpoint=vac_gunb_pv1.setpoint,
         description=vac_gunb_pv1.description,
         creation_time=now,
-        data="Ion Pump",
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data="Ion Pump",
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {0, 1}, 2: {3}, 3: {0, 1}},
     )
 
-    vac_gunb_value2 = Setpoint(
+    vac_gunb_value2 = PV(
         uuid="7c87960d-8b58-4b29-8d5e-e1f3223e356a",
-        pv_name=vac_gunb_pv2.pv_name,
+        setpoint=vac_gunb_pv2.setpoint,
         description=vac_gunb_pv2.description,
         creation_time=now,
-        data=False,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=False,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {0, 1}, 2: {3}, 3: {0, 1}},
     )
 
-    vac_l0b_value = Setpoint(
+    vac_l0b_value = PV(
         uuid="2ef43192-40c9-4e79-96e7-2d7f6df58cd9",
-        pv_name=vac_l0b_pv.pv_name,
+        setpoint=vac_l0b_pv.setpoint,
         description=vac_l0b_pv.description,
         creation_time=now,
-        data=-10,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=-10,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={2: {3}, 3: {0, 1}},
     )
 
-    vac_bsy_value = Setpoint(
+    vac_bsy_value = PV(
         uuid="6bebcb59-884f-4e68-927d-f3053effd698",
-        pv_name=vac_bsy_pv.pv_name,
+        setpoint=vac_bsy_pv.setpoint,
         description=vac_bsy_pv.description,
         creation_time=now,
-        data="",
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data="",
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {1}, 2: {3}, 3: {0, 1}},
     )
 
-    vac_li10_value = Setpoint(
+    vac_li10_value = PV(
         uuid="ee56d60b-b8b9-447d-b857-6117e22f1462",
-        pv_name=vac_li10_pv.pv_name,
+        setpoint=vac_li10_pv.setpoint,
         description=vac_li10_pv.description,
         creation_time=now,
-        data=.25,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=.25,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={2: {3}, 3: {0, 1}},
     )
 
-    lasr_in10_value = Setpoint(
+    lasr_in10_value = PV(
         uuid="fb809d22-76fb-493e-b7f2-b522319e5e2f",
-        pv_name=lasr_in10_pv.pv_name,
+        setpoint=lasr_in10_pv.setpoint,
         description=lasr_in10_pv.description,
         creation_time=now,
-        data=645.26,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=645.26,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={2: {2}, 3: {0, 1}},
     )
 
-    lasr_in20_value = Setpoint(
+    lasr_in20_value = PV(
         uuid="4d2f7bf2-af71-492b-8528-ba9b6e3ab964",
-        pv_name=lasr_in20_pv.pv_name,
+        setpoint=lasr_in20_pv.setpoint,
         description=lasr_in20_pv.description,
         creation_time=now,
-        data=0,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=0,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
 
@@ -224,14 +244,16 @@ def linac_data() -> Root:
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
 
-    vac_li21_setpoint = Setpoint(
+    vac_li21_setpoint = PV(
         uuid="4bffe9a5-f198-41d8-90ab-870d1b5a325b",
         pv_name=vac_li21_pv.pv_name,
         description=vac_li21_pv.description,
         creation_time=now,
-        data=5.0,
-        status=Status.NO_ALARM,
-        severity=Severity.NO_ALARM,
+        setpoint_data=EpicsData(
+            data=5.0,
+            status=Status.NO_ALARM,
+            severity=Severity.NO_ALARM,
+        ),
         readback=vac_li21_readback,
         tags={0: {1}, 2: {2}, 3: {0, 1}},
     )
@@ -447,24 +469,23 @@ def linac_with_comparison_snapshot() -> Root:
     return root
 
 
-def setpoint_with_readback() -> Setpoint:
+def setpoint_with_readback() -> PV:
     """
     A simple setpoint-readback value pair
     """
-    readback = Readback(
+    pv = PV(
         uuid="7b30ddba-9fae-4691-988c-07384c29fe22",
-        pv_name="RBV",
-        description="A readback PV",
-        data=False,
+        setpoint="SET",
+        readback="RBV",
+        description="A PV",
+        setpoint_data=EpicsData(
+            data=True,
+        ),
+        readback_data=EpicsData(
+            data=False,
+        ),
     )
-    setpoint = Setpoint(
-        uuid="418ed1ab-f1cf-4188-8f4c-ae7cbaf00e6c",
-        pv_name="SET",
-        description="A setpoint PV",
-        data=True,
-        readback=readback,
-    )
-    return setpoint
+    return pv
 
 
 def parameter_with_readback() -> PV:
@@ -482,9 +503,9 @@ def parameter_with_readback() -> PV:
 
 def simple_snapshot() -> Snapshot:
     snap = Snapshot(description='various types', title='types collection')
-    snap.children.append(Setpoint(pv_name="MY:FLOAT"))
-    snap.children.append(Setpoint(pv_name="MY:INT"))
-    snap.children.append(Setpoint(pv_name="MY:ENUM"))
+    snap.children.append(PV(setpoint="MY:FLOAT"))
+    snap.children.append(PV(setpoint="MY:INT"))
+    snap.children.append(PV(setpoint="MY:ENUM"))
     return snap
 
 
@@ -492,7 +513,7 @@ def simple_comparison_snapshot() -> Snapshot:
     snap = simple_snapshot()
     snap.children.pop(0)
     snap.children[0].data = 1
-    snap.children.append(Setpoint(pv_name="MY:NEW:ENUM"))
+    snap.children.append(PV(setpoint="MY:NEW:ENUM"))
     return snap
 
 
