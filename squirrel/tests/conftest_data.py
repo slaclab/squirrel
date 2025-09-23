@@ -8,8 +8,8 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 from copy import deepcopy
 from uuid import UUID
 
-from squirrel.model import (Collection, Parameter, Readback, Root, Setpoint,
-                            Severity, Snapshot, Status)
+from squirrel.model import (Parameter, Readback, Root, Setpoint, Severity,
+                            Snapshot, Status)
 
 
 def linac_data() -> Root:
@@ -523,10 +523,6 @@ def sample_database() -> Root:
         data=2,
     )
     root.entries.append(value_1)
-    coll_1 = Collection(
-        title='collection 1',
-        description='collection 1 defining some motor fields',
-    )
     snap_1 = Snapshot(
         title='snapshot 1',
         description='Snapshot 1 created from collection 1',
@@ -540,9 +536,8 @@ def sample_database() -> Root:
             origin=sub_param,
             data=data,
         )
-        coll_1.children.append(sub_param)
         snap_1.children.append(sub_value)
-    root.entries.append(coll_1)
+    root.entries.append(sub_param)
     root.entries.append(snap_1)
 
     return root

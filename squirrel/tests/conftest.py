@@ -14,7 +14,7 @@ from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
-from squirrel.model import Collection, Entry, Parameter, Root, Setpoint
+from squirrel.model import Entry, Parameter, Root, Setpoint, Snapshot
 from squirrel.tests.ioc import IOCFactory
 from squirrel.widgets.window import Window
 
@@ -47,12 +47,12 @@ def parameter_with_readback_fixture() -> Parameter:
 
 
 @pytest.fixture(scope='function')
-def simple_snapshot_fixture() -> Collection:
+def simple_snapshot_fixture() -> Snapshot:
     return simple_snapshot()
 
 
 @pytest.fixture(scope='function')
-def simple_comparison_snapshot_fixture() -> Collection:
+def simple_comparison_snapshot_fixture() -> Snapshot:
     return simple_comparison_snapshot()
 
 
