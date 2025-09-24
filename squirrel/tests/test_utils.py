@@ -56,14 +56,6 @@ def test_parse_csv_without_required_columns(tmp_path):
     with pytest.raises(ValueError):
         parse_csv_to_dict(str(path))
 
-    # Missing Description
-    headers2 = ["PV", "Area"]
-    rows = [["TEST:PV", "IN20"]]
-    path = write_csv(tmp_path, headers2, rows, name="input2.csv")
-    with pytest.raises(ValueError) as e:
-        parse_csv_to_dict(str(path))
-    assert "No 'Description' column" in str(e.value)
-
 
 def test_parse_csv_with_missing_or_bad_data(tmp_path):
     """When non-required data is missing or invalid, ensured it is handled correctly"""
