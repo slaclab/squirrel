@@ -19,11 +19,11 @@ def test_parse_correctly_formatted_csv_file(tmp_path):
     """Verify that a csv file in the correct format is parsed correctly"""
 
     # Mimic a csv file that looks like:
-    # PV,Description,Area,Subsystem
+    # Setpoint,Description,Area,Subsystem
     # LASR:GUNB:TEST1,First LASR pv in GUNB,IN20, GUNB,Laser
     # MGNT:GUNB:TEST0,Only MGNT pv in GUNB,IN20,Magnet
 
-    headers = ["PV", "Description", "Area", "Subsystem"]
+    headers = ["Setpoint", "Description", "Area", "Subsystem"]
     rows = [
         ["LASR:GUNB:TEST1", "First LASR pv in GUNB", "IN20, GUNB", "Laser"],
         ["MGNT:GUNB:TEST0", "Only MGNT pv in GUNB", "IN20", "Magnet"],
@@ -35,13 +35,13 @@ def test_parse_correctly_formatted_csv_file(tmp_path):
     assert len(output) == 2
 
     first_row = output[0]
-    assert first_row["PV"] == "LASR:GUNB:TEST1"
+    assert first_row["Setpoint"] == "LASR:GUNB:TEST1"
     assert first_row["Description"] == "First LASR pv in GUNB"
     assert first_row["groups"]["Area"] == ["IN20", "GUNB"]
     assert first_row["groups"]["Subsystem"] == ["Laser"]
 
     second_row = output[1]
-    assert second_row["PV"] == "MGNT:GUNB:TEST0"
+    assert second_row["Setpoint"] == "MGNT:GUNB:TEST0"
     assert second_row["Description"] == "Only MGNT pv in GUNB"
     assert second_row["groups"]["Area"] == ["IN20"]
     assert second_row["groups"]["Subsystem"] == ["Magnet"]
@@ -67,13 +67,13 @@ def test_parse_csv_without_required_columns(tmp_path):
 
 def test_parse_csv_with_missing_or_bad_data(tmp_path):
     """When non-required data is missing or invalid, ensured it is handled correctly"""
-    headers = ["PV", "Description", "Value1", "Value2", "Value3"]
+    headers = ["Setpoint", "Description", "Value1", "Value2", "Value3"]
     rows = [["TEST:PV", "Test description", "NaN", "none", ""]]
     path = write_csv(tmp_path, headers, rows)
     output = parse_csv_to_dict(str(path))
     parsed_row = output[0]
 
-    assert parsed_row["PV"] == "TEST:PV"
+    assert parsed_row["Setpoint"] == "TEST:PV"
     assert parsed_row["Description"] == "Test description"
     assert parsed_row["groups"]["Value1"] == []
     assert parsed_row["groups"]["Value2"] == []
