@@ -19,7 +19,7 @@ class Root:
     """Convenience class for setting up test backends
     .. deprecated
     """
-    entries: Iterable[PV, Snapshot] = field(default_factory=list)
+    entries: Iterable[PV | Snapshot] = field(default_factory=list)
     tag_groups: TagDef = field(default_factory=dict)
     meta_pvs: Iterable[PV] = field(default_factory=list)
 
