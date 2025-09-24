@@ -275,7 +275,7 @@ def linac_data() -> Root:
         uuid="06282731-33ea-4270-ba14-098872e627dc",
         description="All three facilities in the SLAC LINAC: LCLS-NC, FACET, and LCLS-SC",
         title="Accelerator Directorate",
-        children=[
+        pvs=[
             lasr_gunb_value1,
             lasr_gunb_value2,
             mgnt_gunb_value,
