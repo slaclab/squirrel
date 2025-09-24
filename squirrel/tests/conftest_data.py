@@ -6,9 +6,22 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 """
 
 from copy import deepcopy
+from dataclasses import dataclass, field
+from typing import Iterable
 from uuid import UUID
 
-from squirrel.model import PV, EpicsData, Root, Severity, Snapshot, Status
+from squirrel.model import PV, EpicsData, Severity, Snapshot, Status
+from squirrel.type_hints import TagDef
+
+
+@dataclass
+class Root:
+    """Convenience class for setting up test backends
+    .. deprecated
+    """
+    entries: Iterable[PV, Snapshot] = field(default_factory=list)
+    tag_groups: TagDef = field(default_factory=dict)
+    meta_pvs: Iterable[PV] = field(default_factory=list)
 
 
 def linac_data() -> Root:

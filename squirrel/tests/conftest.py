@@ -14,12 +14,13 @@ from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
-from squirrel.model import PV, Root, Snapshot
+from squirrel.model import PV, Snapshot
 from squirrel.tests.ioc import IOCFactory
 from squirrel.widgets.window import Window
 
 # expose fixtures and helpers from other files in conftest so they will be gathered
-from .conftest_data import (linac_data, linac_with_comparison_snapshot,  # NOQA
+from .conftest_data import (Root, linac_data,  # noqa
+                            linac_with_comparison_snapshot,
                             parameter_with_readback, sample_database,
                             setpoint_with_readback, simple_comparison_snapshot,
                             simple_snapshot)
