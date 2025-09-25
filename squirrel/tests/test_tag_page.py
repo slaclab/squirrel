@@ -10,6 +10,7 @@ from qtpy.QtCore import QModelIndex, Qt
 from qtpy.QtWidgets import (QApplication, QInputDialog, QMessageBox,
                             QPushButton, QWidget)
 
+from squirrel.backends.test import TestBackend
 from squirrel.pages import TagPage, TagsDialog
 
 # ---------------------------------------------------------------------------#
@@ -34,7 +35,7 @@ class _DummyClient:
     """Wrapper exposing the dummy backend via *backend* attribute."""
 
     def __init__(self) -> None:
-        self.backend = _DummyBackend()
+        self.backend = TestBackend()
 
 
 @pytest.fixture(scope="session")
