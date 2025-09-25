@@ -524,9 +524,9 @@ def parameter_with_readback() -> PV:
 
 def simple_snapshot() -> Snapshot:
     snap = Snapshot(description='various types', title='types collection')
-    snap.children.append(PV(setpoint="MY:FLOAT"))
-    snap.children.append(PV(setpoint="MY:INT"))
-    snap.children.append(PV(setpoint="MY:ENUM"))
+    snap.pvs.append(PV(setpoint="MY:FLOAT"))
+    snap.pvs.append(PV(setpoint="MY:INT"))
+    snap.pvs.append(PV(setpoint="MY:ENUM"))
     return snap
 
 
