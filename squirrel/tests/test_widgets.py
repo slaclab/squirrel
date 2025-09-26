@@ -88,7 +88,7 @@ def test_pv_table_model(qtmodeltester, pv_table_model: PVTableModel):
 
 
 @pytest.mark.skip(reason="QThreads aren't behaving with mocked control layer methods")
-@setup_test_stack(sources=['db/filestore.json'], backend_type=TestBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_table_model_data(test_client, pv_table_model: PVTableModel):
     # Expected model data based on the pv_table_model setup
     expected_data = [[None, None, None, 'MY:FLOAT', 1, 1, None, None, None],
@@ -107,7 +107,7 @@ def test_pv_table_model_data(test_client, pv_table_model: PVTableModel):
 
 
 @pytest.mark.skip(reason="QThreads aren't behaving with mocked control layer methods")
-@setup_test_stack(sources=['db/filestore.json'], backend_type=TestBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_table_model_color(test_client: Client, pv_table_model: PVTableModel):
     # Expected model colors based on the pv_table_model setup
     diff_color = QtGui.QColor(LIVE_SETPOINT_HIGHLIGHT)

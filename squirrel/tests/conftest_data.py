@@ -7,6 +7,7 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 
 from copy import deepcopy
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Iterable
 from uuid import UUID
 
@@ -19,7 +20,8 @@ class Root:
     """Convenience class for setting up test backends
     .. deprecated
     """
-    entries: Iterable[PV | Snapshot] = field(default_factory=list)
+    pvs: Iterable[PV] = field(default_factory=list)
+    snapshots: Iterable[Snapshot] = field(default_factory=list)
     tag_groups: TagDef = field(default_factory=dict)
     meta_pvs: Iterable[PV] = field(default_factory=list)
 
@@ -410,8 +412,7 @@ def linac_data() -> Root:
     ]
 
     return Root(
-        entries=[
-            all_snapshot,
+        pvs=[
             lasr_gunb_pv1,
             lasr_gunb_pv2,
             mgnt_gunb_pv,
@@ -424,6 +425,9 @@ def linac_data() -> Root:
             lasr_in20_pv,
             vac_li21_pv,
         ],
+        snapshots=[
+            all_snapshot,
+        ],
         tag_groups=tags,
         meta_pvs=[hxr_pulse, hxr_edes, sxr_pulse, sxr_edes]
     )
@@ -431,7 +435,7 @@ def linac_data() -> Root:
 
 def linac_with_comparison_snapshot() -> Root:
     root = linac_data()
-    original_snapshot = root.entries[0]
+    original_snapshot = root.snapshots[0]
     snapshot = deepcopy(original_snapshot)
     snapshot.title = 'AD Comparison'
     snapshot.description = ('A snapshot with different values and statuses to compare '
@@ -451,7 +455,7 @@ def linac_with_comparison_snapshot() -> Root:
         lasr_in20_value,
         vac_li21_readback,
         vac_li21_setpoint
-    ) = snapshot.children
+    ) = snapshot.pvs
 
     lasr_in20_value.uuid = UUID('ef321662-f98e-4511-b9b0-6f2d8037c302')
     lasr_in20_value.data = -1
@@ -486,7 +490,7 @@ def linac_with_comparison_snapshot() -> Root:
     vac_l0b_value.data = -15
     vac_l0b_value.severity = Severity.MINOR
 
-    root.entries.append(snapshot)
+    root.snapshots.append(snapshot)
     return root
 
 
@@ -532,9 +536,9 @@ def simple_snapshot() -> Snapshot:
 
 def simple_comparison_snapshot() -> Snapshot:
     snap = simple_snapshot()
-    snap.children.pop(0)
-    snap.children[0].data = 1
-    snap.children.append(PV(setpoint="MY:NEW:ENUM"))
+    snap.pvs.pop(0)
+    snap.pvs[0].data = 1
+    snap.pvs.append(PV(setpoint="MY:NEW:ENUM"))
     return snap
 
 
@@ -546,32 +550,106 @@ def sample_database() -> Root:
     """
     root = Root()
     param_1 = PV(
+        uuid="514790d9-3261-4583-a326-9be08d7edf48",
         description='parameter 1 in root',
-        setpoint='MY:MOTOR:mtr1.ACCL'
+        setpoint='MY:MOTOR:mtr1.ACCL',
+        tags={
+            0: [1],
+        },
+        creation_time=datetime.fromisoformat("2024-05-10T16:49:34.574849+00:00").replace(tzinfo=UTC)
     )
-    root.entries.append(param_1)
-    value_1 = PV(
-        setpoint=param_1.setpoint,
-        description=param_1.description,
-        data=EpicsData(2),
-    )
-    root.entries.append(value_1)
+    root.pvs.append(param_1)
+
     snap_1 = Snapshot(
+        uuid="ffd668d3-57d9-404e-8366-0778af7aee61",
         title='snapshot 1',
         description='Snapshot 1 created from collection 1',
+        creation_time=datetime.fromisoformat("2024-05-10T16:49:34.574911+00:00").replace(tzinfo=UTC)
     )
-    for fld, value in zip(['ACCL', 'VELO', 'PREC'], [2, 2, 6]):  # Defaults[1, 1, 3]
-        sub_param = PV(
-            description=f'motor field {fld}',
-            setpoint=f'MY:PREFIX:mtr1.{fld}'
-        )
-        sub_value = PV(
-            setpoint=sub_param.setpoint,
-            description=sub_param.description,
-            setpoint_data=EpicsData(value),
-        )
-        snap_1.children.append(sub_value)
-        root.entries.append(sub_param)
-    root.entries.append(snap_1)
+
+    sub_param = PV(
+        description='motor field ACCL',
+        setpoint='MY:PREFIX:mtr1.ACCL'
+    )
+    root.pvs.append(sub_param)
+    sub_value = PV(
+        uuid="ecb42cdb-b703-4562-86e1-45bd67a2ab1a",
+        setpoint=sub_param.setpoint,
+        description=sub_param.description,
+        setpoint_data=EpicsData(2),
+        creation_time=datetime.fromisoformat("2024-05-10T16:49:34.574951+00:00").replace(tzinfo=UTC)
+    )
+    snap_1.pvs.append(sub_value)
+    sub_param = PV(
+        description='motor field VELO',
+        setpoint='MY:PREFIX:mtr1.VELO'
+    )
+    root.pvs.append(sub_param)
+    sub_value = PV(
+        uuid="8e380e15-5489-41db-a8a7-bc47a731f099",
+        setpoint=sub_param.setpoint,
+        description=sub_param.description,
+        setpoint_data=EpicsData(2),
+        creation_time=datetime.fromisoformat("2024-05-10T16:49:34.574987+00:00").replace(tzinfo=UTC)
+    )
+    snap_1.pvs.append(sub_value)
+    sub_param = PV(
+        description='motor field PREC',
+        setpoint='MY:PREFIX:mtr1.PREC',
+        tags={
+            0: [1],
+            3: [1],
+        },
+    )
+    root.pvs.append(sub_param)
+    sub_value = PV(
+        uuid="ed8318d7-8c72-4d47-82d0-d75216d11565",
+        setpoint=sub_param.setpoint,
+        description=sub_param.description,
+        setpoint_data=EpicsData(6),
+        tags={
+            0: [1],
+            3: [1],
+        },
+        creation_time=datetime.fromisoformat("2024-05-10T16:49:34.575022+00:00").replace(tzinfo=UTC)
+    )
+    snap_1.pvs.append(sub_value)
+
+    root.snapshots.append(snap_1)
+    root.tag_groups = {
+        0: [
+            "Area",
+            "Location of the device",
+            {
+                0: "LI21",
+                1: "LI22",
+                2: "LI23"
+            }
+        ],
+        1: [
+            "Region",
+            "Which region the device is in",
+            {
+                0: "Region 1",
+                1: "Region 2"
+            }
+        ],
+        2: [
+            "Subsytem",
+            "Which subsytem the device is a part of",
+            {
+                0: "Magnets",
+                1: "Network"
+            }
+        ],
+        3: [
+            "Device",
+            "What type of device",
+            {
+                0: "BPM",
+                1: "BLEM"
+            }
+        ]
+    }
 
     return root

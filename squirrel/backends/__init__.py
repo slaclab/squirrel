@@ -5,6 +5,7 @@ from typing import Dict
 
 from .core import SearchTerm, SearchTermType, _Backend  # noqa
 from .mongo import MongoBackend
+from .test import TestBackend
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,6 @@ def _get_backend(backend: str) -> _Backend:
         from .filestore import FilestoreBackend
         return FilestoreBackend
     if backend == 'test':
-        from .test import TestBackend
         return TestBackend
     if backend == 'directory':
         from .directory import DirectoryBackend

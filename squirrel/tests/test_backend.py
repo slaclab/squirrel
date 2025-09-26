@@ -62,7 +62,7 @@ def test_save_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
 )
 def test_delete_entry(test_backend: _Backend):
     entry = test_backend.root.entries[0]
@@ -73,7 +73,7 @@ def test_delete_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
 )
 def test_search_entry(test_backend: _Backend):
     # Given an entry we know is in the backend
@@ -120,7 +120,7 @@ def test_search_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
 )
 def test_fuzzy_search(test_backend: _Backend):
     results = list(test_backend.search(
@@ -140,7 +140,7 @@ def test_fuzzy_search(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
 )
 def test_tag_search(test_backend: _Backend):
     entry_count = len(list(test_backend.search()))
@@ -169,7 +169,7 @@ def test_tag_search(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
 )
 def test_search_error(test_backend: _Backend):
     with pytest.raises(TypeError):
@@ -185,7 +185,7 @@ def test_search_error(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
 )
 def test_update_entry(test_backend: _Backend):
     # grab an entry from the database and modify it.

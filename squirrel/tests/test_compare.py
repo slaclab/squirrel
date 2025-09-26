@@ -4,7 +4,7 @@ from uuid import UUID
 
 import pytest
 
-from squirrel.backends import FilestoreBackend, SearchTerm
+from squirrel.backends import SearchTerm, TestBackend
 from squirrel.client import Client
 from squirrel.compare import AttributePath, DiffItem, EntryDiff, walk_find_diff
 from squirrel.model import (Collection, Entry, Parameter, Readback, Setpoint,
@@ -152,7 +152,7 @@ date_format = "%Y-%m-%dT"
         ]
     ),
 ])
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_client_diff(
     test_client: Client,
     l_uuid: str,

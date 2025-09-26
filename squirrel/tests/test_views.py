@@ -226,7 +226,7 @@ def test_roottree_setup(sample_database_fixture: Root):
     assert tree_model.root_item.child(3).childCount() == 3
 
 
-@setup_test_stack(sources=['db/filestore.json'], backend_type=TestBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_root_tree_view_setup_init_args(test_client: Client):
     tree_view = RootTreeView(
         client=test_client,
@@ -236,7 +236,7 @@ def test_root_tree_view_setup_init_args(test_client: Client):
     assert isinstance(tree_view.model(), RootTree)
 
 
-@setup_test_stack(sources=['db/filestore.json'], backend_type=TestBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_root_tree_view_setup_post_init(test_client: Client):
     tree_view = RootTreeView()
     tree_view.client = test_client
@@ -246,7 +246,7 @@ def test_root_tree_view_setup_post_init(test_client: Client):
     assert isinstance(tree_view.model(), RootTree)
 
 
-@setup_test_stack(sources=['db/filestore.json'], backend_type=TestBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_root_tree_fetchmore(test_client: Client):
     tree_view = RootTreeView()
     tree_view.client = test_client

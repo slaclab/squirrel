@@ -5,8 +5,7 @@ from uuid import uuid4
 
 import pytest
 
-from squirrel.backends import (DirectoryBackend, FilestoreBackend, SearchTerm,
-                               TestBackend)
+from squirrel.backends import DirectoryBackend, SearchTerm, TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import EpicsData
 from squirrel.errors import CommunicationError, EntryNotFoundError
@@ -153,7 +152,7 @@ def test_find_config(sscore_cfg: str):
     assert 'other/cfg' == Client.find_config()
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_search(test_client):
     results = list(test_client.search(
         ('data', 'isclose', (4, 0, 0))
@@ -181,7 +180,7 @@ def uuids_in_entry(entry: Entry):
 
 @setup_test_stack(
     sources=["linac_with_comparison_snapshot"],
-    backend_type=FilestoreBackend
+    backend_type=DirectoryBackend
 )
 def test_search_entries_by_ancestor(test_client: Client):
     entries = tuple(test_client.search(
@@ -199,7 +198,7 @@ def test_search_entries_by_ancestor(test_client: Client):
 
 @setup_test_stack(
     sources=["linac_with_comparison_snapshot"],
-    backend_type=FilestoreBackend
+    backend_type=DirectoryBackend
 )
 def test_search_caching(test_client: Client):
     entry = test_client.backend.get_entry(UUID("06282731-33ea-4270-ba14-098872e627dc"))

@@ -1,16 +1,13 @@
 import inspect
 import itertools
-import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, Union
 from unittest.mock import MagicMock
 
-import apischema
 import pytest
 
 from squirrel.backends import _Backend
 from squirrel.backends.directory import DirectoryBackend
-from squirrel.backends.filestore import FilestoreBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
@@ -98,7 +95,7 @@ class MockTaskStatus:
 
 @pytest.fixture
 def linac_ioc(linac_backend):
-    snapshot = linac_data().entries[0]
+    snapshot = linac_data().snapshots[0]
     client = Client(backend=linac_backend)
     with IOCFactory.from_entries(snapshot.children, client)(prefix="SCORETEST:") as ioc:
         yield ioc
@@ -148,19 +145,16 @@ def test_data(request: pytest.FixtureRequest) -> Root:
                 # not a fixture, should be a function
                 func = namespace[source]
                 data = func()
-        elif isinstance(source, str):
-            user_path = Path(source)
-            fpath = user_path if user_path.is_absolute() else Path(__file__).parent / user_path
-            with open(fpath) as fp:
-                serialized = json.load(fp)
-            data = apischema.deserialize(Root, serialized, coerce=True)
 
         if isinstance(data, Root):
-            for entry in data.entries:
-                new_root.entries.append(entry)
+            new_root.pvs.extend(data.pvs)
+            new_root.snapshots.extend(data.snapshots)
             new_root.tag_groups.update(data.tag_groups)
-        else:
-            new_root.entries.append(data)
+            new_root.meta_pvs.extend(data.meta_pvs)
+        elif isinstance(data, PV):
+            new_root.pvs.append(data)
+        elif isinstance(data, Snapshot):
+            new_root.snapshots.append(data)
 
     return new_root
 
@@ -211,17 +205,24 @@ def test_backend(
         backend = request.getfixturevalue("mock_backend")
     else:
         backend_cls: Type[_Backend] = bknd_type
-        if backend_cls is FilestoreBackend:
-            tmp_fp = tmp_path / 'tmp_filestore.json'
-            backend = backend_cls(path=tmp_fp)
+        if backend_cls is TestBackend:
+            backend = backend_cls()
         elif backend_cls is DirectoryBackend:
             backend = backend_cls(path=tmp_path)
-        else:
-            backend = backend_cls()
 
-    for entry in test_data.entries:
-        backend.save_entry(entry)
-        backend.set_tags(test_data.tag_groups)
+    for pv in test_data.pvs:
+        backend.add_pv(
+            pv.setpoint,
+            pv.readback,
+            pv.description,
+            pv.tags,
+            pv.abs_tolerance,
+            pv.rel_tolerance,
+            pv.config,
+        )
+    for snapshot in test_data.snapshots:
+        backend.add_snapshot(snapshot)
+    backend.set_tags(test_data.tag_groups)
 
     return backend
 

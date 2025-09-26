@@ -6,7 +6,7 @@ import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtCore, QtWidgets
 
-from squirrel.backends import FilestoreBackend
+from squirrel.backends import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import EpicsData
 from squirrel.model import Collection, Parameter, Readback, Setpoint, Snapshot
@@ -128,7 +128,7 @@ def test_page_smoke(page: str, request: pytest.FixtureRequest):
     print(type(request.getfixturevalue(page)))
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_apply_filter(test_client, search_page: SearchPage):
     search_page.start_dt_edit.setDate(QtCore.QDate(2024, 5, 10))
     search_page.apply_filter_button.clicked.emit()
@@ -157,7 +157,7 @@ def test_apply_filter(test_client, search_page: SearchPage):
     assert search_page.results_table_view.model().rowCount() == 1
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_coll_builder_add(test_client, collection_builder_page: CollectionBuilderPage):
     page = collection_builder_page
 
@@ -176,7 +176,7 @@ def test_coll_builder_add(test_client, collection_builder_page: CollectionBuilde
     assert page.sub_coll_table_view._model.rowCount() == 1
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_coll_builder_edit(
     test_client,
     collection_builder_page: CollectionBuilderPage,
@@ -256,7 +256,7 @@ def test_stored_widget_swap(
         )
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_restore_all(
     qtbot,
     test_client: Client,
@@ -278,7 +278,7 @@ def test_restore_all(
     table_model.close()
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_restore_selected(
     qtbot,
     test_client: Client,
@@ -300,7 +300,7 @@ def test_restore_selected(
     table_model.close()
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_snapshot_comparison_page_set_main(
     test_client: Client,
     simple_snapshot_fixture: Snapshot,
@@ -318,7 +318,7 @@ def test_snapshot_comparison_page_set_main(
     assert page.main_snapshot_time_label.text() == simple_snapshot_fixture.creation_time.strftime("%Y-%m-%d %H:%M:%S")
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_snapshot_comparison_page_set_comp(
     test_client: Client,
     simple_snapshot_fixture: Snapshot,
@@ -337,7 +337,7 @@ def test_snapshot_comparison_page_set_comp(
     assert page.comp_snapshot_time_label.text() == simple_snapshot_fixture.creation_time.strftime("%Y-%m-%d %H:%M:%S")
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_snapshot_comparison_page_set_both(
     test_client: Client,
     simple_snapshot_fixture: Snapshot,
