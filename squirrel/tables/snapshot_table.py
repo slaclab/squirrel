@@ -86,7 +86,7 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
             return None
         row = index.row()
         try:
-            filled_snapshot = self.client.backend.get_snapshots(uuid=self._data[row].uuid)
+            filled_snapshot = self.client.backend.get_snapshots(uuid=self._data[row].uuid)[0]
         except BackendError as e:
             logger.exception(e)
         else:

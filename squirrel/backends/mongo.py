@@ -450,7 +450,7 @@ class MongoBackend(_Backend):
             r = requests.get(self.address + ENDPOINTS["SNAPSHOTS"] + f"/{uuid}")
             self._raise_for_status(r)
             snapshot_dict = r.json()["payload"]
-            return self._unpack_snapshot(snapshot_dict)
+            return [self._unpack_snapshot(snapshot_dict)]
 
         tags = tags or {}
         meta_pvs = meta_pvs or []
