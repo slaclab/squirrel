@@ -97,7 +97,7 @@ class MockTaskStatus:
 def linac_ioc(linac_backend):
     snapshot = linac_data().snapshots[0]
     client = Client(backend=linac_backend)
-    with IOCFactory.from_entries(snapshot.children, client)(prefix="SCORETEST:") as ioc:
+    with IOCFactory.from_entries(snapshot.pvs, client)(prefix="SCORETEST:") as ioc:
         yield ioc
 
 
