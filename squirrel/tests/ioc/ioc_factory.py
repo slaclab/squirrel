@@ -43,26 +43,22 @@ class IOCFactory:
         return IOC
 
     @staticmethod
-    def prepare_attrs(entries: Iterable[PV], client: Client) -> Mapping[str, pvproperty]:
+    def prepare_attrs(pvs: Iterable[PV], client: Client) -> Mapping[str, pvproperty]:
         """
         Turns a collecton of PVs into a Mapping from attribute names to
         caproto.pvproperties. The mapping is suitable for passing into a type()
         call as the dict arg.
         """
-        pvs = []
-        for entry in entries:
-            leaves = client._gather_leaves(entry)
-            pvs.extend(leaves)
         attrs = {}
-        for entry in pvs:
-            if entry.setpoint_data.data:
-                value = entry.setpoint_data.data
-                pv = pvproperty(name=entry.setpoint, doc=entry.description, value=value, dtype=dbr.DBR_STRING if isinstance(value, str) else None)
-                attr = "".join([c.lower() for c in entry.setpoint if c.isalnum()])
-                attrs[attr] = pv
-            if entry.readback_data.data:
-                value = entry.readback_data.data
-                pv = pvproperty(name=entry.readback, doc=entry.description, value=value, dtype=dbr.DBR_STRING if isinstance(value, str) else None)
-                attr = "".join([c.lower() for c in entry.pv_name if c.isalnum()])
-                attrs[attr] = pv
+        for pv in pvs:
+            if pv.setpoint_data:
+                value = pv.setpoint_data.data
+                prop = pvproperty(name=pv.setpoint, doc=pv.description, value=value, dtype=dbr.DBR_STRING if isinstance(value, str) else None)
+                attr = "".join([c.lower() for c in pv.setpoint if c.isalnum()])
+                attrs[attr] = prop
+            if pv.readback_data:
+                value = pv.readback_data.data
+                prop = pvproperty(name=pv.readback, doc=pv.description, value=value, dtype=dbr.DBR_STRING if isinstance(value, str) else None)
+                attr = "".join([c.lower() for c in pv.readback if c.isalnum()])
+                attrs[attr] = prop
         return attrs
