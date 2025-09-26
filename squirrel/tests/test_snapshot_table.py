@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from qtpy import QtCore
 
-from squirrel.model import Readback
+from squirrel.model import PV, EpicsData
 from squirrel.tables import SnapshotFilterModel
 
 
@@ -13,15 +13,15 @@ def test_meta_pv_numeric_filter():
     snapshot1 = Mock()
     snapshot1.creation_time = datetime(2025, 8, 4)
     snapshot1.meta_pvs = [
-        Readback(description="HXR Pulse Intensity", data="7.5"),
-        Readback(description="SXR Pulse Intensity", data="10.25"),
+        PV(description="HXR Pulse Intensity", readback_data=EpicsData(data="7.5")),
+        PV(description="SXR Pulse Intensity", readback_data=EpicsData(data="10.25")),
     ]
 
     snapshot2 = Mock()
     snapshot2.creation_time = datetime(2025, 8, 4)
     snapshot2.meta_pvs = [
-        Readback(description="HXR Pulse Intensity", data="7.5"),
-        Readback(description="SXR Pulse Intensity", data="15.0"),
+        PV(description="HXR Pulse Intensity", readback_data=EpicsData(data="7.5")),
+        PV(description="SXR Pulse Intensity", readback_data=EpicsData(data="15.0")),
     ]
 
     source_model = Mock()

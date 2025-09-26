@@ -129,14 +129,14 @@ class SnapshotFilterModel(QtCore.QSortFilterProxyModel):
             comparison_function = self.SUPPORTED_OPERATORS.get(input_operator)
 
             # Retrieve the data for the corresponding meta_pv
-            matching_pvs = [pv for pv in snapshot.meta_pvs if pv.description == column_name]
-            pv_value = matching_pvs[0].data
+            matching_pv = [pv for pv in snapshot.meta_pvs if pv.description == column_name][0]
+            epics_data = matching_pv.readback_data or matching_pv.setpoint_data
 
             try:
-                pv_value = float(pv_value)
+                pv_value = float(epics_data.data)
                 input_value = float(input_value)
             except (ValueError, TypeError):
-                pv_value = str(pv_value)
+                pv_value = str(epics_data.data)
                 input_value = str(input_value)
 
             try:
