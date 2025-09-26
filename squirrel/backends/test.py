@@ -14,14 +14,18 @@ class TestBackend(_Backend):
 
     def __init__(
         self,
+        pvs: Iterable[PV] = None,
+        snapshots: Iterable[Snapshot] = None,
         tags: TagDef = None,
         meta_pvs: Iterable[PV] = None
     ):
+        self.pvs = pvs or []
+        self.snapshots = snapshots or []
         self.tag_groups = tags or {}
         self.meta_pvs = meta_pvs or []
 
     def search(self, *search_terms: SearchTermType):
-        for entry in self._entry_cache.values():
+        for entry in self.pvs + self.snapshots:
             conditions = []
             for attr, op, target in search_terms:
                 if attr == "entry_type":
@@ -77,7 +81,16 @@ class TestBackend(_Backend):
         rel_tolerance=0,
         config_address=None,
     ) -> PV:
-        raise NotImplementedError
+        pv = PV(
+            setpoint=setpoint,
+            readback=readback,
+            description=description,
+            tags=tags,
+            abs_tolerance=abs_tolerance,
+            rel_tolerance=rel_tolerance,
+        )
+        self.pvs.append(pv)
+        return pv
 
     def add_multiple_pvs(self, pvs: Iterable[PV]) -> Iterable[PV]:
         raise NotImplementedError
@@ -92,10 +105,17 @@ class TestBackend(_Backend):
         raise NotImplementedError
 
     def add_snapshot(self, snapshot: Snapshot) -> None:
-        raise NotImplementedError
+        self.snapshots.append(snapshot)
 
     def get_snapshots(self, uuid=None, title="", tags=None, meta_pvs=None) -> Iterable[Snapshot]:
-        raise NotImplementedError
+        tags = tags or {}
+        return [
+            s for s in self.snapshots if (
+                s.uuid == s.uuid
+                and title in s.title
+                and all(tags[key] <= s.tags[key] for key in tags)
+            )
+        ]
 
     def delete_snapshot(self, snapshot: Snapshot) -> None:
         raise NotImplementedError
