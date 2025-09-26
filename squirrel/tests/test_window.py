@@ -61,7 +61,7 @@ def test_pv_browser_model(test_client):
     pv_browser_model = PVBrowserTableModel(client=test_client)
 
     assert pv_browser_model.rowCount() == 4
-    assert pv_browser_model.columnCount() == 4
+    assert pv_browser_model.columnCount() == 5
 
 
 @setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
