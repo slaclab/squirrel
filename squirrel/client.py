@@ -257,7 +257,7 @@ class Client:
             return [self.cl.put(entry.setpoint, entry.setpoint_data)]
 
         # Gather pv-value list and apply at once
-        setpoints = [pv for pv in entry if pv.setpoint and pv.setpoint_data]
+        setpoints = [pv for pv in entry.pvs if pv.setpoint and pv.setpoint_data]
         if sequential:
             status_list = []
             for pv in setpoints:
