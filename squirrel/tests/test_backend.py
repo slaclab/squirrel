@@ -1,7 +1,7 @@
 import pytest
 
-from squirrel.backends import (DirectoryBackend, FilestoreBackend, SearchTerm,
-                               TestBackend, _Backend)
+from squirrel.backends import (DirectoryBackend, SearchTerm, TestBackend,
+                               _Backend)
 from squirrel.errors import BackendError, EntryExistsError, EntryNotFoundError
 from squirrel.model import Collection, Parameter, Snapshot
 from squirrel.tests.conftest import setup_test_stack
@@ -48,7 +48,7 @@ class TestTestBackend:
             linac_backend.delete_entry(unsynced)
 
 
-@setup_test_stack(backend_type=[FilestoreBackend, DirectoryBackend, TestBackend])
+@setup_test_stack(backend_type=[DirectoryBackend, TestBackend])
 def test_save_entry(test_backend: _Backend):
     new_entry = Parameter()
 
@@ -62,7 +62,7 @@ def test_save_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[DirectoryBackend, TestBackend]
 )
 def test_delete_entry(test_backend: _Backend):
     entry = test_backend.root.entries[0]
@@ -73,7 +73,7 @@ def test_delete_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[DirectoryBackend, TestBackend]
 )
 def test_search_entry(test_backend: _Backend):
     # Given an entry we know is in the backend
@@ -120,7 +120,7 @@ def test_search_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[DirectoryBackend, TestBackend]
 )
 def test_fuzzy_search(test_backend: _Backend):
     results = list(test_backend.search(
@@ -140,7 +140,7 @@ def test_fuzzy_search(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[DirectoryBackend, TestBackend]
 )
 def test_tag_search(test_backend: _Backend):
     entry_count = len(list(test_backend.search()))
@@ -169,7 +169,7 @@ def test_tag_search(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[DirectoryBackend, TestBackend]
 )
 def test_search_error(test_backend: _Backend):
     with pytest.raises(TypeError):
@@ -185,7 +185,7 @@ def test_search_error(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["sample_database"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[DirectoryBackend, TestBackend]
 )
 def test_update_entry(test_backend: _Backend):
     # grab an entry from the database and modify it.
@@ -211,7 +211,7 @@ def test_update_entry(test_backend: _Backend):
 
 # TODO: Assess if _gather_reachable should be upstreamed to _Backend
 @setup_test_stack(
-    sources=["linac_data"], backend_type=[FilestoreBackend, DirectoryBackend]
+    sources=["linac_data"], backend_type=[DirectoryBackend]
 )
 def test_gather_reachable(test_backend: _Backend):
     # snapshot
@@ -227,7 +227,7 @@ def test_gather_reachable(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["linac_data"], backend_type=[TestBackend, FilestoreBackend],
+    sources=["linac_data"], backend_type=[TestBackend],
 )
 def test_tags(test_backend: _Backend):
     tag_groups = test_backend.get_tags()
