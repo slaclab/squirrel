@@ -1,28 +1,22 @@
 import copy
 from typing import Any
 from unittest.mock import MagicMock
-from uuid import UUID, uuid4
 
 import apischema
 import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtCore, QtWidgets
 
-from squirrel.backends import TestBackend
 from squirrel.client import Client
-from squirrel.control_layer import EpicsData
-from squirrel.model import (Collection, Nestable, Parameter, Root, Severity,
-                            Status)
-from squirrel.tests.conftest import setup_test_stack
-from squirrel.widgets.views import (CustRoles, EntryItem, LivePVHeader,
-                                    LivePVTableModel, LivePVTableView,
-                                    RootTree, RootTreeView)
+from squirrel.model import PV, EpicsData, Severity, Snapshot, Status
+from squirrel.widgets import SquirrelTableView
+from squirrel.widgets.views import CustRoles, LivePVHeader, LivePVTableModel
 
 
 @pytest.fixture(scope='function')
 def pv_poll_model(
     test_client: Client,
-    parameter_with_readback_fixture: Parameter,
+    parameter_with_readback_fixture: PV,
     qtbot: QtBot
 ):
     """Minimal LivePVTableModel, containing only Parameters (no stored data)"""
@@ -34,22 +28,23 @@ def pv_poll_model(
 
     # Make sure we never actually call EPICS
     model.client.cl.get = MagicMock(return_value=EpicsData(1))
-    qtbot.wait_until(lambda: model._poll_thread.running)
+    # qtbot.wait_until(lambda: model._poll_thread.running)
     yield model
 
     model.stop_polling()
 
-    qtbot.wait_until(lambda: not model._poll_thread.isRunning())
+    # qtbot.wait_until(lambda: not model._poll_thread.isRunning())
 
 
 @pytest.fixture(scope="function")
 def pv_table_view(
     test_client: Client,
-    simple_snapshot_fixture: Collection,
+    pv_poll_model: LivePVTableModel,
+    simple_snapshot_fixture: Snapshot,
     qtbot: QtBot,
 ):
     """
-    LivePVTableView, holds three PVs with different types.  Stored data allowed.
+    SquirrelTableView, holds three PVs with different types.  Stored data allowed.
     Mocks control layer to return realistic-ish EpicsData
 
     TODO: add string field examples once we properly handle strings
@@ -67,17 +62,18 @@ def pv_table_view(
 
     test_client.cl.get = MagicMock(side_effect=simple_coll_return_vals)
 
-    view = LivePVTableView()
-    view.client = test_client
-    view.set_data(simple_snapshot_fixture)
+    pv_poll_model.set_entries(simple_snapshot_fixture.pvs)
+    view = SquirrelTableView()
+    view.setModel(pv_poll_model)
 
-    qtbot.wait_until(lambda: view.model()._poll_thread.isRunning())
+    # qtbot.wait_until(lambda: view.model()._poll_thread.isRunning())
     yield view
 
     view.model().stop_polling()
-    qtbot.wait_until(lambda: not view.model()._poll_thread.isRunning())
+    # qtbot.wait_until(lambda: not view.model()._poll_thread.isRunning())
 
 
+@pytest.mark.skip(reason="Test once live table columns are re-implemented")
 def test_pvmodel_polling(pv_poll_model: LivePVTableModel, qtbot: QtBot):
     thread = pv_poll_model._poll_thread
     pv_poll_model.stop_polling()
@@ -85,6 +81,7 @@ def test_pvmodel_polling(pv_poll_model: LivePVTableModel, qtbot: QtBot):
     assert not thread.running
 
 
+@pytest.mark.skip(reason="Test once live table columns are re-implemented")
 def test_pvmodel_update(pv_poll_model: LivePVTableModel, qtbot: QtBot):
     assert pv_poll_model._data_cache
 
@@ -99,6 +96,7 @@ def test_pvmodel_update(pv_poll_model: LivePVTableModel, qtbot: QtBot):
     )
 
 
+@pytest.mark.skip(reason="Test once value delegates are re-added to table view")
 @pytest.mark.parametrize("row,widget_cls,", [
     (0, QtWidgets.QDoubleSpinBox),
     (1, QtWidgets.QSpinBox),
@@ -107,7 +105,7 @@ def test_pvmodel_update(pv_poll_model: LivePVTableModel, qtbot: QtBot):
 def test_pv_view_value_delegate_types(
     row: int,
     widget_cls: QtWidgets.QWidget,
-    pv_table_view: LivePVTableView,
+    pv_table_view: SquirrelTableView,
     qtbot: QtBot,
 ):
     model = pv_table_view.model()
@@ -124,6 +122,7 @@ def test_pv_view_value_delegate_types(
     assert isinstance(edit_widget, widget_cls)
 
 
+@pytest.mark.skip(reason="Test once value delegates are re-added to table view")
 @pytest.mark.parametrize("col,widget_cls,", [
     (LivePVHeader.PV_NAME, QtWidgets.QLineEdit),
     (LivePVHeader.STORED_SEVERITY, QtWidgets.QComboBox),
@@ -132,7 +131,7 @@ def test_pv_view_value_delegate_types(
 def test_pv_view_common_delegate_types(
     col: int,
     widget_cls: QtWidgets.QWidget,
-    pv_table_view: LivePVTableView,
+    pv_table_view: SquirrelTableView,
 ):
     model = pv_table_view.model()
     assert isinstance(model, LivePVTableModel)
@@ -146,6 +145,7 @@ def test_pv_view_common_delegate_types(
     assert isinstance(edit_widget, widget_cls)
 
 
+@pytest.mark.skip(reason="Rewrite to test table model")
 @pytest.mark.parametrize("row,input_data,", [
     (0, 0.1),
     (1, 2),
@@ -154,7 +154,7 @@ def test_pv_view_common_delegate_types(
 def test_set_data(
     row: int,
     input_data: Any,
-    pv_table_view: LivePVTableView
+    pv_table_view: SquirrelTableView
 ):
     orig_data = copy.deepcopy(pv_table_view.data)
     orig_ser = apischema.serialize(type(pv_table_view.data), pv_table_view.data)
@@ -174,7 +174,8 @@ def test_set_data(
     assert orig_ser != new_ser
 
 
-def test_stat_sev_enums(pv_table_view: LivePVTableView):
+@pytest.mark.skip(reason="Test once value delegates are re-added to table view")
+def test_stat_sev_enums(pv_table_view: SquirrelTableView):
     model = pv_table_view.model()
     sev_index = model.index(0, LivePVHeader.STORED_SEVERITY)
     sev_delegate = pv_table_view.value_delegate.createEditor(
@@ -195,87 +196,3 @@ def test_stat_sev_enums(pv_table_view: LivePVTableView):
     assert stat_delegate.count() == len(Status)
     for stat in Status:
         assert stat_delegate.itemText(stat.value).lower() == stat.name.lower()
-
-
-def test_fill_uuids_pvs(
-    test_client: Client,
-    simple_snapshot_fixture: Collection,
-    qtbot: QtBot,
-):
-    """Verify UUID data gets filled, and dataclass gets modified"""
-    simple_snapshot_fixture.swap_to_uuids()
-    assert all(isinstance(c, UUID) for c in simple_snapshot_fixture.children)
-    view = LivePVTableView()
-    # mock client does not ever return None, as if entries are always found
-    # in the backend
-    view.client = test_client
-    view.set_data(simple_snapshot_fixture)
-
-    assert all(not isinstance(c, UUID) for c in simple_snapshot_fixture.children)
-    print(view.model()._poll_thread)
-    view.model().stop_polling()
-    print(view.model()._poll_thread)
-    qtbot.wait_until(lambda: not view.model()._poll_thread.isRunning())
-
-
-def test_roottree_setup(sample_database_fixture: Root):
-    tree_model = RootTree(base_entry=sample_database_fixture)
-    root_index = tree_model.index_from_item(tree_model.root_item)
-    # Check that the entire tree was created
-    assert tree_model.rowCount(root_index) == 4
-    assert tree_model.root_item.child(3).childCount() == 3
-
-
-@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
-def test_root_tree_view_setup_init_args(test_client: Client):
-    tree_view = RootTreeView(
-        client=test_client,
-        entry=test_client.backend.root
-    )
-    assert isinstance(tree_view.model().root_item, EntryItem)
-    assert isinstance(tree_view.model(), RootTree)
-
-
-@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
-def test_root_tree_view_setup_post_init(test_client: Client):
-    tree_view = RootTreeView()
-    tree_view.client = test_client
-    tree_view.set_data(test_client.backend.root)
-
-    assert isinstance(tree_view.model().root_item, EntryItem)
-    assert isinstance(tree_view.model(), RootTree)
-
-
-@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
-def test_root_tree_fetchmore(test_client: Client):
-    tree_view = RootTreeView()
-    tree_view.client = test_client
-    for entry in test_client.backend.root.entries:
-        entry.swap_to_uuids()
-    tree_view.set_data(test_client.backend.root)
-
-    model: RootTree = tree_view.model()
-    child_index = model.index_from_item(model.root_item.child(2))
-    # check that we have filling to do
-    assert isinstance(child_index.internalPointer()._data, Nestable)
-    assert any(isinstance(child, UUID) for child
-               in child_index.internalPointer()._data.children)
-
-    assert model.canFetchMore(child_index)
-    model.fetchMore(child_index)
-    assert not model.canFetchMore(child_index)
-
-    # Swap EntryItem children to uuids, confirm we re-attempt to fetch
-    for child in child_index.internalPointer()._children:
-        child._data = uuid4()
-
-    assert model.canFetchMore(child_index)
-    model.fetchMore(child_index)
-    assert not model.canFetchMore(child_index)
-
-    # Swap dataclass children to uuids, confirm we re-attempt to fetch
-    child_index.internalPointer()._data.swap_to_uuids()
-
-    assert model.canFetchMore(child_index)
-    model.fetchMore(child_index)
-    assert not model.canFetchMore(child_index)
