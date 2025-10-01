@@ -9,6 +9,8 @@ from squirrel.model import PV, Severity, Snapshot
 from squirrel.widgets import SEVERITY_ICONS
 from squirrel.widgets.views import LivePVTableModel
 
+NO_DATA = "--"
+
 
 class PV_HEADER(Enum):
     CHECKBOX = 0
@@ -108,12 +110,12 @@ class PVTableModel(LivePVTableModel):
                 return getattr(entry.setpoint_data, "data", "")
             elif column == PV_HEADER.LIVE_SETPOINT:
                 # return self._get_live_data_field(entry, 'data')
-                return '--'
+                return NO_DATA
             elif column == PV_HEADER.READBACK:
                 return getattr(entry.readback_data, "data", "")
             elif column == PV_HEADER.LIVE_READBACK:
                 # return self._get_live_data_field(entry.readback, 'data') if entry.readback else None
-                return '--'
+                return NO_DATA
             elif column == PV_HEADER.CONFIG:
                 return None
             else:
