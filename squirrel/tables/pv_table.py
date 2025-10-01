@@ -103,7 +103,7 @@ class PVTableModel(LivePVTableModel):
             elif column == PV_HEADER.SEVERITY:
                 return None
             elif column == PV_HEADER.DEVICE:
-                return None
+                return entry.device or NO_DATA
             elif column == PV_HEADER.PV:
                 return entry.setpoint
             elif column == PV_HEADER.SETPOINT:
