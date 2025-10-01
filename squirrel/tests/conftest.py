@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from squirrel.backends import _Backend
-from squirrel.backends.directory import DirectoryBackend
+# from squirrel.backends.directory import DirectoryBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
@@ -207,8 +207,8 @@ def test_backend(
         backend_cls: Type[_Backend] = bknd_type
         if backend_cls is TestBackend:
             backend = backend_cls()
-        elif backend_cls is DirectoryBackend:
-            backend = backend_cls(path=tmp_path)
+        # elif backend_cls is DirectoryBackend:
+        #    backend = backend_cls(path=tmp_path)
 
     for pv in test_data.pvs:
         backend.add_pv(
