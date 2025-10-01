@@ -102,7 +102,7 @@ class TestBackend(_Backend):
         raise NotImplementedError
 
     def get_all_pvs(self) -> Iterable[PV]:
-        raise NotImplementedError
+        return self.pvs.copy()
 
     def add_snapshot(self, snapshot: Snapshot) -> None:
         self.snapshots.append(snapshot)
