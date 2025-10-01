@@ -1,5 +1,12 @@
 import logging
-from datetime import UTC, datetime, timedelta
+
+try:
+    from datetime import UTC
+except ImportError:
+    from datetime import timezone
+    UTC = timezone.utc
+
+from datetime import datetime, timedelta
 from typing import Iterable
 
 import requests

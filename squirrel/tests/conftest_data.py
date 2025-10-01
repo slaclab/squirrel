@@ -7,7 +7,14 @@ demo instances.  Instead create corresponding fixtures in conftest.py directly
 
 from copy import deepcopy
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+
+try:
+    from datetime import UTC
+except ImportError:
+    from datetime import timezone
+    UTC = timezone.utc
+
+from datetime import datetime
 from typing import Iterable
 from uuid import UUID
 
