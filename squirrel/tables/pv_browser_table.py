@@ -78,7 +78,7 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
         elif role == QtCore.Qt.DisplayRole:
             entry = self._data[index.row()]
             if column == PV_BROWSER_HEADER.DEVICE:
-                return None
+                return entry.device or NO_DATA
             elif column == PV_BROWSER_HEADER.PV:
                 return entry.setpoint
             elif column == PV_BROWSER_HEADER.READBACK:
