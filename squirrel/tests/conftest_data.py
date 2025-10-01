@@ -554,7 +554,7 @@ def sample_database() -> Root:
         description='parameter 1 in root',
         setpoint='MY:MOTOR:mtr1.ACCL',
         tags={
-            0: [1],
+            0: {1},
         },
         creation_time=datetime.fromisoformat("2024-05-10T16:49:34.574849+00:00").replace(tzinfo=UTC)
     )
@@ -563,7 +563,7 @@ def sample_database() -> Root:
     snap_1 = Snapshot(
         uuid="ffd668d3-57d9-404e-8366-0778af7aee61",
         title='snapshot 1',
-        description='Snapshot 1 created from collection 1',
+        description='Snapshot 1',
         creation_time=datetime.fromisoformat("2024-05-10T16:49:34.574911+00:00").replace(tzinfo=UTC)
     )
 
@@ -597,8 +597,8 @@ def sample_database() -> Root:
         description='motor field PREC',
         setpoint='MY:PREFIX:mtr1.PREC',
         tags={
-            0: [1],
-            3: [1],
+            0: {1},
+            3: {1},
         },
     )
     root.pvs.append(sub_param)
@@ -608,8 +608,8 @@ def sample_database() -> Root:
         description=sub_param.description,
         setpoint_data=EpicsData(6),
         tags={
-            0: [1],
-            3: [1],
+            0: {1},
+            3: {1},
         },
         creation_time=datetime.fromisoformat("2024-05-10T16:49:34.575022+00:00").replace(tzinfo=UTC)
     )
