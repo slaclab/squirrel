@@ -622,10 +622,20 @@ class MongoBackend(_Backend):
             # tags=metadata_dict["tags"],
             meta_pvs=[
                 PV(
-                    setpoint=pv["setpointAddress"],
-                    data=pv["data"],
-                    status=getattr(Status, pv["status"]),
-                    severity=getattr(Severity, pv["severity"]),
+                    setpoint=pv.get("setpointAddress", ""),
+                    setpoint_data=EpicsData(
+                        data=pv.get("data", None),
+                        status=getattr(Status, pv["status"]),
+                        severity=getattr(Severity, pv["severity"]),
+                        timestamp=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
+                    ),
+                    readback=pv.get("readbackAddress", ""),
+                    readback_data=EpicsData(
+                        data=pv.get("data", None),
+                        status=getattr(Status, pv["status"]),
+                        severity=getattr(Severity, pv["severity"]),
+                        timestamp=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
+                    ),
                     creation_time=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
                 ) for pv in metadata_dict["metadataPVs"]
             ],
