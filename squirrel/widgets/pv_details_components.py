@@ -186,7 +186,7 @@ class PVDetailsPopupEditable(QDialog):
             self.tolerance_abs_input.setText(str(pv_details.tolerance_abs))
             self.tolerance_rel_input.setText(str(pv_details.tolerance_rel))
 
-        form_layout.addLayout(QLabel("Device"), 0, 0)
+        form_layout.addWidget(QLabel("Device"), 0, 0)
         form_layout.addWidget(self.device_input, 0, 1)
 
         form_layout.addWidget(QLabel("Setpoint Name"), 1, 0)
