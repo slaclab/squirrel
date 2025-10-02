@@ -191,7 +191,7 @@ class SnapshotDetailsPage(Page):
         selected_pvs = self.snapshot_details_model.get_selected_pvs()
         if len(selected_pvs) == 0:
             selected_pvs = self.snapshot_details_model._data
-        ephemeral_snapshot = Snapshot(children=selected_pvs)
+        ephemeral_snapshot = Snapshot(pvs=selected_pvs)
         self.client.apply(ephemeral_snapshot)
 
 

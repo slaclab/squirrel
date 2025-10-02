@@ -10,6 +10,7 @@ from qtpy.QtCore import QModelIndex, Qt
 from qtpy.QtWidgets import (QApplication, QInputDialog, QMessageBox,
                             QPushButton, QWidget)
 
+from squirrel.backends.test import TestBackend
 from squirrel.pages import TagPage, TagsDialog
 
 # ---------------------------------------------------------------------------#
@@ -34,7 +35,7 @@ class _DummyClient:
     """Wrapper exposing the dummy backend via *backend* attribute."""
 
     def __init__(self) -> None:
-        self.backend = _DummyBackend()
+        self.backend = TestBackend()
 
 
 @pytest.fixture(scope="session")
@@ -56,12 +57,12 @@ def always_admin(monkeypatch: pytest.MonkeyPatch) -> None:
 
     Avoids signal wiring and logic branches unrelated to the unit tests.
     """
-    from squirrel.widgets import configure_window as cw
+    from squirrel.permission_manager import PermissionManager
 
     pm = MagicMock()
     pm.is_admin.return_value = True
     pm.admin_status_changed.connect = MagicMock()
-    monkeypatch.setattr(cw.PermissionManager, "get_instance", lambda: pm)
+    monkeypatch.setattr(PermissionManager, "get_instance", lambda: pm)
 
 
 # ---------------------------------------------------------------------------#
@@ -129,7 +130,7 @@ def test_tagsdialog_remove_tag(monkeypatch: pytest.MonkeyPatch, app: QApplicatio
     assert dlg.tag_list.rowCount() == 1
 
 
-@patch("squirrel.widgets.configure_window.TagsDialog.save")
+@patch("squirrel.pages.tag.TagsDialog.save")
 def test_tagsdialog_save_changes(monkeypatch: pytest.MonkeyPatch, app: QApplication) -> None:
     """`save_changes` invokes callback when the name is unique."""
 
@@ -276,7 +277,7 @@ def test_handle_double_click(monkeypatch: pytest.MonkeyPatch, window: TagPage) -
         def exec_(self) -> int:  # noqa: D401
             return 0
 
-    monkeypatch.setattr("squirrel.widgets.configure_window.TagsDialog", _FakeDialog)
+    monkeypatch.setattr("squirrel.pages.tag.TagsDialog", _FakeDialog)
 
     index: QModelIndex = window.table.model().index(0, 0)
     window.handle_double_click(index)

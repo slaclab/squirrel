@@ -33,13 +33,15 @@ def build_abs_path(basedir: str, path: str) -> str:
 
 def parse_csv_to_dict(csv_file_path: str) -> List[Dict[str, Any]]:
     """
-    Parse CSV file representing PV data into a form that can be bulk-imported by the backend. Each row represents
-    a PV and its associated meta-data.
+    Parse CSV file representing PV data into a form that can be bulk-imported by
+    the backend. Each row represents a PV and its associated meta-data.
     """
     result = []
     with open(csv_file_path, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         cleaned_headers = [h.strip() for h in reader.fieldnames if h and h.strip()]
+        if "Setpoint" not in cleaned_headers and "Readback" not in cleaned_headers:
+            raise ValueError("Header missing required columns \"Setpoint\" or \"Readback\"")
 
         group_columns = [col for col in cleaned_headers if col not in ['Setpoint', 'Readback', 'Description']]
 

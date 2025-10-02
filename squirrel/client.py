@@ -4,12 +4,11 @@ import copy
 import logging
 import os
 from pathlib import Path
-from typing import Any, Generator, Iterable, List, Optional, Union
-from uuid import UUID
+from typing import Any, Generator, Iterable, Optional, Union
 
 from squirrel.backends import SearchTerm, SearchTermType, _Backend, get_backend
-from squirrel.control_layer import ControlLayer, EpicsData, TaskStatus
-from squirrel.model import PV, Snapshot
+from squirrel.control_layer import ControlLayer, TaskStatus
+from squirrel.model import PV, EpicsData, Snapshot
 from squirrel.utils import build_abs_path
 
 logger = logging.getLogger(__name__)
@@ -190,38 +189,6 @@ class Client:
         # check for references to ``entry`` in other objects?
         self.backend.delete_entry(entry)
 
-    def fill(self, entry: Union[Entry, UUID], fill_depth: Optional[int] = None) -> None:
-        """
-        Walk through ``entry`` and replace UUIDs with corresponding Entry's.
-        Does nothing if ``entry`` is a PV or UUID.
-        Filling happens "in-place", modifying ``entry``.
-
-        Parameters
-        ----------
-        entry : Union[Entry, UUID]
-            Entry that may contain UUIDs to be filled with full Entry's
-        fill_depth : Optional[int], by default None
-            The depth to fill.  (value of 1 will fill just ``entry``'s children)
-            If None, fill until there is no filling left
-        """
-        if fill_depth is not None:
-            fill_depth -= 1
-            if fill_depth <= 0:
-                return
-
-        if isinstance(entry, Snapshot):
-            new_children = []
-            for child in entry.pvs:
-                if isinstance(child, UUID):
-                    search_condition = SearchTerm('uuid', 'eq', child)
-                    filled_child = list(self.search(search_condition))[0]
-                    self.fill(filled_child, fill_depth)
-                    new_children.append(filled_child)
-                else:
-                    new_children.append(child)
-
-            entry.pvs = new_children
-
     def snap(self, dest: Optional[Snapshot] = None) -> Snapshot:
         """
         Asyncronously read data for all PVs under ``entry``, and store in a
@@ -264,11 +231,11 @@ class Client:
         self,
         entry: Union[PV, Snapshot],
         sequential: bool = False
-    ) -> Optional[List[TaskStatus]]:
+    ) -> Optional[Iterable[TaskStatus]]:
         """
-        Apply settings found in ``entry``.  If no writable values found, return.
-        If ``sequential`` is True, apply values in ``entry`` in sequence, blocking
-        with each put request.  Else apply all values simultaneously (asynchronously)
+        Apply values found in ``entry``. If ``sequential`` is True, apply values
+        in sequence and block during each put request; otherwise, apply all
+        values asynchronously.
 
         Parameters
         ----------
@@ -279,8 +246,8 @@ class Client:
 
         Returns
         -------
-        Optional[List[TaskStatus]]
-            TaskStatus(es) for each value applied.
+        Optional[Iterable[TaskStatus]]
+            TaskStatus(es) for each value applied
         """
         if not isinstance(entry, (PV, Snapshot)):
             logger.info("Entries must be a Snapshot or PV")
@@ -290,92 +257,24 @@ class Client:
             return [self.cl.put(entry.setpoint, entry.setpoint_data)]
 
         # Gather pv-value list and apply at once
-        status_list = []
-        pv_list, data_list = self._gather_data(entry, writable_only=True)
+        setpoints = [pv for pv in entry.pvs if pv.setpoint and pv.setpoint_data]
         if sequential:
-            for pv, data in zip(pv_list, data_list):
-                logger.debug(f'Putting {pv} = {data}')
-                status: TaskStatus = self.cl.put(pv, data)
+            status_list = []
+            for pv in setpoints:
+                address = pv.setpoint
+                value = pv.setpoint_data.data
+                logger.debug(f'Putting {address} = {value}')
+                status: TaskStatus = self.cl.put(address, value)
                 if status.exception():
-                    logger.warning(f"Failed to put {pv} = {data}, "
+                    logger.warning(f"Failed to put {address} = {value}, "
                                    "terminating put sequence")
                     return
-
                 status_list.append(status)
+            return status_list
         else:
-            return self.cl.put(pv_list, data_list)
-
-    def _gather_data(
-        self,
-        entry: Union[Entry, UUID],
-        writable_only: bool = False,
-    ) -> tuple[List[str], Optional[List[Any]]]:
-        """
-        Gather PV name - data pairs that are accessible from ``entry``.  Queries
-        the backend to fill any UUIDs found.
-
-        Parameters
-        ----------
-        entry : Union[Entry, UUID]
-            Entry to gather data from
-        writable_only : bool
-            If True, only include writable data e.g. omit Readbacks; by default False
-
-        Returns
-        -------
-        tuple[List[str], Optional[List[Any]]]
-            the filled pv_list and data_list
-        """
-        entries = self._gather_leaves(entry)
-        pv_list = []
-        data_list = []
-        for entry in entries:
-            pv_list.append(entry.setpoint)
-            if entry.setpoint_data:
-                data_list.append(entry.setpoint_data)
-            if not writable_only:
-                pv_list.append(entry.readback)
-                if entry.readback_data:
-                    data_list.append(entry.readback_data)
-        return pv_list, data_list
-
-    def _gather_leaves(
-        self,
-        entry: Union[Entry, UUID],
-    ) -> Iterable[Entry]:
-        """
-        Gather all PVs reachable from Entry, including Parameters, Setpoints,
-        and Readbacks. Fills UUIDs with full Entries.
-
-        Parameters
-        ----------
-        entry : Union[Entry, UUID]
-            Entry to gather data from
-
-        Returns
-        -------
-        Iterable[Entry]
-            an ordered list of all PV Entries reachable from entry
-        """
-        entries = []
-        seen = set()
-        q = [entry]
-        while len(q) > 0:
-            entry = q.pop()
-            uuid = entry if isinstance(entry, UUID) else entry.uuid
-            if uuid in seen:
-                continue
-            elif isinstance(entry, UUID):
-                entry = self.backend.get_entry(entry)
-            seen.add(entry.uuid)
-
-            if isinstance(entry, Snapshot):
-                q.extend(reversed(entry.pvs))  # preserve execution order
-            else:
-                entries.append(entry)
-                if getattr(entry, "readback", None) is not None:
-                    q.append(entry.readback)
-        return entries
+            address_list = [pv.setpoint for pv in setpoints]
+            value_list = [pv.setpoint_data.data for pv in setpoints]
+            return self.cl.put(address_list, value_list)
 
     def _value_or_default(self, value: Any) -> EpicsData:
         """small helper for ensuring value is an EpicsData instance"""

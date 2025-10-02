@@ -301,7 +301,7 @@ class LivePVTableModel(BaseTableEntryModel):
     _poll_thread: Optional[_PVPollThread]
     _button_cols: List[LivePVHeader] = [LivePVHeader.OPEN, LivePVHeader.REMOVE]
     _header_to_field: Dict[LivePVHeader, str] = {
-        LivePVHeader.PV_NAME: 'pv_name',
+        LivePVHeader.PV_NAME: 'setpoint',
         LivePVHeader.STORED_VALUE: 'data',
         LivePVHeader.STORED_STATUS: 'status',
         LivePVHeader.STORED_SEVERITY: 'severity',
@@ -386,13 +386,13 @@ class LivePVTableModel(BaseTableEntryModel):
             self._poll_thread.data_changed.connect(self._data_changed)
 
     @QtCore.Slot(str)
-    def _data_changed(self, pv_name: str) -> None:
+    def _data_changed(self, address: str) -> None:
         """
         Slot: data changed for the given attribute in the thread.
         Signals the entire row to update (a single PV worth of data)
         """
         try:
-            row = list(self._data_cache).index(pv_name)
+            row = list(self._data_cache).index(address)
         except IndexError:
             ...
         else:
@@ -480,7 +480,7 @@ class LivePVTableModel(BaseTableEntryModel):
             if role == QtCore.Qt.DecorationRole:
                 return self.icon(entry)
             elif role in (QtCore.Qt.DisplayRole, QtCore.Qt.EditRole):
-                name_text = getattr(entry, 'pv_name')
+                name_text = getattr(entry, 'setpoint')
                 return name_text
             elif role == CustRoles.DisplayTypeRole:
                 return DisplayType.PV_NAME
@@ -494,7 +494,7 @@ class LivePVTableModel(BaseTableEntryModel):
         if index.column() == LivePVHeader.STORED_VALUE:
             if role == CustRoles.DisplayTypeRole:
                 return DisplayType.EPICS_DATA
-            cache_data = self.get_cache_data(entry.pv_name)
+            cache_data = self.get_cache_data(entry.setpoint)
             if role == CustRoles.EpicsDataRole:
                 return cache_data
 
@@ -552,7 +552,7 @@ class LivePVTableModel(BaseTableEntryModel):
         Returns
         -------
         Any
-            The data from EpicsData(entry.pv_name).field
+            The data from EpicsData(entry.setpoint).field
         """
         live_data = self.get_cache_data(entry.setpoint)
         if not isinstance(live_data, EpicsData):
@@ -590,16 +590,16 @@ class LivePVTableModel(BaseTableEntryModel):
         except TypeError:
             return l_data == r_data
 
-    def get_cache_data(self, pv_name: str) -> Union[EpicsData, str]:
+    def get_cache_data(self, address: str) -> Union[EpicsData, str]:
         """
-        Get data from cache if possible.  If missing from cache, add pv_name for
+        Get data from cache if possible.  If missing from cache, add address for
         the polling thread to update.
         """
-        data = self._data_cache.get(pv_name, None)
+        data = self._data_cache.get(address, None)
 
         if data is None:
-            if pv_name not in self._data_cache:
-                self._data_cache[pv_name] = None
+            if address not in self._data_cache:
+                self._data_cache[address] = None
 
             # TODO: A neat spinny icon maybe?
             return "fetching..."
@@ -658,21 +658,21 @@ class _PVPollThread(QtCore.QThread):
         """Stop the polling thread."""
         self.running = False
 
-    def _update_data(self, pv_name):
+    def _update_data(self, address):
         """
         Update the internal data cache with new data from EPICS.
         Emit self.data_changed signal if data has changed
         """
         try:
-            val = self.client.cl.get(pv_name)
+            val = self.client.cl.get(address)
         except Exception as e:
-            logger.warning(f'Unable to get data from {pv_name}: {e}')
+            logger.warning(f'Unable to get data from {address}: {e}')
             return
 
         # ControlLayer.get may return CommunicationError instead of raising
-        if not isinstance(val, Exception) and self.data[pv_name] != val:
-            self.data_changed.emit(pv_name)
-            self.data[pv_name] = val
+        if not isinstance(val, Exception) and self.data[address] != val:
+            self.data_changed.emit(address)
+            self.data[address] = val
 
     def run(self):
         """The thread polling loop."""
@@ -682,8 +682,8 @@ class _PVPollThread(QtCore.QThread):
 
         while self.running:
             t0 = time.monotonic()
-            for pv_name in self.data:
-                self._update_data(pv_name)
+            for address in self.data:
+                self._update_data(address)
                 if not self.running:
                     break
                 time.sleep(0)

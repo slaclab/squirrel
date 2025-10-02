@@ -4,7 +4,7 @@ import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtWidgets
 
-from squirrel.backends import FilestoreBackend
+from squirrel.backends import TestBackend
 from squirrel.client import Client
 from squirrel.tables import PVBrowserTableModel
 from squirrel.tests.conftest import setup_test_stack
@@ -22,7 +22,7 @@ def count_visible_items(tree_view):
     return count
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_main_window(qtbot: QtBot, test_client: Client):
     """Pass if main window opens successfully"""
     window = Window(client=test_client)
@@ -30,7 +30,7 @@ def test_main_window(qtbot: QtBot, test_client: Client):
 
 
 @pytest.mark.skip(reason="Needs a working snapshot table to test, plus refactor")
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_take_snapshot(qtbot, test_client):
     window = Window(client=test_client)
     qtbot.addWidget(window)
@@ -56,15 +56,15 @@ def test_take_snapshot(qtbot, test_client):
     assert new_snapshot == search_result[0]
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_browser_model(test_client):
     pv_browser_model = PVBrowserTableModel(client=test_client)
 
     assert pv_browser_model.rowCount() == 4
-    assert pv_browser_model.columnCount() == 4
+    assert pv_browser_model.columnCount() == 5
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_browser_search(qtbot, test_client):
     window = Window(client=test_client)
     qtbot.addWidget(window)
@@ -83,7 +83,7 @@ def test_pv_browser_search(qtbot, test_client):
     assert pv_browser_filter.rowCount() == 0
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_browser_tags(qtbot, test_client):
     window = Window(client=test_client)
     qtbot.addWidget(window)
@@ -101,7 +101,7 @@ def test_pv_browser_tags(qtbot, test_client):
     assert pv_browser_filter.rowCount() == 4
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_nav_panel_expanded(qtbot, test_client):
     """Passes if button property and text are correctly set when nav panel is expanded"""
     window = Window(client=test_client)
@@ -113,7 +113,7 @@ def test_nav_panel_expanded(qtbot, test_client):
     assert window.navigation_panel.view_snapshots_button.property("icon-only") is False
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_nav_panel_collapsed(qtbot, test_client):
     """Passes if button property and text are correctly set when nav panel is collapsed"""
     window = Window(client=test_client)
@@ -125,7 +125,7 @@ def test_nav_panel_collapsed(qtbot, test_client):
     assert window.navigation_panel.view_snapshots_button.property("icon-only") is True
 
 
-@setup_test_stack(sources=["db/filestore.json"], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_nav_panel_selected(qtbot, test_client):
     """Passes if button property is correctly set when button is clicked, and the content
     switched to the correct view"""

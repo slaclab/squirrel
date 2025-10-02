@@ -1,27 +1,23 @@
 import inspect
 import itertools
-import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, Union
 from unittest.mock import MagicMock
 
-import apischema
 import pytest
 
 from squirrel.backends import _Backend
-from squirrel.backends.directory import DirectoryBackend
-from squirrel.backends.filestore import FilestoreBackend
+# from squirrel.backends.directory import DirectoryBackend
 from squirrel.backends.test import TestBackend
 from squirrel.client import Client
 from squirrel.control_layer import ControlLayer, _BaseShim
-from squirrel.model import (Collection, Entry, Nestable, Parameter, Root,
-                            Setpoint)
+from squirrel.model import PV, Snapshot
 from squirrel.tests.ioc import IOCFactory
-from squirrel.widgets.views import EntryItem
 from squirrel.widgets.window import Window
 
 # expose fixtures and helpers from other files in conftest so they will be gathered
-from .conftest_data import (linac_data, linac_with_comparison_snapshot,  # NOQA
+from .conftest_data import (Root, linac_data,  # noqa
+                            linac_with_comparison_snapshot,
                             parameter_with_readback, sample_database,
                             setpoint_with_readback, simple_comparison_snapshot,
                             simple_snapshot)
@@ -39,22 +35,22 @@ def linac_with_comparison_snapshot_fixture() -> Root:
 
 
 @pytest.fixture(scope='function')
-def setpoint_with_readback_fixture() -> Setpoint:
+def setpoint_with_readback_fixture() -> PV:
     return setpoint_with_readback()
 
 
 @pytest.fixture(scope='function')
-def parameter_with_readback_fixture() -> Parameter:
+def parameter_with_readback_fixture() -> PV:
     return parameter_with_readback()
 
 
 @pytest.fixture(scope='function')
-def simple_snapshot_fixture() -> Collection:
+def simple_snapshot_fixture() -> Snapshot:
     return simple_snapshot()
 
 
 @pytest.fixture(scope='function')
-def simple_comparison_snapshot_fixture() -> Collection:
+def simple_comparison_snapshot_fixture() -> Snapshot:
     return simple_comparison_snapshot()
 
 
@@ -99,38 +95,10 @@ class MockTaskStatus:
 
 @pytest.fixture
 def linac_ioc(linac_backend):
-    snapshot = linac_data().entries[0]
+    snapshot = linac_data().snapshots[0]
     client = Client(backend=linac_backend)
-    with IOCFactory.from_entries(snapshot.children, client)(prefix="SCORETEST:") as ioc:
+    with IOCFactory.from_entries(snapshot.pvs, client)(prefix="SCORETEST:") as ioc:
         yield ioc
-
-
-def nest_depth(entry: Union[Nestable, EntryItem]) -> int:
-    """
-    Return the depth of nesting in ``entry``.
-    Works for Entries or EntryItem's (tree items)
-    """
-    depths = []
-    q = []
-    q.append((entry, 0))  # entry and depth
-    while q:
-        e, depth = q.pop()
-        if isinstance(e, Nestable):
-            attr = 'children'
-        elif isinstance(e, EntryItem):
-            attr = '_children'
-        else:
-            depths.append(depth)
-            continue
-
-        children = getattr(e, attr)
-        if not children:
-            depths.append(depth)
-        else:
-            for child in children:
-                q.append((child, depth+1))
-
-    return max(depths)
 
 
 @pytest.fixture(scope="function")
@@ -149,7 +117,8 @@ def test_data(request: pytest.FixtureRequest) -> Root:
 
     Supports fixtures and callables that resolve to:
     * Root
-    * Entry
+    * Snapshot
+    * PV
 
     To use alone, parametrize the fixture with a string that exactly matches a
     fixture or function accessible from the conftest.py namespace
@@ -159,7 +128,7 @@ def test_data(request: pytest.FixtureRequest) -> Root:
         @pytest.mark.parametrize(test_data, [
             {"sources": ["parameter_with_readback"]}
         ], indirect=True)
-        def my_test(test_data: Entry):
+        def my_test(test_data):
             assert isinstance(test_data, Root)
     """
     print(">> test_data fixture setup")
@@ -176,19 +145,16 @@ def test_data(request: pytest.FixtureRequest) -> Root:
                 # not a fixture, should be a function
                 func = namespace[source]
                 data = func()
-        elif isinstance(source, str):
-            user_path = Path(source)
-            fpath = user_path if user_path.is_absolute() else Path(__file__).parent / user_path
-            with open(fpath) as fp:
-                serialized = json.load(fp)
-            data = apischema.deserialize(Root, serialized, coerce=True)
 
         if isinstance(data, Root):
-            for entry in data.entries:
-                new_root.entries.append(entry)
+            new_root.pvs.extend(data.pvs)
+            new_root.snapshots.extend(data.snapshots)
             new_root.tag_groups.update(data.tag_groups)
-        elif isinstance(data, Entry):
-            new_root.entries.append(data)
+            new_root.meta_pvs.extend(data.meta_pvs)
+        elif isinstance(data, PV):
+            new_root.pvs.append(data)
+        elif isinstance(data, Snapshot):
+            new_root.snapshots.append(data)
 
     return new_root
 
@@ -217,7 +183,7 @@ def test_backend(
         @pytest.mark.parametrize("test_backend", [
             {"backend_type": FilestoreBackend}
         ], indirect=True)
-        def my_test(test_backend: Entry):
+        def my_test(test_backend):
             assert isinstance(test_backend, FilestoreBackend)
 
     You can also specify which data to include in the backend, even if test_data
@@ -228,7 +194,7 @@ def test_backend(
         @pytest.mark.parametrize("test_data,test_backend", [
             ({"sources": ["setpoint_with_readback"]}, {"backend_type": TestBackend})
         ], indirect=True)
-        def test_set_backend_and_data(test_backend: _Backend, setpoint_with_readback: Setpoint):
+        def test_set_backend_and_data(test_backend: _Backend, setpoint_with_readback: PV):
             assert isinstance(test_backend, TestBackend)
             assert test_backend.root.entries[0] is setpoint_with_readback
     """
@@ -239,17 +205,24 @@ def test_backend(
         backend = request.getfixturevalue("mock_backend")
     else:
         backend_cls: Type[_Backend] = bknd_type
-        if backend_cls is FilestoreBackend:
-            tmp_fp = tmp_path / 'tmp_filestore.json'
-            backend = backend_cls(path=tmp_fp)
-        elif backend_cls is DirectoryBackend:
-            backend = backend_cls(path=tmp_path)
-        else:
+        if backend_cls is TestBackend:
             backend = backend_cls()
+        # elif backend_cls is DirectoryBackend:
+        #    backend = backend_cls(path=tmp_path)
 
-    for entry in test_data.entries:
-        backend.save_entry(entry)
-        backend.set_tags(test_data.tag_groups)
+    for pv in test_data.pvs:
+        backend.add_pv(
+            pv.setpoint,
+            pv.readback,
+            pv.description,
+            pv.tags,
+            pv.abs_tolerance,
+            pv.rel_tolerance,
+            pv.config,
+        )
+    for snapshot in test_data.snapshots:
+        backend.add_snapshot(snapshot)
+    backend.set_tags(test_data.tag_groups)
 
     return backend
 

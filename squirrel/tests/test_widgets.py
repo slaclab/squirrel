@@ -1,20 +1,16 @@
-from operator import attrgetter
-from typing import Any
 from unittest.mock import MagicMock
-from uuid import uuid4
 
 import pytest
 from pytestqt.qtbot import QtBot
 from qtpy import QtCore, QtGui
 
-from squirrel.backends import FilestoreBackend
+from squirrel.backends import TestBackend
 from squirrel.client import Client
 from squirrel.color import LIVE_SETPOINT_HIGHLIGHT
-from squirrel.control_layer import EpicsData
-from squirrel.model import Collection, Snapshot
+from squirrel.model import EpicsData, Snapshot
 from squirrel.tables import PVTableModel
 from squirrel.tests.conftest import setup_test_stack
-from squirrel.widgets import DataWidget, TagsWidget
+from squirrel.widgets import TagsWidget
 
 
 @pytest.fixture(scope='function')
@@ -24,7 +20,7 @@ def pv_table_model(
     qtbot: QtBot
 ):
     for i in range(3):
-        simple_snapshot_fixture.children[i].data = i + 1
+        simple_snapshot_fixture.pvs[i].data = i + 1
     test_client.backend.save_entry(simple_snapshot_fixture)
 
     """Minimal PVTableModel"""
@@ -35,43 +31,14 @@ def pv_table_model(
 
     # Make sure we never actually call EPICS. Second child has different live data
     model.client.cl.get = MagicMock(side_effect=[EpicsData(1), EpicsData(1), EpicsData(3)])
-    qtbot.wait_until(lambda: model._poll_thread.running)
+    # TODO: uncomment or remove this line once PV table live columns are re-implemented
+    # qtbot.wait_until(lambda: model._poll_thread.running)
     yield model
 
     model.stop_polling()
 
-    qtbot.wait_until(lambda: not model._poll_thread.isRunning())
-
-
-@pytest.mark.parametrize(
-    'attr, signal, value',
-    [
-        ('title', 'changed_value', 'new_title'),
-        ('title', 'updated', 'new_title'),
-        ('children', 'updated', [Collection(), Collection()]),
-        ('uuid', 'changed_value', uuid4()),
-    ]
-)
-def test_collection_datawidget_bridge(
-    qtbot: QtBot,
-    attr: str,
-    signal: str,
-    value: Any
-):
-    data = Collection()
-    widget1 = DataWidget(data=data)
-    widget2 = DataWidget(data=data)
-
-    assert getattr(data, attr) != value
-
-    signal = attrgetter('.'.join((attr, signal)))(widget2.bridge)
-    with qtbot.waitSignal(signal):
-        getattr(widget1.bridge, attr).put(value)
-
-    assert getattr(data, attr) == value
-
-    qtbot.addWidget(widget1)
-    qtbot.addWidget(widget2)
+    # TODO: uncomment or remove this line once PV table live columns are re-implemented
+    # qtbot.wait_until(lambda: not model._poll_thread.isRunning())
 
 
 def test_tags_widget(qtbot):
@@ -121,7 +88,7 @@ def test_pv_table_model(qtmodeltester, pv_table_model: PVTableModel):
 
 
 @pytest.mark.skip(reason="QThreads aren't behaving with mocked control layer methods")
-@setup_test_stack(sources=['db/filestore.json'], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_table_model_data(test_client, pv_table_model: PVTableModel):
     # Expected model data based on the pv_table_model setup
     expected_data = [[None, None, None, 'MY:FLOAT', 1, 1, None, None, None],
@@ -140,7 +107,7 @@ def test_pv_table_model_data(test_client, pv_table_model: PVTableModel):
 
 
 @pytest.mark.skip(reason="QThreads aren't behaving with mocked control layer methods")
-@setup_test_stack(sources=['db/filestore.json'], backend_type=FilestoreBackend)
+@setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_table_model_color(test_client: Client, pv_table_model: PVTableModel):
     # Expected model colors based on the pv_table_model setup
     diff_color = QtGui.QColor(LIVE_SETPOINT_HIGHLIGHT)

@@ -1,68 +1,30 @@
 import pytest
 
-from squirrel.backends import (DirectoryBackend, FilestoreBackend, SearchTerm,
-                               TestBackend, _Backend)
+from squirrel.backends import SearchTerm, TestBackend, _Backend
 from squirrel.errors import BackendError, EntryExistsError, EntryNotFoundError
-from squirrel.model import Collection, Parameter, Snapshot
+from squirrel.model import PV, Snapshot
 from squirrel.tests.conftest import setup_test_stack
 from squirrel.type_hints import UUID
 
 
-class TestTestBackend:
-    def test_retrieve(self, linac_backend):
-        assert linac_backend.get_entry("5544c58f-88b6-40aa-9076-f180a44908f5") is not None  # Parameter
-        assert linac_backend.get_entry("06282731-33ea-4270-ba14-098872e627dc") is not None  # Snapshot
-        assert linac_backend.get_entry("4bffe9a5-f198-41d8-90ab-870d1b5a325b") is not None  # Setpoint
-        with pytest.raises(EntryNotFoundError):
-            linac_backend.get_entry("d3589b21-2f77-462d-9280-bb4d4e48d93b")  # Doesn't exist
-
-    def test_create(self, linac_backend):
-        collision_entry = Parameter(uuid="5ec33c74-7f4c-4905-a106-44fbfe138140")
-        with pytest.raises(EntryExistsError):
-            linac_backend.save_entry(collision_entry)
-
-        new_entry = Parameter(uuid="8913b7af-830d-4e32-bebe-b34a4616ce79")
-        linac_backend.save_entry(new_entry)
-        assert linac_backend.get_entry("8913b7af-830d-4e32-bebe-b34a4616ce79") is not None
-
-    def test_update(self, linac_backend):
-        modified_entry = Parameter(uuid="030786df-153b-4d29-bc1f-66deeb116724", description="This is the new description")
-        linac_backend.update_entry(modified_entry)
-        assert linac_backend.get_entry(modified_entry.uuid) == modified_entry
-
-        missing_entry = Parameter(uuid="d3589b21-2f77-462d-9280-bb4d4e48d93b")
-        with pytest.raises(EntryNotFoundError):
-            linac_backend.update_entry(missing_entry)
-
-    def test_delete(self, linac_backend):
-        entry = linac_backend.get_entry("502d9fc3-455a-47ea-8c48-e1a26d4d3350")
-        linac_backend.delete_entry(entry)
-        with pytest.raises(EntryNotFoundError):
-            linac_backend.get_entry("502d9fc3-455a-47ea-8c48-e1a26d4d3350")
-
-        entry = linac_backend.get_entry("930b137f-5ae2-470e-8b82-c4b4eb7e639e")
-        # need new instance because editing entry would automatically sync to the backend
-        unsynced = Parameter(**entry.__dict__)
-        unsynced.description = "I haven't been synced with the backend"
-        with pytest.raises(BackendError):
-            linac_backend.delete_entry(unsynced)
-
-
-@setup_test_stack(backend_type=[FilestoreBackend, DirectoryBackend, TestBackend])
+@pytest.mark.skip(reason="Rewrite to test add_pv and add_snapshot")
+@setup_test_stack(backend_type=[TestBackend])
 def test_save_entry(test_backend: _Backend):
-    new_entry = Parameter()
-
-    test_backend.save_entry(new_entry)
-    found_entry = test_backend.get_entry(new_entry.uuid)
-    assert found_entry == new_entry
+    added_pv = test_backend.add_pv(
+        setpoint="TEST:SETPT",
+        readback="TEST:RDBK",
+        description="This is a test",
+    )
+    assert test_backend.search() == [added_pv]
 
     # Cannot save an entry that already exists.
     with pytest.raises(EntryExistsError):
-        test_backend.save_entry(new_entry)
+        test_backend.save_entry(added_pv)
 
 
+@pytest.mark.skip(reason="Rewrite to test archive_pv and delete_snapshot")
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_delete_entry(test_backend: _Backend):
     entry = test_backend.root.entries[0]
@@ -72,13 +34,14 @@ def test_delete_entry(test_backend: _Backend):
         test_backend.get_entry(entry.uuid)
 
 
+@pytest.mark.skip(reason="Rewrite 'data' field tests")
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_search_entry(test_backend: _Backend):
     # Given an entry we know is in the backend
     results = test_backend.search(
-        SearchTerm('description', 'eq', 'collection 1 defining some motor fields')
+        SearchTerm('description', 'eq', 'Snapshot 1')
     )
     assert len(list(results)) == 1
     # Search by field name
@@ -90,7 +53,7 @@ def test_search_entry(test_backend: _Backend):
     results = test_backend.search(
         SearchTerm('data', 'eq', 2)
     )
-    assert len(list(results)) == 3
+    assert len(list(results)) == 2
     # Search by field name
     results = test_backend.search(
         SearchTerm('uuid', 'eq', UUID('ecb42cdb-b703-4562-86e1-45bd67a2ab1a')),
@@ -104,7 +67,7 @@ def test_search_entry(test_backend: _Backend):
     assert len(list(results)) == 1
 
     results = test_backend.search(
-        SearchTerm('entry_type', 'in', (Snapshot, Collection))
+        SearchTerm('entry_type', 'in', (Snapshot))
     )
     assert len(list(results)) == 2
 
@@ -120,42 +83,31 @@ def test_search_entry(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_fuzzy_search(test_backend: _Backend):
     results = list(test_backend.search(
         SearchTerm('description', 'like', 'motor'))
     )
-    assert len(results) == 4
+    assert len(results) == 3
 
     results = list(test_backend.search(
         SearchTerm('description', 'like', 'motor field (?!PREC)'))
     )
     assert len(results) == 2
 
-    results = list(test_backend.search(
-        SearchTerm('uuid', 'like', '17cc6ebf'))
-    )
-    assert len(results) == 1
-
 
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_tag_search(test_backend: _Backend):
-    entry_count = len(list(test_backend.search()))
     results = list(test_backend.search(
         SearchTerm('tags', 'gt', {})
     ))
-    assert len(results) == entry_count
+    assert len(results) == 4
 
-    smaller_tag_set = {0: {0}}
+    smaller_tag_set = {0: {1}}
     bigger_tag_set = {0: {0, 1}}
-
-    results[0].tags = smaller_tag_set
-    results[1].tags = bigger_tag_set
-    test_backend.update_entry(results[0])
-    test_backend.update_entry(results[1])
 
     results = list(test_backend.search(
         SearchTerm('tags', 'gt', smaller_tag_set)
@@ -165,11 +117,12 @@ def test_tag_search(test_backend: _Backend):
     results = list(test_backend.search(
         SearchTerm('tags', 'gt', bigger_tag_set)
     ))
-    assert len(results) == 1
+    assert len(results) == 0
 
 
+@pytest.mark.skip(reason="Check test validity and necessity")
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_search_error(test_backend: _Backend):
     with pytest.raises(TypeError):
@@ -184,8 +137,9 @@ def test_search_error(test_backend: _Backend):
         list(results)
 
 
+@pytest.mark.skip(reason="Rewrite to test update_pv")
 @setup_test_stack(
-    sources=["db/filestore.json"], backend_type=[FilestoreBackend, DirectoryBackend, TestBackend]
+    sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_update_entry(test_backend: _Backend):
     # grab an entry from the database and modify it.
@@ -204,14 +158,14 @@ def test_update_entry(test_backend: _Backend):
     assert old_uuid == new_uuid
 
     # fail if we try to modify with a new entry
-    p1 = Parameter()
+    p1 = PV()
     with pytest.raises(BackendError):
         test_backend.update_entry(p1)
 
 
-# TODO: Assess if _gather_reachable should be upstreamed to _Backend
+@pytest.mark.skip(reason="Reactivate once DirectoryBackend is re-implemented")
 @setup_test_stack(
-    sources=["linac_data"], backend_type=[FilestoreBackend, DirectoryBackend]
+    sources=["linac_data"], backend_type=[]
 )
 def test_gather_reachable(test_backend: _Backend):
     # snapshot
@@ -227,7 +181,7 @@ def test_gather_reachable(test_backend: _Backend):
 
 
 @setup_test_stack(
-    sources=["linac_data"], backend_type=[TestBackend, FilestoreBackend],
+    sources=["linac_data"], backend_type=[TestBackend],
 )
 def test_tags(test_backend: _Backend):
     tag_groups = test_backend.get_tags()

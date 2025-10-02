@@ -183,10 +183,10 @@ class SnapshotComparisonTableModel(QtCore.QAbstractTableModel):
 
         self.beginResetModel()
         self._data = []
-        pvs = self.client.backend.get_snapshots(uuid=self.comparison_snapshot.uuid).pvs
+        pvs = self.client.backend.get_snapshots(uuid=self.comparison_snapshot.uuid)[0].pvs
         secondary_pvs = {(pv.setpoint, pv.readback): pv for pv in tuple(pvs)}
         # for each PV in primary snapshot, find partner in secondary snapshot
-        pvs = self.client.backend.get_snapshots(uuid=self.main_snapshot.uuid).pvs
+        pvs = self.client.backend.get_snapshots(uuid=self.main_snapshot.uuid)[0].pvs
         for primary in tuple(pvs):
             secondary = secondary_pvs.pop((primary.setpoint, primary.readback), None)
             self._data.append((primary, secondary))
