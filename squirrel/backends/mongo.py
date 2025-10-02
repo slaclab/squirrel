@@ -642,8 +642,7 @@ class MongoBackend(_Backend):
             creation_time=datetime.fromisoformat(metadata_dict["createdDate"]).replace(tzinfo=UTC),
         )
 
-    @staticmethod
-    def _unpack_snapshot(snapshot_dict) -> Snapshot:
+    def _unpack_snapshot(self, snapshot_dict) -> Snapshot:
         """
         Converts data received from backend endpoints into a complete Snapshot
         instance.
@@ -659,22 +658,45 @@ class MongoBackend(_Backend):
             Snapshot instance containing all encoded data received from the
             backend
         """
+        pv_defs = self.get_all_pvs()
+        pvs = []
+        pv_values_map = {}
+        for pv in pv_defs:
+            pv_with_values = PV(
+                setpoint=pv.setpoint,
+                readback=pv.readback,
+            )
+            if pv.setpoint:
+                pv_values_map[pv.setpoint] = pv_with_values
+            if pv.readback:
+                pv_values_map[pv.readback] = pv_with_values
+            pvs.append(pv_with_values)
+
+        for value_dict in snapshot_dict["data"]:
+            data = EpicsData(
+                data=value_dict.get("data", None),
+                status=getattr(Status, value_dict["status"]),
+                severity=getattr(Severity, value_dict["severity"]),
+                timestamp=datetime.fromisoformat(value_dict["createdDate"]).replace(tzinfo=UTC),
+            )
+            address = value_dict["pvName"]
+            try:
+                pv = pv_values_map[address]
+            except KeyError:
+                logging.debug(f"Address {address} within Snapshot did not match any PV from backend")
+            else:
+                if address == pv.setpoint:
+                    pv.setpoint_data = data
+                elif address == pv.readback:
+                    pv.readback_data = data
+                else:
+                    logging.debug("Address {address} did not match PV address {pv.setpoint} or {pv.readback}; skipping")
         return Snapshot(
             uuid=snapshot_dict["id"],
             title=snapshot_dict["title"],
             description=snapshot_dict["description"],
             # tags=snapshot_dict["tags"],
-            pvs=[
-                PV(
-                    setpoint=pv["pvName"],
-                    setpoint_data=EpicsData(
-                        data=pv.get("data", None),
-                        status=getattr(Status, pv["status"]),
-                        severity=getattr(Severity, pv["severity"]),
-                        timestamp=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
-                    )
-                ) for pv in snapshot_dict["data"]
-            ],
+            pvs=pvs,
             creation_time=datetime.fromisoformat(snapshot_dict["createdDate"]).replace(tzinfo=UTC),
         )
 
