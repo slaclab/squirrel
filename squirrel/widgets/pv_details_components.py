@@ -165,7 +165,7 @@ class PVDetailsPopupEditable(QDialog):
 
         form_layout = QGridLayout()
 
-        self.device_input = QLineEdit(inputMask="--")
+        self.device_input = QLineEdit(placeholderText="--")
         self.pv_name_input = QLineEdit()
         self.readback_name_input = QLineEdit()
         self.description_input = QLineEdit()
@@ -187,7 +187,7 @@ class PVDetailsPopupEditable(QDialog):
             self.tolerance_abs_input.setText(str(pv_details.tolerance_abs))
             self.tolerance_rel_input.setText(str(pv_details.tolerance_rel))
 
-        form_layout.addLayout(QLabel("Device"), 0, 0)
+        form_layout.addWidget(QLabel("Device"), 0, 0)
         form_layout.addWidget(self.device_input, 0, 1)
 
         form_layout.addWidget(QLabel("PV Name"), 1, 0)
