@@ -74,7 +74,7 @@ class SnapshotTableModel(QtCore.QAbstractTableModel):
         """Fetch all snapshots from the backend"""
         self.beginResetModel()
         self._data = sorted(
-            self.client.search(("entry_type", "eq", Snapshot)),
+            self.client.backend.get_snapshots(meta_pvs=self.client.meta_pvs),
             key=lambda s: s.creation_time,
             reverse=True,
         )

@@ -35,7 +35,7 @@ class MongoBackend(_Backend):
         self._tag_cache = {}
         self._last_tag_fetch = datetime.now() - timedelta(minutes=1)
 
-    def search(self, *search_terms: SearchTermType):
+    def search(self, *search_terms: SearchTermType, meta_pvs=None):
         """
         Search for all entries matching the passed search terms.
 
@@ -49,7 +49,7 @@ class MongoBackend(_Backend):
         for attr, op, target in search_terms:
             if attr == "entry_type":
                 if target is Snapshot:
-                    entries = self.get_snapshots()
+                    entries = self.get_snapshots(meta_pvs=meta_pvs)
                 else:
                     entries = self.get_all_pvs()
         for entry in entries:
@@ -471,7 +471,7 @@ class MongoBackend(_Backend):
             params={
                 "title": title,
                 "tags": tags,
-                "metadataPVs": meta_pvs,
+                "metadataPVs": [pv.readback for pv in meta_pvs if pv.readback]
             }
         )
         self._raise_for_status(r)
