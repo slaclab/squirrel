@@ -198,7 +198,7 @@ class CSVTableModel(QtCore.QAbstractTableModel):
         """Build headers from the first row of data"""
         if not self._data:
             return []
-        headers = ['Setpoint', 'Readback', 'Description', 'Tags']
+        headers = ['Setpoint', 'Readback', 'Device', 'Description', 'Tags']
         return headers
 
     def rowCount(self, parent=QtCore.QModelIndex()) -> int:
@@ -225,6 +225,8 @@ class CSVTableModel(QtCore.QAbstractTableModel):
                 return row_data.get('Setpoint', '')
             elif column_name == 'Readback':
                 return row_data.get('Readback', '')
+            elif column_name == 'Device':
+                return row_data.get('Device', '')
             elif column_name == 'Description':
                 return row_data.get('Description', '')
             elif column_name == 'Tags':
@@ -234,6 +236,8 @@ class CSVTableModel(QtCore.QAbstractTableModel):
                 return f"Setpoint: {row_data.get('Setpoint', '')}"
             elif column_name == 'Readback':
                 return f"Readback: {row_data.get('Readback', '')}"
+            elif column_name == 'Device':
+                return f"Device: {row_data.get('Device', '')}"
             elif column_name == 'Description':
                 return f"Description: {row_data.get('Description', '')}"
             elif column_name == 'Tags':

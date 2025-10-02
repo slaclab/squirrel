@@ -43,18 +43,20 @@ def parse_csv_to_dict(csv_file_path: str) -> List[Dict[str, Any]]:
         if "Setpoint" not in cleaned_headers and "Readback" not in cleaned_headers:
             raise ValueError("Header missing required columns \"Setpoint\" or \"Readback\"")
 
-        group_columns = [col for col in cleaned_headers if col not in ['Setpoint', 'Readback', 'Description']]
+        group_columns = [col for col in cleaned_headers if col not in ['Setpoint', 'Readback', 'Device', 'Description']]
 
         for row_num, row in enumerate(reader, start=2):
             setpoint = row.get('Setpoint', '').strip()
             readback = row.get('Readback', '').strip()
             if not (setpoint or readback):
                 continue
+            device = row.get('Device', '').strip()
             desc_value = row.get('Description', '').strip()
 
             row_dict = {
                 'Setpoint': setpoint,
                 'Readback': readback,
+                'Device': device,
                 'Description': desc_value,
                 'groups': {}
             }
