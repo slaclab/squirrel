@@ -276,6 +276,7 @@ class CSVTableDialog(QtWidgets.QDialog):
         """Create a PV object from CSV row data with proper tag handling"""
         setpoint = row_data['Setpoint']
         readback = row_data['Readback']
+        device = row_data['Device']
         description = row_data['Description']
         csv_groups = row_data['groups']
 
@@ -288,6 +289,7 @@ class CSVTableDialog(QtWidgets.QDialog):
         pv = PV(
             setpoint=setpoint,
             readback=readback,
+            device=device,
             description=description,
             tags=tagset,
         )
