@@ -713,15 +713,24 @@ class MongoBackend(_Backend):
         -------
         dict
         """
+        setpoint_values = [
+            {
+                "pvName": pv.setpoint,
+                "status": pv.setpoint_data.status.name,
+                "severity": pv.setpoint_data.severity.name,
+                "data": pv.setpoint_data.data,
+            } for pv in snapshot.pvs if pv.setpoint
+        ]
+        readback_values = [
+            {
+                "pvName": pv.readback,
+                "status": pv.readback_data.status.name,
+                "severity": pv.readback_data.severity.name,
+                "data": pv.readback_data.data,
+            } for pv in snapshot.pvs if pv.readback
+        ]
         return {
             "title": snapshot.title,
             "description": snapshot.description,
-            "values": [
-                {
-                    "pvName": pv.setpoint,
-                    "status": pv.setpoint_data.status.name,
-                    "severity": pv.setpoint_data.severity.name,
-                    "data": pv.setpoint_data.data,
-                } for pv in snapshot.pvs
-            ],
+            "values": setpoint_values + readback_values,
         }
