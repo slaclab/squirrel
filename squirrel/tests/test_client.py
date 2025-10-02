@@ -117,6 +117,7 @@ def test_snap_exception(get_mock, test_client: Client, sample_database_fixture: 
     assert snapshot.pvs[2].setpoint_data.data is None
 
 
+@pytest.mark.skip(reason="Mongo backend not reachable from GitHub action")
 def test_from_cfg(sscore_cfg: str):
     client = Client.from_config()
     assert isinstance(client.backend, MongoBackend)
