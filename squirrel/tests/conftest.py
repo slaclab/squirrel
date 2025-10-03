@@ -215,6 +215,7 @@ def test_backend(
             pv.setpoint,
             pv.readback,
             pv.description,
+            pv.device,
             pv.tags,
             pv.abs_tolerance,
             pv.rel_tolerance,
