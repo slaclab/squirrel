@@ -24,6 +24,3 @@ Widgets
 
 .. automodule:: squirrel.widgets.display
    :members:
-
-.. automodule:: squirrel.widgets.window_linker
-   :members:
