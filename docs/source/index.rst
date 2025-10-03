@@ -28,7 +28,7 @@ Welcome to squirrel's documentation!
    widgets/index.rst
    tables/index.rst
    backends/index.rst
-   control_layers/index.rst
+   control_layer/index.rst
 
 
 .. toctree::

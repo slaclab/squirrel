@@ -217,3 +217,8 @@ inheritance_alias = {
 
 # -- Disabling requirement for all class members to have stub files
 numpydoc_class_members_toctree = False
+
+# Handle missing package dependencies
+autodoc_mock_imports = [
+    "qtpy",
+]
