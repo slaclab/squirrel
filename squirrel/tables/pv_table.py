@@ -9,6 +9,8 @@ from squirrel.model import PV, Severity, Snapshot
 from squirrel.widgets import SEVERITY_ICONS
 from squirrel.widgets.views import LivePVTableModel
 
+NO_DATA = "--"
+
 
 class PV_HEADER(Enum):
     CHECKBOX = 0
@@ -101,19 +103,19 @@ class PVTableModel(LivePVTableModel):
             elif column == PV_HEADER.SEVERITY:
                 return None
             elif column == PV_HEADER.DEVICE:
-                return None
+                return entry.device or NO_DATA
             elif column == PV_HEADER.PV:
                 return entry.setpoint
             elif column == PV_HEADER.SETPOINT:
                 return getattr(entry.setpoint_data, "data", "")
             elif column == PV_HEADER.LIVE_SETPOINT:
                 # return self._get_live_data_field(entry, 'data')
-                return '--'
+                return NO_DATA
             elif column == PV_HEADER.READBACK:
                 return getattr(entry.readback_data, "data", "")
             elif column == PV_HEADER.LIVE_READBACK:
                 # return self._get_live_data_field(entry.readback, 'data') if entry.readback else None
-                return '--'
+                return NO_DATA
             elif column == PV_HEADER.CONFIG:
                 return None
             else:
@@ -152,7 +154,9 @@ class PVTableModel(LivePVTableModel):
                     font.setBold(True)
                     return font
             return None
-        elif role == QtCore.Qt.TextAlignmentRole and column not in [PV_HEADER.DEVICE, PV_HEADER.PV]:
+        elif role == QtCore.Qt.TextAlignmentRole:
+            if column not in [PV_HEADER.DEVICE, PV_HEADER.PV] or index.data() != NO_DATA:
+                return None
             return QtCore.Qt.AlignCenter
         return None
 

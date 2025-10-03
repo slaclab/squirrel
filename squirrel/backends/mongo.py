@@ -264,6 +264,7 @@ class MongoBackend(_Backend):
         setpoint,
         readback,
         description,
+        device="",
         tags: TagSet = None,
         abs_tolerance=0,
         rel_tolerance=0,
@@ -282,6 +283,9 @@ class MongoBackend(_Backend):
             EPICS address to use as a readback. May be empty, but must be set
             explicitly.
         description : str
+            Description of the new PV
+        device : str, optional
+            Alias device name of the new PV, defaults to empty string
         tags : TagSet, optional
             Set of tags assigned to the PV
         abs_tolerance : float, optional
@@ -305,6 +309,7 @@ class MongoBackend(_Backend):
             "readbackAddress": readback,
             "configAddress": config_address,
             "description": description,
+            "device": device,
             "absTolerance": abs_tolerance,
             "relTolerance": rel_tolerance,
             "tags": self._pack_tags(tags) if tags else [],
@@ -325,6 +330,7 @@ class MongoBackend(_Backend):
                     "readbackAddress": pv.readback or None,
                     "configAddress": pv.config or None,
                     "description": pv.description,
+                    "device": pv.device or None,
                     "absTolerance": pv.abs_tolerance,
                     "relTolerance": pv.rel_tolerance,
                     "tags": self._pack_tags(pv.tags),
@@ -336,7 +342,7 @@ class MongoBackend(_Backend):
         pv_dicts = r.json()["payload"]
         return [self._unpack_pv(pv_dict) for pv_dict in pv_dicts]
 
-    def update_pv(self, pv_id, setpoint="", description="", tags=None, abs_tolerance=None, rel_tolerance=None) -> None:
+    def update_pv(self, pv_id, setpoint="", description="", device="", tags=None, abs_tolerance=None, rel_tolerance=None) -> None:
         """
         Update PV in the backend. Data will be updated for any passed parameter;
         data for other parameters will not be affected.
@@ -349,6 +355,8 @@ class MongoBackend(_Backend):
             A new setpoint address
         description : str, optional
             A new description
+        device : str, optional
+            A new device name
         tags : TagSet, optional
             A new set of tags
         abs_tolerance : float, optional
@@ -365,6 +373,8 @@ class MongoBackend(_Backend):
             body["setpointAddress"] = setpoint
         if description:
             body["description"] = description
+        if device:
+            body["device"] = device
         if tags:
             body["tags"] = self._pack_tags(tags)
         if abs_tolerance is not None:
@@ -602,6 +612,7 @@ class MongoBackend(_Backend):
             readback=pv_dict.get("readbackAddress"),
             config=pv_dict.get("configAddress"),
             description=pv_dict["description"],
+            device=pv_dict.get("device", ""),
             tags=self._unpack_tags(pv_dict["tags"]),
             abs_tolerance=pv_dict["absTolerance"],
             rel_tolerance=pv_dict["relTolerance"],

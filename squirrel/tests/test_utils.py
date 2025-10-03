@@ -23,10 +23,10 @@ def test_parse_correctly_formatted_csv_file(tmp_path):
     # LASR:GUNB:TEST1,First LASR pv in GUNB,IN20, GUNB,Laser
     # MGNT:GUNB:TEST0,Only MGNT pv in GUNB,IN20,Magnet
 
-    headers = ["Setpoint", "Description", "Area", "Subsystem"]
+    headers = ["Setpoint", "Description", "Device", "Area", "Subsystem"]
     rows = [
-        ["LASR:GUNB:TEST1", "First LASR pv in GUNB", "IN20, GUNB", "Laser"],
-        ["MGNT:GUNB:TEST0", "Only MGNT pv in GUNB", "IN20", "Magnet"],
+        ["LASR:GUNB:TEST1", "First LASR pv in GUNB", "LASR:DEV", "IN20, GUNB", "Laser"],
+        ["MGNT:GUNB:TEST0", "Only MGNT pv in GUNB", "MGNT:DEV", "IN20", "Magnet"],
     ]
     path = write_csv(tmp_path, headers, rows)
 
@@ -37,12 +37,14 @@ def test_parse_correctly_formatted_csv_file(tmp_path):
     first_row = output[0]
     assert first_row["Setpoint"] == "LASR:GUNB:TEST1"
     assert first_row["Description"] == "First LASR pv in GUNB"
+    assert first_row["Device"] == "LASR:DEV"
     assert first_row["groups"]["Area"] == ["IN20", "GUNB"]
     assert first_row["groups"]["Subsystem"] == ["Laser"]
 
     second_row = output[1]
     assert second_row["Setpoint"] == "MGNT:GUNB:TEST0"
     assert second_row["Description"] == "Only MGNT pv in GUNB"
+    assert second_row["Device"] == "MGNT:DEV"
     assert second_row["groups"]["Area"] == ["IN20"]
     assert second_row["groups"]["Subsystem"] == ["Magnet"]
 
