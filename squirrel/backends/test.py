@@ -76,6 +76,7 @@ class TestBackend(_Backend):
         setpoint,
         readback,
         description,
+        device="",
         tags: TagSet = None,
         abs_tolerance=0,
         rel_tolerance=0,
@@ -85,6 +86,7 @@ class TestBackend(_Backend):
             setpoint=setpoint,
             readback=readback,
             description=description,
+            device=device,
             tags=tags,
             abs_tolerance=abs_tolerance,
             rel_tolerance=rel_tolerance,
@@ -95,7 +97,7 @@ class TestBackend(_Backend):
     def add_multiple_pvs(self, pvs: Iterable[PV]) -> Iterable[PV]:
         raise NotImplementedError
 
-    def update_pv(self, pv_id, setpoint="", description="", tags=None, abs_tolerance=None, rel_tolerance=None) -> None:
+    def update_pv(self, pv_id, setpoint="", description="", device="", tags=None, abs_tolerance=None, rel_tolerance=None) -> None:
         raise NotImplementedError
 
     def archive_pv(self, pv_id) -> None:
