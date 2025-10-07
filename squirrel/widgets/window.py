@@ -345,7 +345,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             logging.exception(e)
 
         pv_details = PVDetails(
-            pv_name=data.setpoint,
+            setpoint_name=data.setpoint,
             readback_name=data.readback,
             description=data.description,
             tolerance_abs=data.abs_tolerance,
@@ -397,7 +397,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         def add_pv():
             try:
                 pv = self.client.backend.add_pv(
-                    self.popup.pv_details.pv_name or None,
+                    self.popup.pv_details.setpoint_name or None,
                     self.popup.pv_details.readback_name or None,
                     self.popup.pv_details.description,
                     abs_tolerance=self.popup.pv_details.tolerance_abs,
