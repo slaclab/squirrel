@@ -120,7 +120,7 @@ class PVDetailsPopup(QWidget):
         title_widget = PVDetailsTitleBar("DETAILS", self)
         layout.addWidget(title_widget)
 
-        layout.addLayout(PVDetailsRow("Device", QLabel(pv_details.device) direction=QBoxLayout.TopToBottom))
+        layout.addLayout(PVDetailsRow("Device", QLabel(pv_details.device), direction=QBoxLayout.TopToBottom))
         layout.addLayout(PVDetailsRow("Setpoint Name", QLabel(pv_details.setpoint_name), direction=QBoxLayout.TopToBottom))
         layout.addLayout(
             PVDetailsRow("Readback Name", QLabel(pv_details.readback_name), direction=QBoxLayout.TopToBottom)
