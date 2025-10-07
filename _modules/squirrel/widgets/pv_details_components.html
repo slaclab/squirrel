@@ -109,7 +109,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">PVDetails</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent the details of a PV (Process Variable). Used to populate the PV details popups.&quot;&quot;&quot;</span>
 
-    <span class="n">pv_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">setpoint_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">readback_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">tolerance_abs</span><span class="p">:</span> <span class="nb">float</span>
@@ -221,7 +221,7 @@
         <span class="n">title_widget</span> <span class="o">=</span> <span class="n">PVDetailsTitleBar</span><span class="p">(</span><span class="s2">&quot;DETAILS&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title_widget</span><span class="p">)</span>
 
-        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;PV Name&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Setpoint Name&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">setpoint_name</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">))</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span>
             <span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Readback Name&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">readback_name</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">)</span>
         <span class="p">)</span>
@@ -262,13 +262,13 @@
 
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">title_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Edit PV: </span><span class="si">{</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">pv_details</span> <span class="k">else</span> <span class="s2">&quot;Create New PV&quot;</span>
+        <span class="n">title_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Edit PV: </span><span class="si">{</span><span class="n">pv_details</span><span class="o">.</span><span class="n">setpoint_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">pv_details</span> <span class="k">else</span> <span class="s2">&quot;Create New PV&quot;</span>
         <span class="n">title_bar</span> <span class="o">=</span> <span class="n">PVDetailsTitleBar</span><span class="p">(</span><span class="n">title_text</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title_bar</span><span class="p">)</span>
 
         <span class="n">form_layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setpoint_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
@@ -283,14 +283,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">validator</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">pv_details</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setpoint_name_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">setpoint_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">readback_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">description_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_abs</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_rel</span><span class="p">))</span>
 
-        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;PV Name&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Setpoint Name&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setpoint_name_input</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Readback Name&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -336,7 +336,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle save button press.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pv_details</span> <span class="o">=</span> <span class="n">PVDetails</span><span class="p">(</span>
-                <span class="n">pv_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="n">setpoint_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">setpoint_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
                 <span class="n">readback_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
                 <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
                 <span class="n">tolerance_abs</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
@@ -360,7 +360,7 @@
     <span class="n">tag_set</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">}}</span>
 
     <span class="n">pv_details</span> <span class="o">=</span> <span class="n">PVDetails</span><span class="p">(</span>
-        <span class="n">pv_name</span><span class="o">=</span><span class="s2">&quot;QUAD:LI21:401:EDES&quot;</span><span class="p">,</span>
+        <span class="n">setpoint_name</span><span class="o">=</span><span class="s2">&quot;QUAD:LI21:401:EDES&quot;</span><span class="p">,</span>
         <span class="n">readback_name</span><span class="o">=</span><span class="s2">&quot;QUAD:LI21:401:EACT&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This will be the description of the PV&quot;</span><span class="p">,</span>
         <span class="n">tolerance_abs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
@@ -380,7 +380,7 @@
         <span class="n">editable_popup</span> <span class="o">=</span> <span class="n">PVDetailsPopupEditable</span><span class="p">(</span><span class="n">tag_groups</span><span class="o">=</span><span class="n">tag_groups</span><span class="p">,</span> <span class="n">pv_details</span><span class="o">=</span><span class="n">pv_details</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">editable_popup</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PV Details Submitted:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PV Name: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setpoint Name: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">setpoint_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Readback Name: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">readback_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Description: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Absolute Tolerance: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_abs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
