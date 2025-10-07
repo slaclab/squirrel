@@ -158,6 +158,8 @@ class PVTableModel(LivePVTableModel):
             if column not in [PV_HEADER.DEVICE, PV_HEADER.PV] or index.data() != NO_DATA:
                 return None
             return QtCore.Qt.AlignCenter
+        elif role == QtCore.Qt.UserRole:
+            return entry
         return None
 
     def setData(self, index, value, role) -> bool:
@@ -202,3 +204,64 @@ class PVTableModel(LivePVTableModel):
     def get_selected_pvs(self) -> Iterable[PV]:
         """Return the Setpoints corresponding to checked rows in the table"""
         return [self._data[i] for i in self._checked]
+
+
+class PVTableFilterProxyModel(QtCore.QSortFilterProxyModel):
+    """
+    A filter proxy model for filtering PVTableModel entries based on a search
+    string. The search string is matched against the device and setpoint
+    fields of each entry.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._search_string = ""
+
+    @property
+    def search_string(self) -> str:
+        """Get the current search string for filtering."""
+        return self._search_string
+
+    @search_string.setter
+    def search_string(self, value: str) -> None:
+        """Set the search string for filtering. Apply filter to model
+        immediately. The value is converted to lowercase for case-insensitive
+        matching.
+
+        Parameters
+        ----------
+        value : str
+            The string to filter entries by.
+        """
+        self._search_string = value.lower()
+        self.invalidateFilter()
+
+    def search_accepts_entry(self, entry: PV) -> bool:
+        """Check if the entry matches the current search string. Searches
+        the device and setpoint fields.
+
+        Parameters
+        ----------
+        entry : PV
+            Entry to be searched
+
+        Returns
+        -------
+        bool
+            True if the entry matches the search string, False otherwise
+        """
+        if not self.search_string:
+            return True
+
+        search_device = self.search_string in (entry.device or NO_DATA).lower()
+        search_setpoint = self.search_string in (entry.setpoint or "").lower()
+
+        return search_device or search_setpoint
+
+    def filterAcceptsRow(self, source_row: int, source_parent: QtCore.QModelIndex) -> bool:
+        row_index = self.sourceModel().index(source_row, 0, source_parent)
+        entry = self.sourceModel().data(row_index, QtCore.Qt.UserRole)
+        if not entry:
+            return False
+
+        return self.search_accepts_entry(entry)
