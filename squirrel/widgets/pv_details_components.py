@@ -165,6 +165,7 @@ class PVDetailsPopupEditable(QDialog):
 
         form_layout = QGridLayout()
 
+        self.device_input = QLineEdit()
         self.setpoint_name_input = QLineEdit()
         self.readback_name_input = QLineEdit()
         self.description_input = QLineEdit()
