@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -9,14 +9,14 @@
   <title>Navigating &mdash; squirrel  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-      <script src="_static/doctools.js?v=888ff710"></script>
-      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -65,6 +65,7 @@
 <li class="toctree-l1"><a class="reference internal" href="widgets/index.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tables/index.html">Table Models and Views</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control_layer/index.html">Control Layers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul>
@@ -96,11 +97,11 @@
            <div itemprop="articleBody">
              
   <section id="navigating">
-<h1>Navigating<a class="headerlink" href="#navigating" title="Permalink to this heading"></a></h1>
+<h1>Navigating<a class="headerlink" href="#navigating" title="Link to this heading"></a></h1>
 <p>The left side of the app contains the control panel, which has buttons to open
 three pages:</p>
 <section id="snapshot-table">
-<h2>Snapshot Table<a class="headerlink" href="#snapshot-table" title="Permalink to this heading"></a></h2>
+<h2>Snapshot Table<a class="headerlink" href="#snapshot-table" title="Link to this heading"></a></h2>
 <p>This table lists all snapshots in reverse chronological order. Each snapshot has
 a timestamp, a title, and values for any meta-PVs.</p>
 <p>Above the table are controls for filtering rows in the table by date range,
@@ -111,7 +112,7 @@ PVs. Live values will also be displayed next to the saved values, and they will
 be highlighted if they differ from the saved value by more than their tolerance.</p>
 </section>
 <section id="pv-table">
-<h2>PV Table<a class="headerlink" href="#pv-table" title="Permalink to this heading"></a></h2>
+<h2>PV Table<a class="headerlink" href="#pv-table" title="Link to this heading"></a></h2>
 <p>This table shows which PVs are tracked by the app, including each PV’s setpoint,
 readback, and tags. Double-clicking a row will open a pop-up displaying
 additional information, including a description and EPICS tolerances.</p>
@@ -120,7 +121,7 @@ additional information, including a description and EPICS tolerances.</p>
 delete button, and fields in the PV pop-up will be editable</p>
 </section>
 <section id="tag-configuration">
-<h2>Tag Configuration<a class="headerlink" href="#tag-configuration" title="Permalink to this heading"></a></h2>
+<h2>Tag Configuration<a class="headerlink" href="#tag-configuration" title="Link to this heading"></a></h2>
 <p>This page contains a list of tag groups, with each group showing its name, its
 description, and how many tags it contains. Double-clicking a group will open a
 pop-up that additionally lists all of the tags in the group.</p>

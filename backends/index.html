@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -9,18 +9,19 @@
   <title>Backends &mdash; squirrel  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Control Layers" href="../control_layer/index.html" />
     <link rel="prev" title="Table Models and Views" href="../tables/index.html" /> 
 </head>
 
@@ -58,7 +59,38 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../widgets/index.html">Widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tables/index.html">Table Models and Views</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Backends</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Backends</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.backends.core.SearchTerm"><code class="docutils literal notranslate"><span class="pre">SearchTerm</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.core.SearchTerm.attr"><code class="docutils literal notranslate"><span class="pre">SearchTerm.attr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.core.SearchTerm.operator"><code class="docutils literal notranslate"><span class="pre">SearchTerm.operator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.core.SearchTerm.value"><code class="docutils literal notranslate"><span class="pre">SearchTerm.value</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend"><code class="docutils literal notranslate"><span class="pre">MongoBackend</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_pv"><code class="docutils literal notranslate"><span class="pre">MongoBackend.add_pv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_snapshot"><code class="docutils literal notranslate"><span class="pre">MongoBackend.add_snapshot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_tag_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.add_tag_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_tag_to_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.add_tag_to_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.archive_pv"><code class="docutils literal notranslate"><span class="pre">MongoBackend.archive_pv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_snapshot"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_snapshot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_from_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_tag_from_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_tag_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_all_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_all_pvs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_meta_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_meta_pvs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots_in_date_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots_in_index_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_tags"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.search"><code class="docutils literal notranslate"><span class="pre">MongoBackend.search()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.set_meta_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.set_meta_pvs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_pv"><code class="docutils literal notranslate"><span class="pre">MongoBackend.update_pv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.update_tag_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_in_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.update_tag_in_group()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../control_layer/index.html">Control Layers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul>
@@ -89,8 +121,523 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="backends">
-<h1>Backends<a class="headerlink" href="#backends" title="Permalink to this heading"></a></h1>
+  <section id="module-squirrel.backends.core">
+<span id="backends"></span><h1>Backends<a class="headerlink" href="#module-squirrel.backends.core" title="Link to this heading"></a></h1>
+<p>Base squirrel data storage backend interface</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.backends.core.SearchTerm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.backends.core.</span></span><span class="sig-name descname"><span class="pre">SearchTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/backends/core.html#SearchTerm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.core.SearchTerm" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
+<td><p>Return number of occurrences of value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
+<td><p>Return first index of value.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="squirrel.backends.core.SearchTerm.attr">
+<span class="sig-name descname"><span class="pre">attr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#squirrel.backends.core.SearchTerm.attr" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="squirrel.backends.core.SearchTerm.operator">
+<span class="sig-name descname"><span class="pre">operator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#squirrel.backends.core.SearchTerm.operator" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="squirrel.backends.core.SearchTerm.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Container" title="(in Python v3.14)"><span class="pre">Container</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#squirrel.backends.core.SearchTerm.value" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-squirrel.backends.mongo"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.backends.mongo.</span></span><span class="sig-name descname"><span class="pre">MongoBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend" title="Link to this definition"></a></dt>
+<dd><p>An integration layer between the Client and a MongoDB instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">root</span></code></dt><dd><p>Return the Root Entry in this backend</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_pv" title="squirrel.backends.mongo.MongoBackend.add_pv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pv</span></code></a>(setpoint, readback, description[, ...])</p></td>
+<td><p>Add PV to the backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_snapshot" title="squirrel.backends.mongo.MongoBackend.add_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_snapshot</span></code></a>(snapshot)</p></td>
+<td><p>Add snapshot to the backend.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_tag_group" title="squirrel.backends.mongo.MongoBackend.add_tag_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_tag_group</span></code></a>(name, description)</p></td>
+<td><p>Add new tag group.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.add_tag_to_group" title="squirrel.backends.mongo.MongoBackend.add_tag_to_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_tag_to_group</span></code></a>(group_id, name[, description])</p></td>
+<td><p>Add new tag to a tag group.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.archive_pv" title="squirrel.backends.mongo.MongoBackend.archive_pv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">archive_pv</span></code></a>(pv_id)</p></td>
+<td><p>Archive PV in the backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare</span></code>(op, data, target)</p></td>
+<td><p>Return whether data and target satisfy the op comparator, typically during application of a search filter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_entry</span></code>(entry)</p></td>
+<td><p>Delete <code class="docutils literal notranslate"><span class="pre">entry</span></code> from the system (all instances) Throws BackendError if backend contains an entry with the same uuid as <code class="docutils literal notranslate"><span class="pre">entry</span></code> but different data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_snapshot" title="squirrel.backends.mongo.MongoBackend.delete_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_snapshot</span></code></a>(snapshot)</p></td>
+<td><p>Delete the given snapshot from the backend.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_from_group" title="squirrel.backends.mongo.MongoBackend.delete_tag_from_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_tag_from_group</span></code></a>(group_id, tag_id)</p></td>
+<td><p>Delete tag from a tag group</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_group" title="squirrel.backends.mongo.MongoBackend.delete_tag_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_tag_group</span></code></a>(group_id)</p></td>
+<td><p>Delete entire tag group.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_all_pvs" title="squirrel.backends.mongo.MongoBackend.get_all_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_pvs</span></code></a>()</p></td>
+<td><p>Get all PVs from the backend</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_entry</span></code>(meta_id)</p></td>
+<td><p>Get entry with <code class="docutils literal notranslate"><span class="pre">meta_id</span></code> Throws EntryNotFoundError</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_meta_pvs" title="squirrel.backends.mongo.MongoBackend.get_meta_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_meta_pvs</span></code></a>()</p></td>
+<td><p>Dummy method that does nothing, but is required for compatibility with the current Client</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots</span></code></a>([uuid, title, tags, meta_pvs])</p></td>
+<td><p>Fetch snapshots from the backend.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_date_range</span></code></a>()</p></td>
+<td><p>TODO: Returns snapshots with timestamps in a given range.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_index_range</span></code></a>()</p></td>
+<td><p>TODO: Returns snapshots with indicies in a given range, indexed by reverse-chronological position in the complete list of snapshots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_tags" title="squirrel.backends.mongo.MongoBackend.get_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tags</span></code></a>()</p></td>
+<td><p>Fetch tag definition from the backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_entry</span></code>(entry)</p></td>
+<td><p>Save <code class="docutils literal notranslate"><span class="pre">entry</span></code> into the database Throws EntryExistsError</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.search" title="squirrel.backends.mongo.MongoBackend.search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code></a>(*search_terms)</p></td>
+<td><p>Search for all entries matching the passed search terms.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.set_meta_pvs" title="squirrel.backends.mongo.MongoBackend.set_meta_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_pvs</span></code></a>(meta_pvs)</p></td>
+<td><p>Dummy method that does nothing, but is required for compatibility with the current Client</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tags</span></code>(tags)</p></td>
+<td><p>Set the definition of valid entry tags</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_entry</span></code>(entry)</p></td>
+<td><p>Update <code class="docutils literal notranslate"><span class="pre">entry</span></code> in the backend.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_pv" title="squirrel.backends.mongo.MongoBackend.update_pv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_pv</span></code></a>(pv_id[, setpoint, description, ...])</p></td>
+<td><p>Update PV in the backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_group" title="squirrel.backends.mongo.MongoBackend.update_tag_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_tag_group</span></code></a>(group_id[, name, description])</p></td>
+<td><p>Update name and/or description of a tag group.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_in_group" title="squirrel.backends.mongo.MongoBackend.update_tag_in_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_tag_in_group</span></code></a>(group_id, tag_id[, ...])</p></td>
+<td><p>Update tag in a tag group.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>add_multiple_pvs</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.add_pv">
+<span class="sig-name descname"><span class="pre">add_pv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_address</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PV</span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.add_pv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.add_pv" title="Link to this definition"></a></dt>
+<dd><p>Add PV to the backend. The new PV will have data according to the passed
+parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>setpoint</strong><span class="classifier">str</span></dt><dd><p>EPICS address to use as a setpoint. May be empty, but must be set
+explicitly.</p>
+</dd>
+<dt><strong>readback</strong><span class="classifier">str</span></dt><dd><p>EPICS address to use as a readback. May be empty, but must be set
+explicitly.</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str</span></dt><dd></dd>
+<dt><strong>tags</strong><span class="classifier">TagSet, optional</span></dt><dd><p>Set of tags assigned to the PV</p>
+</dd>
+<dt><strong>abs_tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Absolute tolerance</p>
+</dd>
+<dt><strong>rel_tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>Relative tolerance</p>
+</dd>
+<dt><strong>config_address</strong><span class="classifier">str, optional</span></dt><dd><p>EPICS address for reading last config value. Defaults to empty.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>PV</dt><dd><p>PV instance containing all data received from the backend</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.add_snapshot">
+<span class="sig-name descname"><span class="pre">add_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Snapshot</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.add_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.add_snapshot" title="Link to this definition"></a></dt>
+<dd><p>Add snapshot to the backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>snapshot</strong><span class="classifier">Snapshot</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.add_tag_group">
+<span class="sig-name descname"><span class="pre">add_tag_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.add_tag_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.add_tag_group" title="Link to this definition"></a></dt>
+<dd><p>Add new tag group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name of the new tag group</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str</span></dt><dd><p>Description of the new tag group. May be empty, but must be set
+explicitly.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>ID of the newly created tag group, received from the backend</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.add_tag_to_group">
+<span class="sig-name descname"><span class="pre">add_tag_to_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.add_tag_to_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.add_tag_to_group" title="Link to this definition"></a></dt>
+<dd><p>Add new tag to a tag group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
+</dd>
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name to use for the new tag</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str, optional</span></dt><dd><p>Description to use for the new tag</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.archive_pv">
+<span class="sig-name descname"><span class="pre">archive_pv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pv_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.archive_pv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.archive_pv" title="Link to this definition"></a></dt>
+<dd><p>Archive PV in the backend. The PV will still appear in Snapshots that
+already exist, but will not appear in the list of current PVs nor will
+data for this PV be saved in future Snapshots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pv_id</strong><span class="classifier">str</span></dt><dd><p>ID of the PV to archive</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.delete_snapshot">
+<span class="sig-name descname"><span class="pre">delete_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Snapshot</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.delete_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.delete_snapshot" title="Link to this definition"></a></dt>
+<dd><p>Delete the given snapshot from the backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.delete_tag_from_group">
+<span class="sig-name descname"><span class="pre">delete_tag_from_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.delete_tag_from_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.delete_tag_from_group" title="Link to this definition"></a></dt>
+<dd><p>Delete tag from a tag group</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
+</dd>
+<dt><strong>tag_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag to remove from the group</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.delete_tag_group">
+<span class="sig-name descname"><span class="pre">delete_tag_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.delete_tag_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.delete_tag_group" title="Link to this definition"></a></dt>
+<dd><p>Delete entire tag group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group to delete</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_all_pvs">
+<span class="sig-name descname"><span class="pre">get_all_pvs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PV</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_all_pvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_all_pvs" title="Link to this definition"></a></dt>
+<dd><p>Get all PVs from the backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Iterable[PV]</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_meta_pvs">
+<span class="sig-name descname"><span class="pre">get_meta_pvs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PV</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_meta_pvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_meta_pvs" title="Link to this definition"></a></dt>
+<dd><p>Dummy method that does nothing, but is required for
+compatibility with the current Client</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_snapshots">
+<span class="sig-name descname"><span class="pre">get_snapshots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_pvs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Snapshot</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_snapshots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="Link to this definition"></a></dt>
+<dd><p>Fetch snapshots from the backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>uuid</strong><span class="classifier">str, optional</span></dt><dd><p>ID of one specific Snapshot; if present, other parameters are ignored</p>
+</dd>
+<dt><strong>title</strong><span class="classifier">str, optional</span></dt><dd><p>Substring contained in the title field of desired Snapshots</p>
+</dd>
+<dt><strong>tags</strong><span class="classifier">TagSet, optional</span></dt><dd><p>Tags contained in the tags field of desired Snapshots</p>
+</dd>
+<dt><strong>meta_pvs</strong></dt><dd><p>Not Implemented</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Iterable[Snapshot]</dt><dd><p>Snapshot instances that match the selected filters</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range">
+<span class="sig-name descname"><span class="pre">get_snapshots_in_date_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_snapshots_in_date_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range" title="Link to this definition"></a></dt>
+<dd><p>TODO: Returns snapshots with timestamps in a given range. This method
+is potentially valuable for limiting how much data is sent by the backend
+at once.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range">
+<span class="sig-name descname"><span class="pre">get_snapshots_in_index_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_snapshots_in_index_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range" title="Link to this definition"></a></dt>
+<dd><p>TODO: Returns snapshots with indicies in a given range, indexed by
+reverse-chronological position in the complete list of snapshots. This
+method is potentially valuable for limiting how much data is sent by the
+backend at once.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_tags">
+<span class="sig-name descname"><span class="pre">get_tags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_tags" title="Link to this definition"></a></dt>
+<dd><p>Fetch tag definition from the backend. Caches data for one minute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TagDef</dt><dd><p>Full tag definition received from the backend</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">search_terms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Container" title="(in Python v3.14)"><span class="pre">Container</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.search" title="Link to this definition"></a></dt>
+<dd><p>Search for all entries matching the passed search terms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TagDef</dt><dd><p>Full tag definition received from the backend</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.set_meta_pvs">
+<span class="sig-name descname"><span class="pre">set_meta_pvs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_pvs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PV</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.set_meta_pvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.set_meta_pvs" title="Link to this definition"></a></dt>
+<dd><p>Dummy method that does nothing, but is required for
+compatibility with the current Client</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.update_pv">
+<span class="sig-name descname"><span class="pre">update_pv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pv_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">setpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.update_pv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.update_pv" title="Link to this definition"></a></dt>
+<dd><p>Update PV in the backend. Data will be updated for any passed parameter;
+data for other parameters will not be affected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pv_id</strong><span class="classifier">str</span></dt><dd><p>ID of the PV to update</p>
+</dd>
+<dt><strong>setpoint</strong><span class="classifier">str, optional</span></dt><dd><p>A new setpoint address</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str, optional</span></dt><dd><p>A new description</p>
+</dd>
+<dt><strong>tags</strong><span class="classifier">TagSet, optional</span></dt><dd><p>A new set of tags</p>
+</dd>
+<dt><strong>abs_tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>A new absolute tolerance</p>
+</dd>
+<dt><strong>rel_tolerance</strong><span class="classifier">float, optional</span></dt><dd><p>A new relative tolerance</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.update_tag_group">
+<span class="sig-name descname"><span class="pre">update_tag_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.update_tag_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.update_tag_group" title="Link to this definition"></a></dt>
+<dd><p>Update name and/or description of a tag group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
+</dd>
+<dt><strong>name</strong><span class="classifier">str, optional</span></dt><dd><p>New name to use for the tag group</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str, optional</span></dt><dd><p>New description to use for the tag group</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.update_tag_in_group">
+<span class="sig-name descname"><span class="pre">update_tag_in_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.update_tag_in_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.update_tag_in_group" title="Link to this definition"></a></dt>
+<dd><p>Update tag in a tag group. Name and/or description will be updated if
+passed as parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
+</dd>
+<dt><strong>tag_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag to in the tag group</p>
+</dd>
+<dt><strong>name</strong><span class="classifier">str, optional</span></dt><dd><p>New name to use for the tag</p>
+</dd>
+<dt><strong>description</strong><span class="classifier">str, optional</span></dt><dd><p>New description to use for the tag</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -98,6 +645,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../tables/index.html" class="btn btn-neutral float-left" title="Table Models and Views" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../control_layer/index.html" class="btn btn-neutral float-right" title="Control Layers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

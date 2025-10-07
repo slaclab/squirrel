@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -9,14 +9,14 @@
   <title>Widgets &mdash; squirrel  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -57,9 +57,72 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Widgets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Widgets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout"><code class="docutils literal notranslate"><span class="pre">FlowLayout</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.addItem"><code class="docutils literal notranslate"><span class="pre">FlowLayout.addItem()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.count"><code class="docutils literal notranslate"><span class="pre">FlowLayout.count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.doLayout"><code class="docutils literal notranslate"><span class="pre">FlowLayout.doLayout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.expandingDirections"><code class="docutils literal notranslate"><span class="pre">FlowLayout.expandingDirections()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.hasHeightForWidth"><code class="docutils literal notranslate"><span class="pre">FlowLayout.hasHeightForWidth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.heightForWidth"><code class="docutils literal notranslate"><span class="pre">FlowLayout.heightForWidth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.itemAt"><code class="docutils literal notranslate"><span class="pre">FlowLayout.itemAt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.minimumSize"><code class="docutils literal notranslate"><span class="pre">FlowLayout.minimumSize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.setGeometry"><code class="docutils literal notranslate"><span class="pre">FlowLayout.setGeometry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.sizeHint"><code class="docutils literal notranslate"><span class="pre">FlowLayout.sizeHint()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.takeAt"><code class="docutils literal notranslate"><span class="pre">FlowLayout.takeAt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetails"><code class="docutils literal notranslate"><span class="pre">PVDetails</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetailsPopup"><code class="docutils literal notranslate"><span class="pre">PVDetailsPopup</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetailsPopupEditable"><code class="docutils literal notranslate"><span class="pre">PVDetailsPopupEditable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetailsPopupEditable.handle_submit"><code class="docutils literal notranslate"><span class="pre">PVDetailsPopupEditable.handle_submit()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetailsRow"><code class="docutils literal notranslate"><span class="pre">PVDetailsRow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetailsTitleBar"><code class="docutils literal notranslate"><span class="pre">PVDetailsTitleBar</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.tag.TagChip"><code class="docutils literal notranslate"><span class="pre">TagChip</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagChip.clear"><code class="docutils literal notranslate"><span class="pre">TagChip.clear()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagChip.set_tags"><code class="docutils literal notranslate"><span class="pre">TagChip.set_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagChip.tagsChanged"><code class="docutils literal notranslate"><span class="pre">TagChip.tagsChanged</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.tag.TagDelegate"><code class="docutils literal notranslate"><span class="pre">TagDelegate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.tag.TagEditor"><code class="docutils literal notranslate"><span class="pre">TagEditor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagEditor.emitTagsChanged"><code class="docutils literal notranslate"><span class="pre">TagEditor.emitTagsChanged()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagEditor.set_choices"><code class="docutils literal notranslate"><span class="pre">TagEditor.set_choices()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagEditor.tagsChanged"><code class="docutils literal notranslate"><span class="pre">TagEditor.tagsChanged</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget"><code class="docutils literal notranslate"><span class="pre">TagsWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.clear_tags"><code class="docutils literal notranslate"><span class="pre">TagsWidget.clear_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.emitTagSetChanged"><code class="docutils literal notranslate"><span class="pre">TagsWidget.emitTagSetChanged()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.get_group_chip"><code class="docutils literal notranslate"><span class="pre">TagsWidget.get_group_chip()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.get_tag_set"><code class="docutils literal notranslate"><span class="pre">TagsWidget.get_tag_set()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.set_tags"><code class="docutils literal notranslate"><span class="pre">TagsWidget.set_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.tagSetChanged"><code class="docutils literal notranslate"><span class="pre">TagsWidget.tagSetChanged</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget"><code class="docutils literal notranslate"><span class="pre">NameDescTagsWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.apply_new_desc"><code class="docutils literal notranslate"><span class="pre">NameDescTagsWidget.apply_new_desc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.init_desc"><code class="docutils literal notranslate"><span class="pre">NameDescTagsWidget.init_desc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.init_tags"><code class="docutils literal notranslate"><span class="pre">NameDescTagsWidget.init_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.update_saved_desc"><code class="docutils literal notranslate"><span class="pre">NameDescTagsWidget.update_saved_desc()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin"><code class="docutils literal notranslate"><span class="pre">NameMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin.apply_new_name"><code class="docutils literal notranslate"><span class="pre">NameMixin.apply_new_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin.init_name"><code class="docutils literal notranslate"><span class="pre">NameMixin.init_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin.update_saved_name"><code class="docutils literal notranslate"><span class="pre">NameMixin.update_saved_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.qsingleton.QtSingleton"><code class="docutils literal notranslate"><span class="pre">QtSingleton</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.data_widget.DataWidget"><code class="docutils literal notranslate"><span class="pre">DataWidget</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.display.Display"><code class="docutils literal notranslate"><span class="pre">Display</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../tables/index.html">Table Models and Views</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control_layer/index.html">Control Layers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul>
@@ -90,8 +153,784 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="widgets">
-<h1>Widgets<a class="headerlink" href="#widgets" title="Permalink to this heading"></a></h1>
+  <section id="module-squirrel.widgets.flow_layout">
+<span id="widgets"></span><h1>Widgets<a class="headerlink" href="#module-squirrel.widgets.flow_layout" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.flow_layout.</span></span><span class="sig-name descname"><span class="pre">FlowLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout" title="Link to this definition"></a></dt>
+<dd><p>A custom layout that arranges child widgets in a flowing manner.</p>
+<p>Widgets are placed horizontally until there is no more space, then the layout
+wraps them to the next line. This layout is useful for creating a tag cloud,
+button groups, or any interface where items should wrap automatically.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.addItem" title="squirrel.widgets.flow_layout.FlowLayout.addItem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addItem</span></code></a>(item)</p></td>
+<td><p>Add an item to the layout.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.count" title="squirrel.widgets.flow_layout.FlowLayout.count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code></a>()</p></td>
+<td><p>Return the number of items in the layout.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.doLayout" title="squirrel.widgets.flow_layout.FlowLayout.doLayout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">doLayout</span></code></a>(rect, testOnly)</p></td>
+<td><p>Layout the items within the given rectangle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.expandingDirections" title="squirrel.widgets.flow_layout.FlowLayout.expandingDirections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expandingDirections</span></code></a>()</p></td>
+<td><p>Specify the directions in which the layout can expand.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.hasHeightForWidth" title="squirrel.widgets.flow_layout.FlowLayout.hasHeightForWidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hasHeightForWidth</span></code></a>()</p></td>
+<td><p>Indicate that this layout has a height-for-width dependency.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.heightForWidth" title="squirrel.widgets.flow_layout.FlowLayout.heightForWidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heightForWidth</span></code></a>(width)</p></td>
+<td><p>Calculate the height of the layout given a specific width.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.itemAt" title="squirrel.widgets.flow_layout.FlowLayout.itemAt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">itemAt</span></code></a>(index)</p></td>
+<td><p>Return the layout item at the given index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.minimumSize" title="squirrel.widgets.flow_layout.FlowLayout.minimumSize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minimumSize</span></code></a>()</p></td>
+<td><p>Calculate the minimum size required by the layout.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.setGeometry" title="squirrel.widgets.flow_layout.FlowLayout.setGeometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setGeometry</span></code></a>(rect)</p></td>
+<td><p>Set the geometry of the layout and position the child items.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.sizeHint" title="squirrel.widgets.flow_layout.FlowLayout.sizeHint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sizeHint</span></code></a>()</p></td>
+<td><p>Provide a recommended size for the layout.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.flow_layout.FlowLayout.takeAt" title="squirrel.widgets.flow_layout.FlowLayout.takeAt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">takeAt</span></code></a>(index)</p></td>
+<td><p>Remove and return the layout item at the given index.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.addItem">
+<span class="sig-name descname"><span class="pre">addItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qtpy.QtWidgets.QLayoutItem</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.addItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.addItem" title="Link to this definition"></a></dt>
+<dd><p>Add an item to the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>item</strong><span class="classifier">QLayoutItem</span></dt><dd><p>The layout item to add.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.count" title="Link to this definition"></a></dt>
+<dd><p>Return the number of items in the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>int</dt><dd><p>The count of items currently in the layout.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.doLayout">
+<span class="sig-name descname"><span class="pre">doLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qtpy.QtCore.QRect</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testOnly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.doLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.doLayout" title="Link to this definition"></a></dt>
+<dd><p>Layout the items within the given rectangle.</p>
+<p>Items are arranged horizontally until there is no more space, then they wrap
+to the next line. This method is used both for setting the geometry and for
+calculating the required height.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rect</strong><span class="classifier">QRect</span></dt><dd><p>The rectangle within which to layout the items.</p>
+</dd>
+<dt><strong>testOnly</strong><span class="classifier">bool</span></dt><dd><p>If True, the layout is calculated but item geometries are not set.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>The total height required by the layout.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.expandingDirections">
+<span class="sig-name descname"><span class="pre">expandingDirections</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qtpy.QtCore.Qt.Orientations</span></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.expandingDirections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.expandingDirections" title="Link to this definition"></a></dt>
+<dd><p>Specify the directions in which the layout can expand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Qt.Orientations</dt><dd><p>A combination of Qt.Horizontal and Qt.Vertical indicating that the layout can expand in both directions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.hasHeightForWidth">
+<span class="sig-name descname"><span class="pre">hasHeightForWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.hasHeightForWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.hasHeightForWidth" title="Link to this definition"></a></dt>
+<dd><p>Indicate that this layout has a height-for-width dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>bool</dt><dd><p>True, since the layout’s height depends on its width.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.heightForWidth">
+<span class="sig-name descname"><span class="pre">heightForWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.heightForWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.heightForWidth" title="Link to this definition"></a></dt>
+<dd><p>Calculate the height of the layout given a specific width.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>width</strong><span class="classifier">int</span></dt><dd><p>The width to calculate the height for.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>The computed height based on the layout of items.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.itemAt">
+<span class="sig-name descname"><span class="pre">itemAt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qtpy.QtWidgets.QLayoutItem</span></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.itemAt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.itemAt" title="Link to this definition"></a></dt>
+<dd><p>Return the layout item at the given index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>index</strong><span class="classifier">int</span></dt><dd><p>The index of the item.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>QLayoutItem or None</dt><dd><p>The layout item if index is valid; otherwise, None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.minimumSize">
+<span class="sig-name descname"><span class="pre">minimumSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qtpy.QtCore.QSize</span></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.minimumSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.minimumSize" title="Link to this definition"></a></dt>
+<dd><p>Calculate the minimum size required by the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>QSize</dt><dd><p>The minimum size that can contain all layout items with margins.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.setGeometry">
+<span class="sig-name descname"><span class="pre">setGeometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">qtpy.QtCore.QRect</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.setGeometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.setGeometry" title="Link to this definition"></a></dt>
+<dd><p>Set the geometry of the layout and position the child items.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rect</strong><span class="classifier">QRect</span></dt><dd><p>The rectangle that defines the area available for the layout.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.sizeHint">
+<span class="sig-name descname"><span class="pre">sizeHint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qtpy.QtCore.QSize</span></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.sizeHint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.sizeHint" title="Link to this definition"></a></dt>
+<dd><p>Provide a recommended size for the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>QSize</dt><dd><p>The recommended size, based on the minimum size of the items.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.flow_layout.FlowLayout.takeAt">
+<span class="sig-name descname"><span class="pre">takeAt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qtpy.QtWidgets.QLayoutItem</span></span></span><a class="reference internal" href="../_modules/squirrel/widgets/flow_layout.html#FlowLayout.takeAt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.flow_layout.FlowLayout.takeAt" title="Link to this definition"></a></dt>
+<dd><p>Remove and return the layout item at the given index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>index</strong><span class="classifier">int</span></dt><dd><p>The index of the item to remove.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>QLayoutItem or None</dt><dd><p>The removed layout item if index is valid; otherwise, None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.pv_details_components"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.pv_details_components.PVDetails">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.pv_details_components.</span></span><span class="sig-name descname"><span class="pre">PVDetails</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pv_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">readback_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance_abs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance_rel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lolo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hihi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/pv_details_components.html#PVDetails"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.pv_details_components.PVDetails" title="Link to this definition"></a></dt>
+<dd><p>Class to represent the details of a PV (Process Variable). Used to populate the PV details popups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>high</strong></dt><dd></dd>
+<dt><strong>hihi</strong></dt><dd></dd>
+<dt><strong>lolo</strong></dt><dd></dd>
+<dt><strong>low</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.pv_details_components.PVDetailsPopup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.pv_details_components.</span></span><span class="sig-name descname"><span class="pre">PVDetailsPopup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/pv_details_components.html#PVDetailsPopup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.pv_details_components.PVDetailsPopup" title="Link to this definition"></a></dt>
+<dd><p>Read-only popup displaying PV details.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.pv_details_components.PVDetailsPopupEditable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.pv_details_components.</span></span><span class="sig-name descname"><span class="pre">PVDetailsPopupEditable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/pv_details_components.html#PVDetailsPopupEditable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.pv_details_components.PVDetailsPopupEditable" title="Link to this definition"></a></dt>
+<dd><p>Editable popup for creating or editing PVs.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.pv_details_components.PVDetailsPopupEditable.handle_submit" title="squirrel.widgets.pv_details_components.PVDetailsPopupEditable.handle_submit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_submit</span></code></a>()</p></td>
+<td><p>Handle save button press.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.pv_details_components.PVDetailsPopupEditable.handle_submit">
+<span class="sig-name descname"><span class="pre">handle_submit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/pv_details_components.html#PVDetailsPopupEditable.handle_submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.pv_details_components.PVDetailsPopupEditable.handle_submit" title="Link to this definition"></a></dt>
+<dd><p>Handle save button press.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.pv_details_components.PVDetailsRow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.pv_details_components.</span></span><span class="sig-name descname"><span class="pre">PVDetailsRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/pv_details_components.html#PVDetailsRow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.pv_details_components.PVDetailsRow" title="Link to this definition"></a></dt>
+<dd><p>A row in the PV details popup.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.pv_details_components.PVDetailsTitleBar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.pv_details_components.</span></span><span class="sig-name descname"><span class="pre">PVDetailsTitleBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/pv_details_components.html#PVDetailsTitleBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.pv_details_components.PVDetailsTitleBar" title="Link to this definition"></a></dt>
+<dd><p>Title bar for the PV details popup. Allows dragging and closing the popup.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>mouseMoveEvent</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>mousePressEvent</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.tag"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagChip">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.tag.</span></span><span class="sig-name descname"><span class="pre">TagChip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagChip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagChip" title="Link to this definition"></a></dt>
+<dd><p>A UI element representing active tags for one tag group. TagsWidget uses multiple to
+represent a full TagSet.</p>
+<p>This widget display the tag group name and the name of all its active tags. If enabled,
+clicking this widget opens a popup to activate or deactivate tags, and it exposes a button
+to clear all active tags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tag_group</strong><span class="classifier">int</span></dt><dd><p>The index of this widget’s tag group.</p>
+</dd>
+<dt><strong>choices</strong><span class="classifier">dict[int, str]</span></dt><dd><p>A map relating tag indices and names.</p>
+</dd>
+<dt><strong>tag_name</strong><span class="classifier">str</span></dt><dd><p>The name of this widget’s tag group.</p>
+</dd>
+<dt><strong>desc</strong><span class="classifier">str</span></dt><dd><p>The description of this widget’s tag group. Only shown via tooltip.</p>
+</dd>
+<dt><strong>enabled</strong><span class="classifier">bool</span></dt><dd><p>Whether this widget is editable or its set of active tags is frozen.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">Any</span></dt><dd><p>Additional keyword arguments to pass to the base QWidget.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagChip.clear" title="squirrel.widgets.tag.TagChip.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p>Clear this widget's active tags.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagChip.set_tags" title="squirrel.widgets.tag.TagChip.set_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tags</span></code></a>(tags)</p></td>
+<td><p>Set this widget's active tags and redraw.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>minimumSize</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>mouseReleaseEvent</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>paint</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>paintEvent</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sizeHint</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>tagsChanged</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagChip.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagChip.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagChip.clear" title="Link to this definition"></a></dt>
+<dd><p>Clear this widget’s active tags.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagChip.set_tags">
+<span class="sig-name descname"><span class="pre">set_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagChip.set_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagChip.set_tags" title="Link to this definition"></a></dt>
+<dd><p>Set this widget’s active tags and redraw.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagChip.tagsChanged">
+<span class="sig-name descname"><span class="pre">tagsChanged</span></span><a class="headerlink" href="#squirrel.widgets.tag.TagChip.tagsChanged" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagDelegate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.tag.</span></span><span class="sig-name descname"><span class="pre">TagDelegate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagDelegate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagDelegate" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>paint</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>sizeHint</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagEditor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.tag.</span></span><span class="sig-name descname"><span class="pre">TagEditor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagEditor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagEditor" title="Link to this definition"></a></dt>
+<dd><p>Popup for selecting a TagChip’s active tags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>choices</strong><span class="classifier">dict[int, str]</span></dt><dd><p>Map of tag indices to names; received from TagChip. Used to display the correct tag
+names while sending the correct tag indices back to the TagChip.</p>
+</dd>
+<dt><strong>selected</strong><span class="classifier">set[int]</span></dt><dd><p>Set of tag indices representing active tags from the TagChip. These will be selected
+when this widget is initially shown.</p>
+</dd>
+<dt><strong>parent</strong><span class="classifier">QWidget</span></dt><dd><p>This widget’s parent; typically a TagChip. Only used for positioning, data is
+transferred via signals.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tagsChanged</strong><span class="classifier">QtCore.Signal(set)</span></dt><dd><p>Signal emitted when the set of selected tags is changed.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagEditor.emitTagsChanged" title="squirrel.widgets.tag.TagEditor.emitTagsChanged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emitTagsChanged</span></code></a>()</p></td>
+<td><p>Emits self.tagsChanged with the new set of selected tag indices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagEditor.set_choices" title="squirrel.widgets.tag.TagEditor.set_choices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_choices</span></code></a>(choices)</p></td>
+<td><p>Set this widget's tag choices.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>show</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>tagsChanged</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagEditor.emitTagsChanged">
+<span class="sig-name descname"><span class="pre">emitTagsChanged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagEditor.emitTagsChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagEditor.emitTagsChanged" title="Link to this definition"></a></dt>
+<dd><p>Emits self.tagsChanged with the new set of selected tag indices. Needed so that
+self.tagsChanged can emit the required data despite being connected to the data-less
+QListWidget.itemSelectionChanged signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagEditor.set_choices">
+<span class="sig-name descname"><span class="pre">set_choices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagEditor.set_choices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagEditor.set_choices" title="Link to this definition"></a></dt>
+<dd><p>Set this widget’s tag choices. Clears and then re-populates choice_list, with each
+list item containing both the tag index and name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagEditor.tagsChanged">
+<span class="sig-name descname"><span class="pre">tagsChanged</span></span><a class="headerlink" href="#squirrel.widgets.tag.TagEditor.tagsChanged" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.tag.</span></span><span class="sig-name descname"><span class="pre">TagsWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagsWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget" title="Link to this definition"></a></dt>
+<dd><p>A container for TagChips arranged in a flow layout.</p>
+<p>This widget manages a collection of tag elements, each of which manages the
+addition, removal, and display of tags in its tag group. To freeze the set
+of tags in the TagChips, set enabled to False on this widget. The tags are
+arranged using a custom FlowLayout that automatically wraps the tags when
+they reach the edge of the widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tag_list_layout</strong><span class="classifier">FlowLayout</span></dt><dd><p>The layout containing the widget’s tag elements.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.clear_tags" title="squirrel.widgets.tag.TagsWidget.clear_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_tags</span></code></a>()</p></td>
+<td><p>Clears all tags in all TagChips</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.emitTagSetChanged" title="squirrel.widgets.tag.TagsWidget.emitTagSetChanged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emitTagSetChanged</span></code></a>()</p></td>
+<td><p>Emits the tagSetChanged signal with the widget's current TagSet</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.get_group_chip" title="squirrel.widgets.tag.TagsWidget.get_group_chip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_group_chip</span></code></a>(tag_group)</p></td>
+<td><p>Returns TagChip corresponding to the desired tag group, or None if chip was not found</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.get_tag_set" title="squirrel.widgets.tag.TagsWidget.get_tag_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tag_set</span></code></a>()</p></td>
+<td><p>Constructs the TagSet representation of the child TagChips</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.tag.TagsWidget.set_tags" title="squirrel.widgets.tag.TagsWidget.set_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tags</span></code></a>(tag_set)</p></td>
+<td><p>Sets the child TagChips according to the provided TagSet</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>paint</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_groups</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>tagSetChanged</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget.clear_tags">
+<span class="sig-name descname"><span class="pre">clear_tags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagsWidget.clear_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget.clear_tags" title="Link to this definition"></a></dt>
+<dd><p>Clears all tags in all TagChips</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget.emitTagSetChanged">
+<span class="sig-name descname"><span class="pre">emitTagSetChanged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagsWidget.emitTagSetChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget.emitTagSetChanged" title="Link to this definition"></a></dt>
+<dd><p>Emits the tagSetChanged signal with the widget’s current TagSet</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget.get_group_chip">
+<span class="sig-name descname"><span class="pre">get_group_chip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#squirrel.widgets.tag.TagChip" title="squirrel.widgets.tag.TagChip"><span class="pre">TagChip</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagsWidget.get_group_chip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget.get_group_chip" title="Link to this definition"></a></dt>
+<dd><p>Returns TagChip corresponding to the desired tag group, or None if chip was not found</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget.get_tag_set">
+<span class="sig-name descname"><span class="pre">get_tag_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagsWidget.get_tag_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget.get_tag_set" title="Link to this definition"></a></dt>
+<dd><p>Constructs the TagSet representation of the child TagChips</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget.set_tags">
+<span class="sig-name descname"><span class="pre">set_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/tag.html#TagsWidget.set_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget.set_tags" title="Link to this definition"></a></dt>
+<dd><p>Sets the child TagChips according to the provided TagSet</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="squirrel.widgets.tag.TagsWidget.tagSetChanged">
+<span class="sig-name descname"><span class="pre">tagSetChanged</span></span><a class="headerlink" href="#squirrel.widgets.tag.TagsWidget.tagSetChanged" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.namedesctags"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameDescTagsWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.namedesctags.</span></span><span class="sig-name descname"><span class="pre">NameDescTagsWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameDescTagsWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameDescTagsWidget" title="Link to this definition"></a></dt>
+<dd><p>Widget for displaying and editing the name, description, and tags fields.</p>
+<p>Any of these will be automatically disabled if the data source is missing
+the corresponding field.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.apply_new_desc" title="squirrel.widgets.namedesctags.NameDescTagsWidget.apply_new_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_new_desc</span></code></a>(desc)</p></td>
+<td><p>When some other widget updates the description, update it here.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_new_name</span></code>(text)</p></td>
+<td><p>If the text changed in the data, update the widget.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.init_desc" title="squirrel.widgets.namedesctags.NameDescTagsWidget.init_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_desc</span></code></a>()</p></td>
+<td><p>Set up the desc_edit widget appropriately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_name</span></code>()</p></td>
+<td><p>Set up the name_edit widget appropriately.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.init_tags" title="squirrel.widgets.namedesctags.NameDescTagsWidget.init_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_tags</span></code></a>(tag_groups)</p></td>
+<td><p>Set up the tags widgets appropriately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">retranslateUi</span></code>(*args, **kwargs)</p></td>
+<td><p>Required function for setupUi to work in __init__</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_type_hints</span></code>()</p></td>
+<td><p>Show type hints of widgets included in the display for development help.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.update_saved_desc" title="squirrel.widgets.namedesctags.NameDescTagsWidget.update_saved_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_saved_desc</span></code></a>()</p></td>
+<td><p>When the user edits the desc, write to the config.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_saved_name</span></code>(name)</p></td>
+<td><p>When the user edits the name, write to the config.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameDescTagsWidget.apply_new_desc">
+<span class="sig-name descname"><span class="pre">apply_new_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameDescTagsWidget.apply_new_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.apply_new_desc" title="Link to this definition"></a></dt>
+<dd><p>When some other widget updates the description, update it here.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameDescTagsWidget.init_desc">
+<span class="sig-name descname"><span class="pre">init_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameDescTagsWidget.init_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.init_desc" title="Link to this definition"></a></dt>
+<dd><p>Set up the desc_edit widget appropriately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameDescTagsWidget.init_tags">
+<span class="sig-name descname"><span class="pre">init_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameDescTagsWidget.init_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.init_tags" title="Link to this definition"></a></dt>
+<dd><p>Set up the tags widgets appropriately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameDescTagsWidget.update_saved_desc">
+<span class="sig-name descname"><span class="pre">update_saved_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameDescTagsWidget.update_saved_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameDescTagsWidget.update_saved_desc" title="Link to this definition"></a></dt>
+<dd><p>When the user edits the desc, write to the config.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.namedesctags.</span></span><span class="sig-name descname"><span class="pre">NameMixin</span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameMixin" title="Link to this definition"></a></dt>
+<dd><p>Mixin class for distributing init_name</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin.apply_new_name" title="squirrel.widgets.namedesctags.NameMixin.apply_new_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_new_name</span></code></a>(text)</p></td>
+<td><p>If the text changed in the data, update the widget.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin.init_name" title="squirrel.widgets.namedesctags.NameMixin.init_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_name</span></code></a>()</p></td>
+<td><p>Set up the name_edit widget appropriately.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.widgets.namedesctags.NameMixin.update_saved_name" title="squirrel.widgets.namedesctags.NameMixin.update_saved_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_saved_name</span></code></a>(name)</p></td>
+<td><p>When the user edits the name, write to the config.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameMixin.apply_new_name">
+<span class="sig-name descname"><span class="pre">apply_new_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameMixin.apply_new_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameMixin.apply_new_name" title="Link to this definition"></a></dt>
+<dd><p>If the text changed in the data, update the widget.</p>
+<p>Only run if needed to avoid annoyance with cursor repositioning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameMixin.init_name">
+<span class="sig-name descname"><span class="pre">init_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameMixin.init_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameMixin.init_name" title="Link to this definition"></a></dt>
+<dd><p>Set up the name_edit widget appropriately.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.widgets.namedesctags.NameMixin.update_saved_name">
+<span class="sig-name descname"><span class="pre">update_saved_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/widgets/namedesctags.html#NameMixin.update_saved_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.namedesctags.NameMixin.update_saved_name" title="Link to this definition"></a></dt>
+<dd><p>When the user edits the name, write to the config.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.qsingleton"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.qsingleton.QtSingleton">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.qsingleton.</span></span><span class="sig-name descname"><span class="pre">QtSingleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/qsingleton.html#QtSingleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.qsingleton.QtSingleton" title="Link to this definition"></a></dt>
+<dd><p>Qt specific singleton implementation, needed to ensure signals are shared
+between instances.  Adapted from
+<a class="reference external" href="https://stackoverflow.com/questions/59459770/receiving-pyqtsignal-from-singleton">https://stackoverflow.com/questions/59459770/receiving-pyqtsignal-from-singleton</a></p>
+<p>The more common __new__ - based singleton pattern does result in the QObject
+being a singleton, but the bound signals lose their connections whenever the
+instance is re-acquired.  I do not understand but this works</p>
+<p>To use this, specify <a class="reference internal" href="#squirrel.widgets.qsingleton.QtSingleton" title="squirrel.widgets.qsingleton.QtSingleton"><code class="xref any py py-class docutils literal notranslate"><span class="pre">QtSingleton</span></code></a> as a metaclass:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SingletonClass</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">QtSingleton</span><span class="p">):</span>
+    <span class="n">shared_signal</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">]</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mro</span></code>(/)</p></td>
+<td><p>Return a type's method resolution order.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.data_widget"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.data_widget.DataWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.data_widget.</span></span><span class="sig-name descname"><span class="pre">DataWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/data_widget.html#DataWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.data_widget.DataWidget" title="Link to this definition"></a></dt>
+<dd><p>Base class for widgets that manipulate dataclasses.</p>
+<p>Defines the init args for all data widgets and handles synchronization
+of the <code class="docutils literal notranslate"><span class="pre">QDataclassBridge</span></code> instances. This is done so that only data
+widgets need to consider how to handle bridges and the page classes
+simply need to pass in data structures, rather than needing to keep track
+of how two widgets editing the same data structure must share the same
+bridge object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">any dataclass</span></dt><dd><p>The dataclass that the widget needs to manipulate. Most widgets are
+expecting either specific dataclasses or dataclasses that have
+specific matching fields.</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">QWidget kwargs</span></dt><dd><p>Passed directly to QWidget’s __init__. Likely unused in most cases.
+Even parent is unlikely to see use because parent is set automatically
+when a widget is inserted into a layout.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.display"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.display.Display">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.display.</span></span><span class="sig-name descname"><span class="pre">Display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/display.html#Display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.display.Display" title="Link to this definition"></a></dt>
+<dd><p>Helper class for loading designer .ui files and adding logic</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">retranslateUi</span></code>(*args, **kwargs)</p></td>
+<td><p>Required function for setupUi to work in __init__</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_type_hints</span></code>()</p></td>
+<td><p>Show type hints of widgets included in the display for development help.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </section>
 
 

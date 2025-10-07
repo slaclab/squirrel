@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>squirrel.widgets.pv_details_components &mdash; squirrel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/docs-versions-menu.js?v=3d6a1aea"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            squirrel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../saving.html">Saving Snapshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../navigating.html">Navigating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../alpha_test.html">Alpha Testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../import_format.html">Importing PVs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets/index.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tables/index.html">Table Models and Views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../control_layer/index.html">Control Layers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/slaclab/squirrel">Github Repository</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">squirrel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">squirrel.widgets.pv_details_components</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for squirrel.widgets.pv_details_components</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDoubleValidator</span><span class="p">,</span> <span class="n">QFont</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QApplication</span><span class="p">,</span> <span class="n">QBoxLayout</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QGridLayout</span><span class="p">,</span>
+                            <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span>
+                            <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.type_hints</span><span class="w"> </span><span class="kn">import</span> <span class="n">TagDef</span><span class="p">,</span> <span class="n">TagSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.widgets.tag</span><span class="w"> </span><span class="kn">import</span> <span class="n">TagsWidget</span>
+
+
+<div class="viewcode-block" id="PVDetails">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.pv_details_components.PVDetails">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PVDetails</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent the details of a PV (Process Variable). Used to populate the PV details popups.&quot;&quot;&quot;</span>
+
+    <span class="n">pv_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">readback_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tolerance_abs</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">tolerance_rel</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="n">TagSet</span>
+    <span class="n">lolo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">low</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">high</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">hihi</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="PVDetailsTitleBar">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.pv_details_components.PVDetailsTitleBar">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PVDetailsTitleBar</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Title bar for the PV details popup. Allows dragging and closing the popup.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drag_position</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Title label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;font-weight: bold;&quot;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title_label</span><span class="p">)</span>
+
+        <span class="c1"># Spacer and close button</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">close_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;✕&quot;</span><span class="p">)</span>
+        <span class="n">close_button</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+        <span class="n">close_button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;border: none;&quot;</span><span class="p">)</span>
+        <span class="n">close_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">close_button</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drag_position</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">globalPos</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span><span class="o">.</span><span class="n">topLeft</span><span class="p">()</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">buttons</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">globalPos</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">drag_position</span><span class="p">)</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="PVDetailsRow">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.pv_details_components.PVDetailsRow">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PVDetailsRow</span><span class="p">(</span><span class="n">QBoxLayout</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A row in the PV details popup.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">content</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">QBoxLayout</span><span class="o">.</span><span class="n">Direction</span> <span class="o">=</span> <span class="n">QBoxLayout</span><span class="o">.</span><span class="n">LeftToRight</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a row with a label and optional content.</span>
+
+<span class="sd">        :param label: The label text for the row.</span>
+<span class="sd">        :param content: The content widget to display in the row.</span>
+<span class="sd">        :param indent: The indentation level for the row.</span>
+<span class="sd">        :param direction: The layout direction (horizontal or vertical).</span>
+<span class="sd">        :param parent: The parent widget for the layout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tab_width</span> <span class="o">=</span> <span class="mi">20</span>
+
+        <span class="k">if</span> <span class="n">indent</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">direction</span> <span class="o">==</span> <span class="n">QBoxLayout</span><span class="o">.</span><span class="n">LeftToRight</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">QBoxLayout</span><span class="o">.</span><span class="n">RightToLeft</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addSpacing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tab_width</span> <span class="o">*</span> <span class="n">indent</span><span class="p">)</span>
+
+        <span class="n">label_widget</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">label_font</span> <span class="o">=</span> <span class="n">QFont</span><span class="p">()</span>
+        <span class="n">label_font</span><span class="o">.</span><span class="n">setPointSize</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">label_widget</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">label_font</span><span class="p">)</span>
+        <span class="n">label_widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: #555555;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">label_widget</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s2">&quot;setFont&quot;</span><span class="p">):</span>
+                <span class="n">content_font</span> <span class="o">=</span> <span class="n">QFont</span><span class="p">()</span>
+                <span class="n">content_font</span><span class="o">.</span><span class="n">setPointSize</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: #222222;&quot;</span><span class="p">)</span>
+                <span class="n">content</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="n">content_font</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PVDetailsPopup">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.pv_details_components.PVDetailsPopup">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PVDetailsPopup</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read-only popup displaying PV details.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_groups</span><span class="p">:</span> <span class="n">TagDef</span><span class="p">,</span> <span class="n">pv_details</span><span class="p">:</span> <span class="n">PVDetails</span><span class="p">,</span> <span class="n">pv_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Popup</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pv_id</span> <span class="o">=</span> <span class="n">pv_id</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">title_widget</span> <span class="o">=</span> <span class="n">PVDetailsTitleBar</span><span class="p">(</span><span class="s2">&quot;DETAILS&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title_widget</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;PV Name&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span>
+            <span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Readback Name&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">readback_name</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">description</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">))</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Tolerance&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Absolute:&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_abs</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Relative:&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_rel</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;PV Limits&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;LOLO:&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">lolo</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;LOW:&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">low</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;HIGH:&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">high</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;HIHI:&quot;</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">hihi</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">tags_widget</span> <span class="o">=</span> <span class="n">TagsWidget</span><span class="p">(</span><span class="n">tag_groups</span><span class="o">=</span><span class="n">tag_groups</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">tags_widget</span><span class="o">.</span><span class="n">set_tags</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">PVDetailsRow</span><span class="p">(</span><span class="s2">&quot;Tags&quot;</span><span class="p">,</span> <span class="n">tags_widget</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">TopToBottom</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="PVDetailsPopupEditable">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.pv_details_components.PVDetailsPopupEditable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PVDetailsPopupEditable</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Editable popup for creating or editing PVs.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_groups</span><span class="p">:</span> <span class="n">TagDef</span><span class="p">,</span> <span class="n">pv_details</span><span class="p">:</span> <span class="n">PVDetails</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pv_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">FramelessWindowHint</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Dialog</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pv_id</span> <span class="o">=</span> <span class="n">pv_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pv_details</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">title_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Edit PV: </span><span class="si">{</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">pv_details</span> <span class="k">else</span> <span class="s2">&quot;Create New PV&quot;</span>
+        <span class="n">title_bar</span> <span class="o">=</span> <span class="n">PVDetailsTitleBar</span><span class="p">(</span><span class="n">title_text</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">title_bar</span><span class="p">)</span>
+
+        <span class="n">form_layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tags_input</span> <span class="o">=</span> <span class="n">TagsWidget</span><span class="p">(</span><span class="n">tag_groups</span><span class="o">=</span><span class="n">tag_groups</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pv_details</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tags_input</span><span class="o">.</span><span class="n">set_tags</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
+
+        <span class="n">validator</span> <span class="o">=</span> <span class="n">QDoubleValidator</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">validator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">validator</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pv_details</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">readback_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">description_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_abs</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_rel</span><span class="p">))</span>
+
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;PV Name&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Readback Name&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description_input</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">tolerance_group_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Tolerance&quot;</span><span class="p">)</span>
+        <span class="n">tolerance_group_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;font-weight: bold;&quot;</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">tolerance_group_label</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">tolerance_abs_label_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">tolerance_abs_label_layout</span><span class="o">.</span><span class="n">addSpacing</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">tolerance_abs_label_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Absolute&quot;</span><span class="p">))</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">tolerance_abs_label_layout</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">tolerance_rel_label_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">tolerance_rel_label_layout</span><span class="o">.</span><span class="n">addSpacing</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">tolerance_rel_label_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Relative&quot;</span><span class="p">))</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">tolerance_rel_label_layout</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">tags_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Tags&quot;</span><span class="p">)</span>
+        <span class="n">tags_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;font-weight: bold;&quot;</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">tags_label</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">form_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags_input</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">form_layout</span><span class="p">)</span>
+
+        <span class="n">submit_text</span> <span class="o">=</span> <span class="s2">&quot;Save Changes&quot;</span> <span class="k">if</span> <span class="n">pv_details</span> <span class="k">else</span> <span class="s2">&quot;Create PV&quot;</span>
+        <span class="n">create_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="n">submit_text</span><span class="p">)</span>
+        <span class="n">create_button</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background-color: grey;&quot;</span><span class="p">)</span>
+        <span class="n">create_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_submit</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">create_button</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PVDetailsPopupEditable.handle_submit">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.pv_details_components.PVDetailsPopupEditable.handle_submit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_submit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle save button press.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pv_details</span> <span class="o">=</span> <span class="n">PVDetails</span><span class="p">(</span>
+                <span class="n">pv_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pv_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="n">readback_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">readback_name_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description_input</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
+                <span class="n">tolerance_abs</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tolerance_abs_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">tolerance_rel</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tolerance_rel_input</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tags_input</span><span class="o">.</span><span class="n">get_tag_set</span><span class="p">(),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid input: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+    <span class="n">tag_groups</span><span class="p">:</span> <span class="n">TagDef</span>
+    <span class="n">tag_groups</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Dest&quot;</span><span class="p">,</span> <span class="s2">&quot;Which endpoint...&quot;</span><span class="p">,</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;SXR&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;HXR&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;ASDF&quot;</span><span class="p">}]}</span>
+
+    <span class="n">tag_set</span><span class="p">:</span> <span class="n">TagSet</span>
+    <span class="n">tag_set</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">}}</span>
+
+    <span class="n">pv_details</span> <span class="o">=</span> <span class="n">PVDetails</span><span class="p">(</span>
+        <span class="n">pv_name</span><span class="o">=</span><span class="s2">&quot;QUAD:LI21:401:EDES&quot;</span><span class="p">,</span>
+        <span class="n">readback_name</span><span class="o">=</span><span class="s2">&quot;QUAD:LI21:401:EACT&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This will be the description of the PV&quot;</span><span class="p">,</span>
+        <span class="n">tolerance_abs</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">tolerance_rel</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">lolo</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">low</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">high</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+        <span class="n">hihi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="n">tag_set</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Show read-only popup first</span>
+    <span class="n">readonly_popup</span> <span class="o">=</span> <span class="n">PVDetailsPopup</span><span class="p">(</span><span class="n">tag_groups</span><span class="o">=</span><span class="n">tag_groups</span><span class="p">,</span> <span class="n">pv_details</span><span class="o">=</span><span class="n">pv_details</span><span class="p">)</span>
+    <span class="n">readonly_popup</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_editable_popup</span><span class="p">():</span>
+        <span class="n">editable_popup</span> <span class="o">=</span> <span class="n">PVDetailsPopupEditable</span><span class="p">(</span><span class="n">tag_groups</span><span class="o">=</span><span class="n">tag_groups</span><span class="p">,</span> <span class="n">pv_details</span><span class="o">=</span><span class="n">pv_details</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">editable_popup</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PV Details Submitted:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PV Name: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">pv_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Readback Name: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">readback_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Description: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Absolute Tolerance: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_abs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Relative Tolerance: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tolerance_rel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tags: </span><span class="si">{</span><span class="n">editable_popup</span><span class="o">.</span><span class="n">pv_details</span><span class="o">.</span><span class="n">tags</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Launch editable popup after readonly popup is closed</span>
+    <span class="n">readonly_popup</span><span class="o">.</span><span class="n">destroyed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">show_editable_popup</span><span class="p">)</span>
+
+    <span class="c1"># Keep the application running until the user closes the popup</span>
+    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Press Enter after closing the readonly popup to open the editable popup...&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,888 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>squirrel.backends.mongo &mdash; squirrel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/docs-versions-menu.js?v=3d6a1aea"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            squirrel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../saving.html">Saving Snapshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../navigating.html">Navigating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../alpha_test.html">Alpha Testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../import_format.html">Importing PVs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets/index.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tables/index.html">Table Models and Views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../control_layer/index.html">Control Layers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/slaclab/squirrel">Github Repository</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">squirrel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">squirrel.backends.mongo</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for squirrel.backends.mongo</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span>
+    <span class="n">UTC</span> <span class="o">=</span> <span class="n">timezone</span><span class="o">.</span><span class="n">utc</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">SearchTermType</span><span class="p">,</span> <span class="n">_Backend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">PV</span><span class="p">,</span> <span class="n">EpicsData</span><span class="p">,</span> <span class="n">Severity</span><span class="p">,</span> <span class="n">Snapshot</span><span class="p">,</span> <span class="n">Status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.type_hints</span><span class="w"> </span><span class="kn">import</span> <span class="n">TagDef</span><span class="p">,</span> <span class="n">TagSet</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">ENDPOINTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;TAGS&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/tags&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PVS&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/pvs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PVS_MULTI&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/pvs/multi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">:</span> <span class="s2">&quot;/v1/snapshots&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="MongoBackend">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MongoBackend</span><span class="p">(</span><span class="n">_Backend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An integration layer between the Client and a MongoDB instance&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_tag_fetch</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MongoBackend.search">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.search">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">search_terms</span><span class="p">:</span> <span class="n">SearchTermType</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Search for all entries matching the passed search terms.</span>
+
+<span class="sd">        .. deprecated</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TagDef</span>
+<span class="sd">            Full tag definition received from the backend</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">search_terms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;entry_type&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="n">Snapshot</span><span class="p">:</span>
+                    <span class="n">entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_snapshots</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_pvs</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">:</span>
+            <span class="n">conditions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">search_terms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;entry_type&quot;</span><span class="p">:</span>
+                    <span class="n">conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">target</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;ancestor&quot;</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># check entry attribute by name</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+                        <span class="n">conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">target</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="n">conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">conditions</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">entry</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_tags">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_tags">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TagDef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch tag definition from the backend. Caches data for one minute.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TagDef</span>
+<span class="sd">            Full tag definition received from the backend</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_tag_fetch</span> <span class="o">&gt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">tag_def</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">])</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">dct</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+                        <span class="n">dct</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">description</span> <span class="o">=</span> <span class="n">dct</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                        <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]}</span>
+                        <span class="n">tag_def</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">tags</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tag_cache</span> <span class="o">=</span> <span class="n">tag_def</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_tag_fetch</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tag_cache</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.add_tag_group">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.add_tag_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_tag_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add new tag group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the new tag group</span>
+<span class="sd">        description : str</span>
+<span class="sd">            Description of the new tag group. May be empty, but must be set</span>
+<span class="sd">            explicitly.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            ID of the newly created tag group, received from the backend</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.update_tag_group">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.update_tag_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_tag_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update name and/or description of a tag group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_id : int</span>
+<span class="sd">            ID of the tag group</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            New name to use for the tag group</span>
+<span class="sd">        description : str, optional</span>
+<span class="sd">            New description to use for the tag group</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">description</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.delete_tag_group">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.delete_tag_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_tag_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete entire tag group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_id : int</span>
+<span class="sd">            ID of the tag group to delete</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.add_tag_to_group">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.add_tag_to_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_tag_to_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add new tag to a tag group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_id : int</span>
+<span class="sd">            ID of the tag group</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name to use for the new tag</span>
+<span class="sd">        description : str, optional</span>
+<span class="sd">            Description to use for the new tag</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;groupId&quot;</span><span class="p">:</span> <span class="n">group_id</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">/tags&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.update_tag_in_group">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.update_tag_in_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_tag_in_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">tag_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update tag in a tag group. Name and/or description will be updated if</span>
+<span class="sd">        passed as parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_id : int</span>
+<span class="sd">            ID of the tag group</span>
+<span class="sd">        tag_id : int</span>
+<span class="sd">            ID of the tag to in the tag group</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            New name to use for the tag</span>
+<span class="sd">        description : str, optional</span>
+<span class="sd">            New description to use for the tag</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;groupId&quot;</span><span class="p">:</span> <span class="n">group_id</span><span class="p">,</span>
+            <span class="s2">&quot;tagId&quot;</span><span class="p">:</span> <span class="n">tag_id</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">description</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">/tags/</span><span class="si">{</span><span class="n">tag_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.delete_tag_from_group">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.delete_tag_from_group">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_tag_from_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">tag_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete tag from a tag group</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_id : int</span>
+<span class="sd">            ID of the tag group</span>
+<span class="sd">        tag_id : int</span>
+<span class="sd">            ID of the tag to remove from the group</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;TAGS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">/tags/</span><span class="si">{</span><span class="n">tag_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.add_pv">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.add_pv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_pv</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">setpoint</span><span class="p">,</span>
+        <span class="n">readback</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">,</span>
+        <span class="n">tags</span><span class="p">:</span> <span class="n">TagSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">abs_tolerance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">rel_tolerance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">config_address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PV</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add PV to the backend. The new PV will have data according to the passed</span>
+<span class="sd">        parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        setpoint : str</span>
+<span class="sd">            EPICS address to use as a setpoint. May be empty, but must be set</span>
+<span class="sd">            explicitly.</span>
+<span class="sd">        readback : str</span>
+<span class="sd">            EPICS address to use as a readback. May be empty, but must be set</span>
+<span class="sd">            explicitly.</span>
+<span class="sd">        description : str</span>
+<span class="sd">        tags : TagSet, optional</span>
+<span class="sd">            Set of tags assigned to the PV</span>
+<span class="sd">        abs_tolerance : float, optional</span>
+<span class="sd">            Absolute tolerance</span>
+<span class="sd">        rel_tolerance : float, optional</span>
+<span class="sd">            Relative tolerance</span>
+<span class="sd">        config_address : str, optional</span>
+<span class="sd">            EPICS address for reading last config value. Defaults to empty.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PV</span>
+<span class="sd">            PV instance containing all data received from the backend</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;setpointAddress&quot;</span><span class="p">:</span> <span class="n">setpoint</span><span class="p">,</span>
+            <span class="s2">&quot;readbackAddress&quot;</span><span class="p">:</span> <span class="n">readback</span><span class="p">,</span>
+            <span class="s2">&quot;configAddress&quot;</span><span class="p">:</span> <span class="n">config_address</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+            <span class="s2">&quot;absTolerance&quot;</span><span class="p">:</span> <span class="n">abs_tolerance</span><span class="p">,</span>
+            <span class="s2">&quot;relTolerance&quot;</span><span class="p">:</span> <span class="n">rel_tolerance</span><span class="p">,</span>
+            <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="k">if</span> <span class="n">tags</span> <span class="k">else</span> <span class="p">[],</span>
+            <span class="s2">&quot;readOnly&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;PVS&quot;</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">pv_dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_pv</span><span class="p">(</span><span class="n">pv_dict</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_multiple_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pvs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">]:</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">pvs</span><span class="p">:</span>
+            <span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;setpointAddress&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;readbackAddress&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;configAddress&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">config</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                    <span class="s2">&quot;absTolerance&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">abs_tolerance</span><span class="p">,</span>
+                    <span class="s2">&quot;relTolerance&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">rel_tolerance</span><span class="p">,</span>
+                    <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack_tags</span><span class="p">(</span><span class="n">pv</span><span class="o">.</span><span class="n">tags</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;PVS_MULTI&quot;</span><span class="p">],</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">pv_dicts</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_pv</span><span class="p">(</span><span class="n">pv_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">pv_dict</span> <span class="ow">in</span> <span class="n">pv_dicts</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MongoBackend.update_pv">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.update_pv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_pv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_id</span><span class="p">,</span> <span class="n">setpoint</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">abs_tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rel_tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update PV in the backend. Data will be updated for any passed parameter;</span>
+<span class="sd">        data for other parameters will not be affected.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pv_id : str</span>
+<span class="sd">            ID of the PV to update</span>
+<span class="sd">        setpoint : str, optional</span>
+<span class="sd">            A new setpoint address</span>
+<span class="sd">        description : str, optional</span>
+<span class="sd">            A new description</span>
+<span class="sd">        tags : TagSet, optional</span>
+<span class="sd">            A new set of tags</span>
+<span class="sd">        abs_tolerance : float, optional</span>
+<span class="sd">            A new absolute tolerance</span>
+<span class="sd">        rel_tolerance : float, optional</span>
+<span class="sd">            A new relative tolerance</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">setpoint</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;setpointAddress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">setpoint</span>
+        <span class="k">if</span> <span class="n">description</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="k">if</span> <span class="n">tags</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">abs_tolerance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;absTolerance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">abs_tolerance</span>
+        <span class="k">if</span> <span class="n">rel_tolerance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;relTolerance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_tolerance</span>
+        <span class="n">body</span><span class="p">[</span><span class="s2">&quot;readOnly&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;PVS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">pv_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.archive_pv">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.archive_pv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">archive_pv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Archive PV in the backend. The PV will still appear in Snapshots that</span>
+<span class="sd">        already exist, but will not appear in the list of current PVs nor will</span>
+<span class="sd">        data for this PV be saved in future Snapshots.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pv_id : str</span>
+<span class="sd">            ID of the PV to archive</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;PVS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">pv_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2"> with response </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_all_pvs">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_all_pvs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all PVs from the backend</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterable[PV]</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;PVS&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_pv</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.add_snapshot">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.add_snapshot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add snapshot to the backend.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        snapshot : Snapshot</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">],</span>
+            <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_pack_snapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_snapshots">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_snapshots">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_snapshots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta_pvs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Snapshot</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch snapshots from the backend.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        uuid : str, optional</span>
+<span class="sd">            ID of one specific Snapshot; if present, other parameters are ignored</span>
+<span class="sd">        title : str, optional</span>
+<span class="sd">            Substring contained in the title field of desired Snapshots</span>
+<span class="sd">        tags : TagSet, optional</span>
+<span class="sd">            Tags contained in the tags field of desired Snapshots</span>
+<span class="sd">        meta_pvs</span>
+<span class="sd">            Not Implemented</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterable[Snapshot]</span>
+<span class="sd">            Snapshot instances that match the selected filters</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">uuid</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">snapshot_dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_snapshot</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)]</span>
+
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">meta_pvs</span> <span class="o">=</span> <span class="n">meta_pvs</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">],</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+                <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">tags</span><span class="p">,</span>
+                <span class="s2">&quot;metadataPVs&quot;</span><span class="p">:</span> <span class="n">meta_pvs</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_snapshot_metadata</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">snapshot_dict</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.delete_snapshot">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.delete_snapshot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete the given snapshot from the backend.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;deleteData&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_snapshots_in_date_range">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_snapshots_in_date_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO: Returns snapshots with timestamps in a given range. This method</span>
+<span class="sd">        is potentially valuable for limiting how much data is sent by the backend</span>
+<span class="sd">        at once.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_snapshots_in_index_range">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_snapshots_in_index_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TODO: Returns snapshots with indicies in a given range, indexed by</span>
+<span class="sd">        reverse-chronological position in the complete list of snapshots. This</span>
+<span class="sd">        method is potentially valuable for limiting how much data is sent by the</span>
+<span class="sd">        backend at once.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_meta_pvs">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_meta_pvs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_meta_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dummy method that does nothing, but is required for</span>
+<span class="sd">        compatibility with the current Client</span>
+
+<span class="sd">        .. deprecated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.set_meta_pvs">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.set_meta_pvs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_meta_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta_pvs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dummy method that does nothing, but is required for</span>
+<span class="sd">        compatibility with the current Client</span>
+
+<span class="sd">        .. deprecated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_raise_for_status</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wraps response errors from the requests package in an app-specific</span>
+<span class="sd">        error class</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">            If the backend&#39;s response raises an HTTPError; contains error message</span>
+<span class="sd">            from the response&#39;s json body</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># server response can have &quot;errorMessage&quot; or &quot;message&quot; key depending on error</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">BackendError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TagSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts data received from backend endpoints into a TagSet instance.</span>
+<span class="sd">        This method is intended for processing tag data embedded within snapshot</span>
+<span class="sd">        data that is received from backend endpoints.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tag_list : Iterable[int]</span>
+<span class="sd">            Encoded tags for one PV received from the backend</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TagSet</span>
+<span class="sd">            Tags for one PV formatted as a TagSet</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tag_def</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tags</span><span class="p">()</span>
+        <span class="n">id_to_group</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">tag_id</span><span class="p">:</span> <span class="n">group</span> <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">group_def</span> <span class="ow">in</span> <span class="n">tag_def</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag_id</span> <span class="ow">in</span> <span class="n">group_def</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="n">tag_set</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tag_list</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">id_to_group</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tag_set</span><span class="p">:</span>
+                <span class="n">tag_set</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">tag_set</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">tag_set</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pack_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">:</span> <span class="n">TagSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the TagSet to a format that is accepted by backend endpoints</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tags : TagSet</span>
+<span class="sd">            Tags for one PV</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterable[int]</span>
+<span class="sd">            All tags for one PV</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">tag</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">group</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_pv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PV</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts data received from backend endpoints into a PV instance</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pv_dict : dict</span>
+<span class="sd">            Encoded data received from the backend</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PV</span>
+<span class="sd">            PV instance containing all encoded data received from the backend</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PV</span><span class="p">(</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">pv_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="n">setpoint</span><span class="o">=</span><span class="n">pv_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;setpointAddress&quot;</span><span class="p">),</span>
+            <span class="n">readback</span><span class="o">=</span><span class="n">pv_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;readbackAddress&quot;</span><span class="p">),</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">pv_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;configAddress&quot;</span><span class="p">),</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">pv_dict</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
+            <span class="n">tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_tags</span><span class="p">(</span><span class="n">pv_dict</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]),</span>
+            <span class="n">abs_tolerance</span><span class="o">=</span><span class="n">pv_dict</span><span class="p">[</span><span class="s2">&quot;absTolerance&quot;</span><span class="p">],</span>
+            <span class="n">rel_tolerance</span><span class="o">=</span><span class="n">pv_dict</span><span class="p">[</span><span class="s2">&quot;relTolerance&quot;</span><span class="p">],</span>
+            <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv_dict</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_snapshot_metadata</span><span class="p">(</span><span class="n">metadata_dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Snapshot</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts data received from backend endpoints into a Snapshot instance</span>
+<span class="sd">        without PV data. This method only parses metadata, such as title,</span>
+<span class="sd">        description, timestamp, and meta PV data. It is intended for processing</span>
+<span class="sd">        rows in the snapshot table.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        metadata_dict : dict</span>
+<span class="sd">            Encoded snapshot metadata received from the backend</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Snapshot</span>
+<span class="sd">            Snapshot instance containing all encoded metadata received from the</span>
+<span class="sd">            backend</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Snapshot</span><span class="p">(</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
+            <span class="c1"># tags=metadata_dict[&quot;tags&quot;],</span>
+            <span class="n">meta_pvs</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">PV</span><span class="p">(</span>
+                    <span class="n">setpoint</span><span class="o">=</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;setpointAddress&quot;</span><span class="p">],</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+                    <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
+                    <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
+                    <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+                <span class="p">)</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;metadataPVs&quot;</span><span class="p">]</span>
+            <span class="p">],</span>
+            <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_snapshot</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Snapshot</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts data received from backend endpoints into a complete Snapshot</span>
+<span class="sd">        instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        snapshot_dict : dict</span>
+<span class="sd">            Encoded snapshot data received from the backend</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Snapshot</span>
+<span class="sd">            Snapshot instance containing all encoded data received from the</span>
+<span class="sd">            backend</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Snapshot</span><span class="p">(</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
+            <span class="c1"># tags=snapshot_dict[&quot;tags&quot;],</span>
+            <span class="n">pvs</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">PV</span><span class="p">(</span>
+                    <span class="n">setpoint</span><span class="o">=</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;pvName&quot;</span><span class="p">],</span>
+                    <span class="n">setpoint_data</span><span class="o">=</span><span class="n">EpicsData</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                        <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
+                        <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
+                        <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+            <span class="p">],</span>
+            <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pack_snapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">:</span> <span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the Snapshot to a format that is accepted by backend endpoints</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        snapshot : Snapshot</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;pvName&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">,</span>
+                    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="p">}</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">pvs</span>
+            <span class="p">],</span>
+        <span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

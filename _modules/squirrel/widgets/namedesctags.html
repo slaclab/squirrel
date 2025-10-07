@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>squirrel.widgets.namedesctags &mdash; squirrel  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/docs-versions-menu.js?v=3d6a1aea"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            squirrel
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../saving.html">Saving Snapshots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../navigating.html">Navigating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../alpha_test.html">Alpha Testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../import_format.html">Importing PVs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../widgets/index.html">Widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tables/index.html">Table Models and Views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../control_layer/index.html">Control Layers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/slaclab/squirrel">Github Repository</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">squirrel</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">squirrel.widgets.namedesctags</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for squirrel.widgets.namedesctags</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qtpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">squirrel.type_hints</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyDataclass</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.data_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.tag</span><span class="w"> </span><span class="kn">import</span> <span class="n">TagDef</span><span class="p">,</span> <span class="n">TagsWidget</span>
+
+
+<div class="viewcode-block" id="NameMixin">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameMixin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NameMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin class for distributing init_name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NameMixin.init_name">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameMixin.init_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up the name_edit widget appropriately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load starting text</span>
+        <span class="n">load_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_name</span> <span class="o">=</span> <span class="n">load_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_edit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">load_name</span><span class="p">)</span>
+        <span class="c1"># Set up the saving/loading</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_edit</span><span class="o">.</span><span class="n">textEdited</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_saved_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">changed_value</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_new_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NameMixin.update_saved_name">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameMixin.update_saved_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_saved_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        When the user edits the name, write to the config.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NameMixin.apply_new_name">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameMixin.apply_new_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_new_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If the text changed in the data, update the widget.</span>
+
+<span class="sd">        Only run if needed to avoid annoyance with cursor repositioning.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name_edit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NameDescTagsWidget">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameDescTagsWidget">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NameDescTagsWidget</span><span class="p">(</span><span class="n">Display</span><span class="p">,</span> <span class="n">NameMixin</span><span class="p">,</span> <span class="n">DataWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Widget for displaying and editing the name, description, and tags fields.</span>
+
+<span class="sd">    Any of these will be automatically disabled if the data source is missing</span>
+<span class="sd">    the corresponding field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;name_desc_tags_widget.ui&#39;</span>
+
+    <span class="n">name_edit</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span>
+    <span class="n">name_frame</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFrame</span>
+    <span class="n">desc_edit</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPlainTextEdit</span>
+    <span class="n">desc_frame</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFrame</span>
+    <span class="n">tags_widget</span><span class="p">:</span> <span class="n">TagsWidget</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">AnyDataclass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">tag_groups</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;tag_options&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">title</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name_frame</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_name</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">description</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">desc_frame</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_desc</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">tags</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tags_widget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_tags</span><span class="p">(</span><span class="n">tag_groups</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NameDescTagsWidget.init_desc">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameDescTagsWidget.init_desc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up the desc_edit widget appropriately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load starting text</span>
+        <span class="n">load_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_desc</span> <span class="o">=</span> <span class="n">load_desc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desc_edit</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="n">load_desc</span><span class="p">)</span>
+        <span class="c1"># Setup the saving/loading</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desc_edit</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_saved_desc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">changed_value</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_new_desc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NameDescTagsWidget.update_saved_desc">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameDescTagsWidget.update_saved_desc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_saved_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        When the user edits the desc, write to the config.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">desc_edit</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bridge</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_desc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NameDescTagsWidget.apply_new_desc">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameDescTagsWidget.apply_new_desc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_new_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        When some other widget updates the description, update it here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">desc</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_desc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">desc_edit</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NameDescTagsWidget.init_tags">
+<a class="viewcode-back" href="../../../widgets/index.html#squirrel.widgets.namedesctags.NameDescTagsWidget.init_tags">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_groups</span><span class="p">:</span> <span class="n">TagDef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set up the tags widgets appropriately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tags_widget</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;TagsWidget&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tags_widget</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tags_widget</span><span class="o">.</span><span class="n">set_tag_groups</span><span class="p">(</span><span class="n">tag_groups</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

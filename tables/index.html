@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -9,14 +9,14 @@
   <title>Table Models and Views &mdash; squirrel  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -58,8 +58,24 @@
 <p class="caption" role="heading"><span class="caption-text">Developer Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../widgets/index.html">Widgets</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Table Models and Views</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Table Models and Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.tables.pv_browser_table.CSVTableModel"><code class="docutils literal notranslate"><span class="pre">CSVTableModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.CSVTableModel.get_validation_results"><code class="docutils literal notranslate"><span class="pre">CSVTableModel.get_validation_results()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel.is_tag_subset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel.set_tag_set()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserTableModel"><code class="docutils literal notranslate"><span class="pre">PVBrowserTableModel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PV_BROWSER_HEADER"><code class="docutils literal notranslate"><span class="pre">PV_BROWSER_HEADER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.squirrel_table_view.SquirrelTableGridDelegate"><code class="docutils literal notranslate"><span class="pre">SquirrelTableGridDelegate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squirrel.widgets.squirrel_table_view.SquirrelTableView"><code class="docutils literal notranslate"><span class="pre">SquirrelTableView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../backends/index.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control_layer/index.html">Control Layers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Links</span></p>
 <ul>
@@ -90,8 +106,198 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="table-models-and-views">
-<h1>Table Models and Views<a class="headerlink" href="#table-models-and-views" title="Permalink to this heading"></a></h1>
+  <section id="module-squirrel.tables.pv_browser_table">
+<span id="table-models-and-views"></span><h1>Table Models and Views<a class="headerlink" href="#module-squirrel.tables.pv_browser_table" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.CSVTableModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.tables.pv_browser_table.</span></span><span class="sig-name descname"><span class="pre">CSVTableModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#CSVTableModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.CSVTableModel" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.CSVTableModel.get_validation_results" title="squirrel.tables.pv_browser_table.CSVTableModel.get_validation_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_validation_results</span></code></a>()</p></td>
+<td><p>Return comprehensive validation results</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>columnCount</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>data</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>headerData</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>rowCount</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.CSVTableModel.get_validation_results">
+<span class="sig-name descname"><span class="pre">get_validation_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a></span></span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#CSVTableModel.get_validation_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.CSVTableModel.get_validation_results" title="Link to this definition"></a></dt>
+<dd><p>Return comprehensive validation results</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.tables.pv_browser_table.</span></span><span class="sig-name descname"><span class="pre">PVBrowserFilterProxyModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PVBrowserFilterProxyModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_tag_subset</span></code></a>(entry_tags)</p></td>
+<td><p>Check if the entry's tags are a subset of the filter's tag set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tag_set</span></code></a>(tag_set)</p></td>
+<td><p>Set the tag set for filtering.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>filterAcceptsRow</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset">
+<span class="sig-name descname"><span class="pre">is_tag_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PVBrowserFilterProxyModel.is_tag_subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset" title="Link to this definition"></a></dt>
+<dd><p>Check if the entry’s tags are a subset of the filter’s tag set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>entry_tags</strong><span class="classifier">TagSet</span></dt><dd><p>The tags of the entry to check.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if the entry’s tags are a subset of the filter’s tag set, False otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set">
+<span class="sig-name descname"><span class="pre">set_tag_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PVBrowserFilterProxyModel.set_tag_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set" title="Link to this definition"></a></dt>
+<dd><p>Set the tag set for filtering. Apply filter to model immediately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tag_set</strong><span class="classifier">TagSet</span></dt><dd><p>The set of tags to filter entries by.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserTableModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.tables.pv_browser_table.</span></span><span class="sig-name descname"><span class="pre">PVBrowserTableModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PVBrowserTableModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserTableModel" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>add_pv</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>add_pvs</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>columnCount</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>data</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>headerData</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>refetch_row</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>removeRow</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>rowCount</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PV_BROWSER_HEADER">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.tables.pv_browser_table.</span></span><span class="sig-name descname"><span class="pre">PV_BROWSER_HEADER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PV_BROWSER_HEADER"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PV_BROWSER_HEADER" title="Link to this definition"></a></dt>
+<dd><p>An enumeration.</p>
+</dd></dl>
+
+<span class="target" id="module-squirrel.widgets.squirrel_table_view"></span><dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.squirrel_table_view.SquirrelTableGridDelegate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.squirrel_table_view.</span></span><span class="sig-name descname"><span class="pre">SquirrelTableGridDelegate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/squirrel_table_view.html#SquirrelTableGridDelegate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.squirrel_table_view.SquirrelTableGridDelegate" title="Link to this definition"></a></dt>
+<dd><p>Styled Item Delegate for showing the horizontal grid lines in a
+table view. To be used by the SquirrelTableView class.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>paint</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="squirrel.widgets.squirrel_table_view.SquirrelTableView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.widgets.squirrel_table_view.</span></span><span class="sig-name descname"><span class="pre">SquirrelTableView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/widgets/squirrel_table_view.html#SquirrelTableView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.widgets.squirrel_table_view.SquirrelTableView" title="Link to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>copy_address</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>mousePressEvent</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </section>
 
 
