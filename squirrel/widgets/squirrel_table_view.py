@@ -26,6 +26,12 @@ class SquirrelTableView(QtWidgets.QTableView):
             mode = clipboard.Mode.Clipboard
         clipboard.setText(text, mode=mode)
 
+    def resizeColumnsToContents(self):
+        header = self.horizontalHeader()
+        for column in range(header.count()):
+            if header.sectionResizeMode(column) != header.ResizeMode.Stretch:
+                self.resizeColumnToContents(column)
+
 
 class SquirrelTableGridDelegate(QtWidgets.QStyledItemDelegate):
     """Styled Item Delegate for showing the horizontal grid lines in a
