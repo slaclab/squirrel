@@ -135,10 +135,28 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
 class PVBrowserFilterProxyModel(QtCore.QSortFilterProxyModel):
     def __init__(self, parent=None, tag_set: TagSet = None):
         super().__init__(parent=parent)
-        self.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.setFilterKeyColumn(PV_BROWSER_HEADER.PV.value)
+        self._search_string = ""
 
         self.tag_set = tag_set or {}  # Initialize with an empty tag dict
+
+    @property
+    def search_string(self) -> str:
+        """Get the current search string for filtering."""
+        return self._search_string
+
+    @search_string.setter
+    def search_string(self, value: str) -> None:
+        """Set the search string for filtering. Apply filter to model
+        immediately. The value is converted to lowercase for case-insensitive
+        matching.
+
+        Parameters
+        ----------
+        value : str
+            The string to filter entries by.
+        """
+        self._search_string = value.lower()
+        self.invalidateFilter()
 
     def set_tag_set(self, tag_set: TagSet) -> None:
         """Set the tag set for filtering. Apply filter to model immediately.
@@ -170,6 +188,29 @@ class PVBrowserFilterProxyModel(QtCore.QSortFilterProxyModel):
 
         return is_subset
 
+    def search_accepts_entry(self, entry: PV) -> bool:
+        """Check if the entry matches the current search string. Searches
+        the device, setpoint, and readback fields.
+
+        Parameters
+        ----------
+        entry : PV
+            Entry to be searched
+
+        Returns
+        -------
+        bool
+            True if the entry matches the search string, False otherwise
+        """
+        if not self.search_string:
+            return True
+
+        search_device = self.search_string in (entry.device or "").lower()
+        search_setpoint = self.search_string in (entry.setpoint or "").lower()
+        search_readback = self.search_string in (entry.readback or "").lower()
+
+        return search_device or search_setpoint or search_readback
+
     def filterAcceptsRow(self, source_row: int, source_parent: QtCore.QModelIndex) -> bool:
         row_index = self.sourceModel().index(source_row, 0, source_parent)
         entry = self.sourceModel().data(row_index, QtCore.Qt.UserRole)
@@ -178,8 +219,7 @@ class PVBrowserFilterProxyModel(QtCore.QSortFilterProxyModel):
 
         logger.debug(f"Filtering row {source_row} with entry: {entry}")
 
-        search_accepts_row = super().filterAcceptsRow(source_row, source_parent)
-        return self.is_tag_subset(entry.tags) and search_accepts_row
+        return self.is_tag_subset(entry.tags) and self.search_accepts_entry(entry)
 
 
 class CSVTableModel(QtCore.QAbstractTableModel):

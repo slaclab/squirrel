@@ -154,7 +154,7 @@ class PVBrowserPage(Page):
     @QtCore.Slot()
     def search_bar_middle_man(self):
         search_text = self.search_bar.text()
-        self.pv_browser_filter.setFilterFixedString(search_text)
+        self.pv_browser_filter.search_string = search_text
 
     @QtCore.Slot(QtCore.QModelIndex)
     def open_details_middle_man(self, index: QtCore.QModelIndex):
