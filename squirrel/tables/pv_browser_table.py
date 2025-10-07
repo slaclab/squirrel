@@ -205,9 +205,9 @@ class PVBrowserFilterProxyModel(QtCore.QSortFilterProxyModel):
         if not self.search_string:
             return True
 
-        search_device = self.search_string in (entry.device or "").lower()
+        search_device = self.search_string in (entry.device or NO_DATA).lower()
         search_setpoint = self.search_string in (entry.setpoint or "").lower()
-        search_readback = self.search_string in (entry.readback or "").lower()
+        search_readback = self.search_string in (entry.readback or NO_DATA).lower()
 
         return search_device or search_setpoint or search_readback
 
