@@ -325,16 +325,22 @@ class TagDelegate(QtWidgets.QStyledItemDelegate):
     def __init__(self, tag_def, parent=None):
         super().__init__(parent)
         self.tag_def = tag_def
+        self.widgets = {}
 
     def paint(self, painter, option, index):
-        tag_widget = TagsWidget(tag_groups=self.tag_def, enabled=False)
-        tag_widget.set_tags(index.data())
+        tag_widget = self._get_tag_widget(index)
         tag_widget.layout().setGeometry(option.rect)
         tag_widget.paint(painter)
 
     def sizeHint(self, option, index):
-        tag_widget = TagsWidget(tag_groups=self.tag_def, enabled=False)
-        tag_widget.set_tags(index.data())
+        tag_widget = self._get_tag_widget(index)
         width = option.rect.width()
         height = tag_widget.heightForWidth(width)
         return QtCore.QSize(width, height)
+
+    def _get_tag_widget(self, index):
+        row = index.row()
+        if row not in self.widgets:
+            self.widgets[row] = TagsWidget(tag_groups=self.tag_def, enabled=False)
+        self.widgets[row].set_tags(index.data())
+        return self.widgets[row]
