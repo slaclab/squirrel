@@ -119,7 +119,7 @@ class PVDetailsPopup(QWidget):
         title_widget = PVDetailsTitleBar("DETAILS", self)
         layout.addWidget(title_widget)
 
-        layout.addLayout(PVDetailsRow("PV Name", QLabel(pv_details.pv_name), direction=QBoxLayout.TopToBottom))
+        layout.addLayout(PVDetailsRow("Setpoint Name", QLabel(pv_details.setpoint_name), direction=QBoxLayout.TopToBottom))
         layout.addLayout(
             PVDetailsRow("Readback Name", QLabel(pv_details.readback_name), direction=QBoxLayout.TopToBottom)
         )
@@ -163,7 +163,7 @@ class PVDetailsPopupEditable(QDialog):
 
         form_layout = QGridLayout()
 
-        self.pv_name_input = QLineEdit()
+        self.setpoint_name_input = QLineEdit()
         self.readback_name_input = QLineEdit()
         self.description_input = QLineEdit()
         self.tolerance_abs_input = QLineEdit()
@@ -178,14 +178,14 @@ class PVDetailsPopupEditable(QDialog):
         self.tolerance_rel_input.setValidator(validator)
 
         if pv_details:
-            self.pv_name_input.setText(pv_details.pv_name)
+            self.setpoint_name_input.setText(pv_details.pv_name)
             self.readback_name_input.setText(pv_details.readback_name)
             self.description_input.setText(pv_details.description)
             self.tolerance_abs_input.setText(str(pv_details.tolerance_abs))
             self.tolerance_rel_input.setText(str(pv_details.tolerance_rel))
 
-        form_layout.addWidget(QLabel("PV Name"), 0, 0)
-        form_layout.addWidget(self.pv_name_input, 0, 1)
+        form_layout.addWidget(QLabel("Setpoint Name"), 0, 0)
+        form_layout.addWidget(self.setpoint_name_input, 0, 1)
 
         form_layout.addWidget(QLabel("Readback Name"), 1, 0)
         form_layout.addWidget(self.readback_name_input, 1, 1)
@@ -229,7 +229,7 @@ class PVDetailsPopupEditable(QDialog):
         """Handle save button press."""
         try:
             self.pv_details = PVDetails(
-                pv_name=self.pv_name_input.text(),
+                pv_name=self.setpoint_name_input.text(),
                 readback_name=self.readback_name_input.text(),
                 description=self.description_input.text(),
                 tolerance_abs=float(self.tolerance_abs_input.text() or 0),
