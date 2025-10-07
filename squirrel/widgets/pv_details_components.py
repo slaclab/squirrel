@@ -16,7 +16,7 @@ from squirrel.widgets.tag import TagsWidget
 class PVDetails:
     """Class to represent the details of a PV (Process Variable). Used to populate the PV details popups."""
 
-    pv_name: str
+    setpoint_name: str
     readback_name: str
     description: str
     tolerance_abs: float
@@ -119,7 +119,7 @@ class PVDetailsPopup(QWidget):
         title_widget = PVDetailsTitleBar("DETAILS", self)
         layout.addWidget(title_widget)
 
-        layout.addLayout(PVDetailsRow("PV Name", QLabel(pv_details.pv_name), direction=QBoxLayout.TopToBottom))
+        layout.addLayout(PVDetailsRow("Setpoint Name", QLabel(pv_details.setpoint_name), direction=QBoxLayout.TopToBottom))
         layout.addLayout(
             PVDetailsRow("Readback Name", QLabel(pv_details.readback_name), direction=QBoxLayout.TopToBottom)
         )
@@ -157,13 +157,13 @@ class PVDetailsPopupEditable(QDialog):
 
         layout = QVBoxLayout(self)
 
-        title_text = f"Edit PV: {pv_details.pv_name}" if pv_details else "Create New PV"
+        title_text = f"Edit PV: {pv_details.setpoint_name}" if pv_details else "Create New PV"
         title_bar = PVDetailsTitleBar(title_text, self)
         layout.addWidget(title_bar)
 
         form_layout = QGridLayout()
 
-        self.pv_name_input = QLineEdit()
+        self.setpoint_name_input = QLineEdit()
         self.readback_name_input = QLineEdit()
         self.description_input = QLineEdit()
         self.tolerance_abs_input = QLineEdit()
@@ -178,14 +178,14 @@ class PVDetailsPopupEditable(QDialog):
         self.tolerance_rel_input.setValidator(validator)
 
         if pv_details:
-            self.pv_name_input.setText(pv_details.pv_name)
+            self.setpoint_name_input.setText(pv_details.setpoint_name)
             self.readback_name_input.setText(pv_details.readback_name)
             self.description_input.setText(pv_details.description)
             self.tolerance_abs_input.setText(str(pv_details.tolerance_abs))
             self.tolerance_rel_input.setText(str(pv_details.tolerance_rel))
 
-        form_layout.addWidget(QLabel("PV Name"), 0, 0)
-        form_layout.addWidget(self.pv_name_input, 0, 1)
+        form_layout.addWidget(QLabel("Setpoint Name"), 0, 0)
+        form_layout.addWidget(self.setpoint_name_input, 0, 1)
 
         form_layout.addWidget(QLabel("Readback Name"), 1, 0)
         form_layout.addWidget(self.readback_name_input, 1, 1)
@@ -229,7 +229,7 @@ class PVDetailsPopupEditable(QDialog):
         """Handle save button press."""
         try:
             self.pv_details = PVDetails(
-                pv_name=self.pv_name_input.text(),
+                setpoint_name=self.setpoint_name_input.text(),
                 readback_name=self.readback_name_input.text(),
                 description=self.description_input.text(),
                 tolerance_abs=float(self.tolerance_abs_input.text() or 0),
@@ -251,7 +251,7 @@ if __name__ == "__main__":
     tag_set = {0: {0, 2}}
 
     pv_details = PVDetails(
-        pv_name="QUAD:LI21:401:EDES",
+        setpoint_name="QUAD:LI21:401:EDES",
         readback_name="QUAD:LI21:401:EACT",
         description="This will be the description of the PV",
         tolerance_abs=0.1,
@@ -271,7 +271,7 @@ if __name__ == "__main__":
         editable_popup = PVDetailsPopupEditable(tag_groups=tag_groups, pv_details=pv_details)
         if editable_popup.exec_() == QDialog.Accepted:
             print("PV Details Submitted:")
-            print(f"PV Name: {editable_popup.pv_details.pv_name}")
+            print(f"Setpoint Name: {editable_popup.pv_details.setpoint_name}")
             print(f"Readback Name: {editable_popup.pv_details.readback_name}")
             print(f"Description: {editable_popup.pv_details.description}")
             print(f"Absolute Tolerance: {editable_popup.pv_details.tolerance_abs}")
