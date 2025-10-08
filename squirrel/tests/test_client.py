@@ -135,14 +135,14 @@ def test_find_config(sscore_cfg: str):
 @pytest.mark.skip(reason="Rewrite search to check data values within Snapshots")
 @setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_search(test_client):
-    results = list(test_client.search(
+    results = test_client.search(
         ('setpoint_data.data', 'isclose', (4, 0, 0))
-    ))
+    )
     assert len(results) == 0
 
-    results = list(test_client.search(
+    results = test_client.search(
         SearchTerm(operator='isclose', attr='setpoint_data.data', value=(4, .5, 1))
-    ))
+    )
     assert len(results) == 4
 
 
@@ -152,16 +152,16 @@ def test_search(test_client):
     backend_type=TestBackend
 )
 def test_search_entries_by_ancestor(test_client: Client):
-    entries = tuple(test_client.search(
+    entries = test_client.search(
         ("entry_type", "eq", PV),
         ("pv_name", "eq", "LASR:GUNB:TEST1"),
-    ))
+    )
     assert len(entries) == 2
-    entries = tuple(test_client.search(
+    entries = test_client.search(
         ("entry_type", "eq", PV),
         ("pv_name", "eq", "LASR:GUNB:TEST1"),
         ("ancestor", "eq", UUID("06282731-33ea-4270-ba14-098872e627dc")),  # top-level snapshot
-    ))
+    )
     assert len(entries) == 1
 
 
@@ -175,14 +175,14 @@ def test_search_caching(test_client: Client):
     result = test_client.search(
         ("ancestor", "eq", UUID("06282731-33ea-4270-ba14-098872e627dc")),
     )
-    assert len(tuple(result)) == 13
+    assert len(result) == 13
     entry.pvs = []
     test_client.backend.update_entry(entry)
     result = test_client.search(
         ("ancestor", "eq", UUID("06282731-33ea-4270-ba14-098872e627dc")),
     )
-    assert len(tuple(result)) == 1  # update is picked up in new search
+    assert len(result) == 1  # update is picked up in new search
 
 
 def test_parametrized_filestore_empty(test_client: Client):
-    assert len(list(test_client.search())) == 0
+    assert len(test_client.search()) == 0
