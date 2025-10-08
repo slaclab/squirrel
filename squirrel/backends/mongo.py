@@ -52,6 +52,7 @@ class MongoBackend(_Backend):
                     entries = self.get_snapshots(meta_pvs=meta_pvs)
                 else:
                     entries = self.get_all_pvs()
+        matching = []
         for entry in entries:
             conditions = []
             for attr, op, target in search_terms:
@@ -67,7 +68,8 @@ class MongoBackend(_Backend):
                     except AttributeError:
                         conditions.append(False)
             if all(conditions):
-                yield entry
+                matching.append(entry)
+        return matching
 
     def get_tags(self) -> TagDef:
         """

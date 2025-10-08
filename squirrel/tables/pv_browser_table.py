@@ -38,9 +38,7 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
     def __init__(self, client, parent=None):
         super().__init__(parent=parent)
         self.client = client
-        self._data = list(self.client.search(
-            ("entry_type", "eq", PV),
-        ))
+        self._data = self.client.search(("entry_type", "eq", PV))
 
     def rowCount(self, _=QtCore.QModelIndex()) -> int:
         return len(self._data)
@@ -122,11 +120,9 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
     def refetch_row(self, row):
         index = self.index(row, PV_BROWSER_HEADER.PV.value)
         pv_id = self.data(index, QtCore.Qt.UserRole).uuid
-        pv = list(
-            self.client.search(
-                ("entry_type", "eq", PV),
-                ("uuid", "eq", pv_id),
-            )
+        pv = self.client.search(
+            ("entry_type", "eq", PV),
+            ("uuid", "eq", pv_id),
         )[0]
         self._data[row] = pv
         self.dataChanged.emit(index, index)

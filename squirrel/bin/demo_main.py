@@ -51,6 +51,6 @@ def main(*args, db_path=None, **kwargs):
     source_names = parser.get("demo", "fixtures").split()
     populate_backend(client.backend, source_names)
     # IOCFactory needs the Entries with data
-    filled = list(client.search(("entry_type", "eq", PV)))
+    filled = client.search(("entry_type", "eq", PV))
     with IOCFactory.from_entries(filled, client)(prefix=''):
         ui_main(cfg_path=DEMO_CONFIG)
