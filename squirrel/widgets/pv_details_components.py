@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from qtpy.QtCore import Qt
-from qtpy.QtGui import QDoubleValidator, QFont
+from qtpy.QtGui import QDoubleValidator, QFont, QKeyEvent
 from qtpy.QtWidgets import (QApplication, QBoxLayout, QDialog, QGridLayout,
                             QHBoxLayout, QLabel, QLineEdit, QPushButton,
                             QVBoxLayout, QWidget)
@@ -224,6 +224,18 @@ class PVDetailsPopupEditable(QDialog):
 
         layout.addStretch()
         self.setLayout(layout)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        """Submit the PV edit on Enter key press, or close the popup on
+        Escape key press.
+        """
+        if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
+            self.handle_submit()
+            event.accept()
+        elif event.key() == Qt.Key_Escape:
+            self.reject()
+            event.accept()
+        return super().keyPressEvent(event)
 
     def handle_submit(self) -> None:
         """Handle save button press."""
