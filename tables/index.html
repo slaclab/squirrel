@@ -65,6 +65,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel.is_tag_subset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_accepts_entry"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel.search_accepts_entry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_string"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel.search_string</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set"><code class="docutils literal notranslate"><span class="pre">PVBrowserFilterProxyModel.set_tag_set()</span></code></a></li>
 </ul>
 </li>
@@ -149,7 +151,15 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">squirrel.tables.pv_browser_table.</span></span><span class="sig-name descname"><span class="pre">PVBrowserFilterProxyModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PVBrowserFilterProxyModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel" title="Link to this definition"></a></dt>
-<dd><p class="rubric">Methods</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_string" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_string</span></code></a></dt><dd><p>Get the current search string for filtering.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*args, **kwargs)</p></td>
@@ -158,7 +168,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.is_tag_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_tag_subset</span></code></a>(entry_tags)</p></td>
 <td><p>Check if the entry's tags are a subset of the filter's tag set.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tag_set</span></code></a>(tag_set)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_accepts_entry" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_accepts_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_accepts_entry</span></code></a>(entry)</p></td>
+<td><p>Check if the entry matches the current search string.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set" title="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.set_tag_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tag_set</span></code></a>(tag_set)</p></td>
 <td><p>Set the tag set for filtering.</p></td>
 </tr>
 </tbody>
@@ -188,6 +201,33 @@
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_accepts_entry">
+<span class="sig-name descname"><span class="pre">search_accepts_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PV</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/squirrel/tables/pv_browser_table.html#PVBrowserFilterProxyModel.search_accepts_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_accepts_entry" title="Link to this definition"></a></dt>
+<dd><p>Check if the entry matches the current search string. Searches
+the device, setpoint, and readback fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>entry</strong><span class="classifier">PV</span></dt><dd><p>Entry to be searched</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd><p>True if the entry matches the search string, False otherwise</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_string">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">search_string</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#squirrel.tables.pv_browser_table.PVBrowserFilterProxyModel.search_string" title="Link to this definition"></a></dt>
+<dd><p>Get the current search string for filtering.</p>
 </dd></dl>
 
 <dl class="py method">
