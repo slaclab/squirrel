@@ -10,7 +10,7 @@ from typing import Optional
 
 import qtawesome as qta
 from epicscorelibs.ca.cadef import CAException
-from qtpy import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtGui import QCloseEvent
 
 from squirrel.client import Client
