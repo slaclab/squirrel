@@ -22,6 +22,7 @@ class PVDetails:
     tolerance_abs: float
     tolerance_rel: float
     tags: TagSet
+    device: str = ""
     lolo: Optional[float] = None
     low: Optional[float] = None
     high: Optional[float] = None
@@ -119,6 +120,7 @@ class PVDetailsPopup(QWidget):
         title_widget = PVDetailsTitleBar("DETAILS", self)
         layout.addWidget(title_widget)
 
+        layout.addLayout(PVDetailsRow("Device", QLabel(pv_details.device), direction=QBoxLayout.TopToBottom))
         layout.addLayout(PVDetailsRow("Setpoint Name", QLabel(pv_details.setpoint_name), direction=QBoxLayout.TopToBottom))
         layout.addLayout(
             PVDetailsRow("Readback Name", QLabel(pv_details.readback_name), direction=QBoxLayout.TopToBottom)
@@ -163,6 +165,7 @@ class PVDetailsPopupEditable(QDialog):
 
         form_layout = QGridLayout()
 
+        self.device_input = QLineEdit()
         self.setpoint_name_input = QLineEdit()
         self.readback_name_input = QLineEdit()
         self.description_input = QLineEdit()
@@ -184,35 +187,38 @@ class PVDetailsPopupEditable(QDialog):
             self.tolerance_abs_input.setText(str(pv_details.tolerance_abs))
             self.tolerance_rel_input.setText(str(pv_details.tolerance_rel))
 
-        form_layout.addWidget(QLabel("Setpoint Name"), 0, 0)
-        form_layout.addWidget(self.setpoint_name_input, 0, 1)
+        form_layout.addWidget(QLabel("Device"), 0, 0)
+        form_layout.addWidget(self.device_input, 0, 1)
 
-        form_layout.addWidget(QLabel("Readback Name"), 1, 0)
-        form_layout.addWidget(self.readback_name_input, 1, 1)
+        form_layout.addWidget(QLabel("Setpoint Name"), 1, 0)
+        form_layout.addWidget(self.setpoint_name_input, 1, 1)
 
-        form_layout.addWidget(QLabel("Description"), 2, 0)
-        form_layout.addWidget(self.description_input, 2, 1)
+        form_layout.addWidget(QLabel("Readback Name"), 2, 0)
+        form_layout.addWidget(self.readback_name_input, 2, 1)
+
+        form_layout.addWidget(QLabel("Description"), 3, 0)
+        form_layout.addWidget(self.description_input, 3, 1)
 
         tolerance_group_label = QLabel("Tolerance")
         tolerance_group_label.setStyleSheet("font-weight: bold;")
-        form_layout.addWidget(tolerance_group_label, 3, 0)
+        form_layout.addWidget(tolerance_group_label, 4, 0)
 
         tolerance_abs_label_layout = QHBoxLayout()
         tolerance_abs_label_layout.addSpacing(20)
         tolerance_abs_label_layout.addWidget(QLabel("Absolute"))
-        form_layout.addLayout(tolerance_abs_label_layout, 4, 0)
-        form_layout.addWidget(self.tolerance_abs_input, 4, 1)
+        form_layout.addLayout(tolerance_abs_label_layout, 5, 0)
+        form_layout.addWidget(self.tolerance_abs_input, 5, 1)
 
         tolerance_rel_label_layout = QHBoxLayout()
         tolerance_rel_label_layout.addSpacing(20)
         tolerance_rel_label_layout.addWidget(QLabel("Relative"))
-        form_layout.addLayout(tolerance_rel_label_layout, 5, 0)
-        form_layout.addWidget(self.tolerance_rel_input, 5, 1)
+        form_layout.addLayout(tolerance_rel_label_layout, 6, 0)
+        form_layout.addWidget(self.tolerance_rel_input, 6, 1)
 
         tags_label = QLabel("Tags")
         tags_label.setStyleSheet("font-weight: bold;")
-        form_layout.addWidget(tags_label, 6, 0)
-        form_layout.addWidget(self.tags_input, 7, 0, 1, 2)
+        form_layout.addWidget(tags_label, 7, 0)
+        form_layout.addWidget(self.tags_input, 8, 0, 1, 2)
 
         layout.addLayout(form_layout)
 
@@ -247,6 +253,7 @@ class PVDetailsPopupEditable(QDialog):
                 tolerance_abs=float(self.tolerance_abs_input.text() or 0),
                 tolerance_rel=float(self.tolerance_rel_input.text() or 0),
                 tags=self.tags_input.get_tag_set(),
+                device=self.device_input.text(),
             )
             self.accept()
         except ValueError as e:

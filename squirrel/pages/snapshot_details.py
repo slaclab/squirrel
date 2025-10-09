@@ -6,7 +6,8 @@ from qtpy import QtCore, QtWidgets
 from squirrel.client import Client
 from squirrel.model import Snapshot
 from squirrel.pages import Page
-from squirrel.tables import PV_HEADER, PVTableModel, SnapshotTableModel
+from squirrel.tables import (PV_HEADER, PVTableFilterProxyModel, PVTableModel,
+                             SnapshotTableModel)
 from squirrel.widgets import SquirrelTableView
 
 
@@ -102,11 +103,9 @@ class SnapshotDetailsPage(Page):
             self.pv_table_models[self.snapshot.uuid] = self.snapshot_details_model
 
         self.snapshot_details_table = SquirrelTableView()
-        proxy_model = QtCore.QSortFilterProxyModel()
-        proxy_model.setSourceModel(self.snapshot_details_model)
-        proxy_model.setFilterKeyColumn(PV_HEADER.PV.value)
-        proxy_model.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.snapshot_details_table.setModel(proxy_model)
+        self.snapshot_filter = PVTableFilterProxyModel()
+        self.snapshot_filter.setSourceModel(self.snapshot_details_model)
+        self.snapshot_details_table.setModel(self.snapshot_filter)
         header_view = self.snapshot_details_table.horizontalHeader()
         header_view.setSectionResizeMode(header_view.ResizeMode.Stretch)
         header_view.setSectionResizeMode(PV_HEADER.CHECKBOX.value, header_view.ResizeMode.Fixed)
@@ -115,7 +114,7 @@ class SnapshotDetailsPage(Page):
         header_view.setSectionResizeMode(PV_HEADER.PV.value, header_view.ResizeMode.Fixed)
         self.snapshot_details_table.resizeColumnsToContents()
         snapshot_details_layout.addWidget(self.snapshot_details_table)
-        self.search_bar.textEdited.connect(self.snapshot_details_table.model().setFilterFixedString)
+        self.search_bar.textEdited.connect(self.search_bar_middle_man)
 
     def set_snapshot(self, snapshot: Snapshot) -> None:
         """Set the snapshot to be displayed in the details page."""
@@ -167,6 +166,11 @@ class SnapshotDetailsPage(Page):
             "Invalid Selection",
             "Please select a Snapshot to compare to.",
         )
+
+    @QtCore.Slot()
+    def search_bar_middle_man(self):
+        search_text = self.search_bar.text()
+        self.snapshot_filter.search_string = search_text
 
     def show_restore_dialog(self):
         """Prompt the user to confirm a restore action"""

@@ -146,7 +146,7 @@ class SnapshotComparisonTableModel(QtCore.QAbstractTableModel):
                     if entry is None:
                         return NO_DATA
                 elif column == COMPARE_HEADER.DEVICE:
-                    return NO_DATA
+                    return entry.device or NO_DATA
                 elif column == COMPARE_HEADER.PV:
                     return entry.setpoint if entry else compare.setpoint
                 elif column in (COMPARE_HEADER.SETPOINT, COMPARE_HEADER.COMPARE_SETPOINT):

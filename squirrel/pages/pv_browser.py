@@ -154,7 +154,7 @@ class PVBrowserPage(Page):
     @QtCore.Slot()
     def search_bar_middle_man(self):
         search_text = self.search_bar.text()
-        self.pv_browser_filter.setFilterFixedString(search_text)
+        self.pv_browser_filter.search_string = search_text
 
     @QtCore.Slot(QtCore.QModelIndex)
     def open_details_middle_man(self, index: QtCore.QModelIndex):
@@ -276,6 +276,7 @@ class CSVTableDialog(QtWidgets.QDialog):
         """Create a PV object from CSV row data with proper tag handling"""
         setpoint = row_data['Setpoint']
         readback = row_data['Readback']
+        device = row_data['Device']
         description = row_data['Description']
         csv_groups = row_data['groups']
 
@@ -288,6 +289,7 @@ class CSVTableDialog(QtWidgets.QDialog):
         pv = PV(
             setpoint=setpoint,
             readback=readback,
+            device=device,
             description=description,
             tags=tagset,
         )
