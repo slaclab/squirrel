@@ -337,7 +337,7 @@ class MongoBackend(_Backend):
         pv_dicts = r.json()["payload"]
         return [self._unpack_pv(pv_dict) for pv_dict in pv_dicts]
 
-    def update_pv(self, pv_id, setpoint="", description="", device="", tags=None, abs_tolerance=None, rel_tolerance=None) -> None:
+    def update_pv(self, pv_id, setpoint="", readback="", description="", device="", tags=None, abs_tolerance=None, rel_tolerance=None) -> None:
         """
         Update PV in the backend. Data will be updated for any passed parameter;
         data for other parameters will not be affected.
@@ -348,6 +348,8 @@ class MongoBackend(_Backend):
             ID of the PV to update
         setpoint : str, optional
             A new setpoint address
+        readback : str, optional
+            A new readback address
         description : str, optional
             A new description
         device : str, optional
@@ -366,6 +368,8 @@ class MongoBackend(_Backend):
         body = {}
         if setpoint:
             body["setpointAddress"] = setpoint
+        if readback:
+            body["readbackAddress"] = readback
         if description:
             body["description"] = description
         if device:

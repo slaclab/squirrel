@@ -382,6 +382,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         self.client.backend.update_pv(
             pv_id,
             setpoint=pv_details.setpoint_name,
+            readback=pv_details.readback_name,
             description=pv_details.description,
             device=pv_details.device,
             tags=pv_details.tags,
