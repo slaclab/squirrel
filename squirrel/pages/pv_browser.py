@@ -197,7 +197,7 @@ class CSVTableDialog(QtWidgets.QDialog):
         validation_results = self.model.get_validation_results()
         self._show_validation_feedback(layout, validation_results)
 
-        self.table_view = QtWidgets.QTableView()
+        self.table_view = SquirrelTableView()
         self.table_view.setModel(self.model)
 
         tags_column_index = self.model._build_headers().index('Tags')
@@ -205,9 +205,7 @@ class CSVTableDialog(QtWidgets.QDialog):
         self.table_view.setItemDelegateForColumn(tags_column_index, tag_delegate)
 
         self.table_view.setAlternatingRowColors(True)
-        self.table_view.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
         self.table_view.horizontalHeader().setStretchLastSection(True)
-        self.table_view.verticalHeader().setVisible(False)
         self.table_view.resizeColumnsToContents()
 
         layout.addWidget(self.table_view)
