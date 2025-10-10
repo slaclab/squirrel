@@ -35,16 +35,11 @@ class MongoBackend(_Backend):
         self._tag_cache = {}
         self._last_tag_fetch = datetime.now() - timedelta(minutes=1)
 
-    def search(self, *search_terms: SearchTermType):
+    def search(self, *search_terms: SearchTermType, meta_pvs=None):
         """
         Search for all entries matching the passed search terms.
 
         .. deprecated
-
-        Returns
-        -------
-        TagDef
-            Full tag definition received from the backend
 
         Raises
         ------
@@ -54,7 +49,7 @@ class MongoBackend(_Backend):
         for attr, op, target in search_terms:
             if attr == "entry_type":
                 if target is Snapshot:
-                    entries = self.get_snapshots()
+                    entries = self.get_snapshots(meta_pvs=meta_pvs)
                 else:
                     entries = self.get_all_pvs()
         for entry in entries:
@@ -476,7 +471,7 @@ class MongoBackend(_Backend):
             params={
                 "title": title,
                 "tags": tags,
-                "metadataPVs": meta_pvs,
+                "metadataPVs": [pv.readback for pv in meta_pvs if pv.readback]
             }
         )
         self._raise_for_status(r)
@@ -510,24 +505,6 @@ class MongoBackend(_Backend):
         method is potentially valuable for limiting how much data is sent by the
         backend at once."""
         raise NotImplementedError
-
-    def get_meta_pvs(self) -> Iterable[PV]:
-        """
-        Dummy method that does nothing, but is required for
-        compatibility with the current Client
-
-        .. deprecated
-        """
-        return []
-
-    def set_meta_pvs(self, meta_pvs: Iterable[PV]) -> None:
-        """
-        Dummy method that does nothing, but is required for
-        compatibility with the current Client
-
-        .. deprecated
-        """
-        return
 
     @staticmethod
     def _raise_for_status(response):
@@ -645,18 +622,27 @@ class MongoBackend(_Backend):
             # tags=metadata_dict["tags"],
             meta_pvs=[
                 PV(
-                    setpoint=pv["setpointAddress"],
-                    data=pv["data"],
-                    status=getattr(Status, pv["status"]),
-                    severity=getattr(Severity, pv["severity"]),
+                    setpoint=pv.get("setpointAddress", ""),
+                    setpoint_data=EpicsData(
+                        data=pv.get("data", None),
+                        status=getattr(Status, pv["status"]),
+                        severity=getattr(Severity, pv["severity"]),
+                        timestamp=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
+                    ),
+                    readback=pv.get("readbackAddress", ""),
+                    readback_data=EpicsData(
+                        data=pv.get("data", None),
+                        status=getattr(Status, pv["status"]),
+                        severity=getattr(Severity, pv["severity"]),
+                        timestamp=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
+                    ),
                     creation_time=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
                 ) for pv in metadata_dict["metadataPVs"]
             ],
             creation_time=datetime.fromisoformat(metadata_dict["createdDate"]).replace(tzinfo=UTC),
         )
 
-    @staticmethod
-    def _unpack_snapshot(snapshot_dict) -> Snapshot:
+    def _unpack_snapshot(self, snapshot_dict) -> Snapshot:
         """
         Converts data received from backend endpoints into a complete Snapshot
         instance.
@@ -672,22 +658,45 @@ class MongoBackend(_Backend):
             Snapshot instance containing all encoded data received from the
             backend
         """
+        pv_defs = self.get_all_pvs()
+        pvs = []
+        pv_values_map = {}
+        for pv in pv_defs:
+            pv_with_values = PV(
+                setpoint=pv.setpoint,
+                readback=pv.readback,
+            )
+            if pv.setpoint:
+                pv_values_map[pv.setpoint] = pv_with_values
+            if pv.readback:
+                pv_values_map[pv.readback] = pv_with_values
+            pvs.append(pv_with_values)
+
+        for value_dict in snapshot_dict["data"]:
+            data = EpicsData(
+                data=value_dict.get("data", None),
+                status=getattr(Status, value_dict["status"]),
+                severity=getattr(Severity, value_dict["severity"]),
+                timestamp=datetime.fromisoformat(value_dict["createdDate"]).replace(tzinfo=UTC),
+            )
+            address = value_dict["pvName"]
+            try:
+                pv = pv_values_map[address]
+            except KeyError:
+                logging.debug(f"Address {address} within Snapshot did not match any PV from backend")
+            else:
+                if address == pv.setpoint:
+                    pv.setpoint_data = data
+                elif address == pv.readback:
+                    pv.readback_data = data
+                else:
+                    logging.debug("Address {address} did not match PV address {pv.setpoint} or {pv.readback}; skipping")
         return Snapshot(
             uuid=snapshot_dict["id"],
             title=snapshot_dict["title"],
             description=snapshot_dict["description"],
             # tags=snapshot_dict["tags"],
-            pvs=[
-                PV(
-                    setpoint=pv["pvName"],
-                    setpoint_data=EpicsData(
-                        data=pv.get("data", None),
-                        status=getattr(Status, pv["status"]),
-                        severity=getattr(Severity, pv["severity"]),
-                        timestamp=datetime.fromisoformat(pv["createdDate"]).replace(tzinfo=UTC),
-                    )
-                ) for pv in snapshot_dict["data"]
-            ],
+            pvs=pvs,
             creation_time=datetime.fromisoformat(snapshot_dict["createdDate"]).replace(tzinfo=UTC),
         )
 
@@ -704,15 +713,24 @@ class MongoBackend(_Backend):
         -------
         dict
         """
+        setpoint_values = [
+            {
+                "pvName": pv.setpoint,
+                "status": pv.setpoint_data.status.name,
+                "severity": pv.setpoint_data.severity.name,
+                "data": pv.setpoint_data.data,
+            } for pv in snapshot.pvs if pv.setpoint
+        ]
+        readback_values = [
+            {
+                "pvName": pv.readback,
+                "status": pv.readback_data.status.name,
+                "severity": pv.readback_data.severity.name,
+                "data": pv.readback_data.data,
+            } for pv in snapshot.pvs if pv.readback
+        ]
         return {
             "title": snapshot.title,
             "description": snapshot.description,
-            "values": [
-                {
-                    "pvName": pv.setpoint,
-                    "status": pv.setpoint_data.status.name,
-                    "severity": pv.setpoint_data.severity.name,
-                    "data": pv.setpoint_data.data,
-                } for pv in snapshot.pvs
-            ],
+            "values": setpoint_values + readback_values,
         }

@@ -152,7 +152,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         date_range.rangeChanged.connect(proxy_model.setDateRange)
 
         # Set up the filters for the meta pv columns
-        meta_columns = [pv.description for pv in self.client.backend.get_meta_pvs()]
+        meta_columns = [pv.readback for pv in self.client.meta_pvs if pv.readback]
         self.meta_pv_filter_popup = QtWidgets.QFrame(self)
         self.meta_pv_filter_popup.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.meta_pv_filter_popup.setWindowFlags(QtCore.Qt.Popup)

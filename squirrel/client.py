@@ -25,6 +25,7 @@ class Client:
         self,
         backend: Optional[_Backend] = None,
         control_layer: Optional[ControlLayer] = None,
+        meta_pvs: Iterable[PV] = None
     ) -> None:
         if backend is None:
             # set up a temp backend with temp file
@@ -35,6 +36,7 @@ class Client:
 
         self.backend = backend
         self.cl = control_layer
+        self.meta_pvs = meta_pvs or []
 
     @classmethod
     def from_config(cls, cfg: Optional[Path] = None):
@@ -112,7 +114,20 @@ class Client:
             logger.debug('No control layer shims specified, loading all available')
             control_layer = ControlLayer()
 
-        return cls(backend=backend, control_layer=control_layer)
+        if 'meta PVs' in cfg_parser.sections():
+            pv_strs = cfg_parser['meta PVs']['pvs'].split('\n')
+            meta_pvs = []
+            for string in pv_strs:
+                pv = list(backend.search(
+                    ('entry_type', 'eq', PV),
+                    ('readback', 'eq', string)),
+                )
+                if len(pv) == 1:
+                    meta_pvs.append(pv[0])
+                else:
+                    logger.warning(f"Could not fetch meta PV {string} from backend")
+
+        return cls(backend=backend, control_layer=control_layer, meta_pvs=meta_pvs)
 
     @staticmethod
     def find_config() -> Path:
@@ -205,15 +220,13 @@ class Client:
         """
         logger.debug("Saving Snapshot")
         pvs = self.backend.get_all_pvs()
-        meta_pvs = self.backend.get_meta_pvs()
-        all_pvs = pvs + meta_pvs
-        all_addresses = [pv.setpoint for pv in all_pvs if pv.setpoint] + [pv.readback for pv in all_pvs if pv.readback]
+        all_addresses = [pv.setpoint for pv in pvs if pv.setpoint] + [pv.readback for pv in pvs if pv.readback]
         values = self.cl.get(all_addresses)
         data = {pv_address: value for pv_address, value in zip(all_addresses, values)}
 
         snapshot = dest or Snapshot()
 
-        for pv in all_pvs:
+        for pv in pvs:
             new_entry = copy.copy(pv)
             if pv.readback:
                 value = data[pv.readback]
