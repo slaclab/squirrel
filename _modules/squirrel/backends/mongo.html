@@ -130,16 +130,11 @@
 
 <div class="viewcode-block" id="MongoBackend.search">
 <a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.search">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">search_terms</span><span class="p">:</span> <span class="n">SearchTermType</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">search_terms</span><span class="p">:</span> <span class="n">SearchTermType</span><span class="p">,</span> <span class="n">meta_pvs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Search for all entries matching the passed search terms.</span>
 
 <span class="sd">        .. deprecated</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        TagDef</span>
-<span class="sd">            Full tag definition received from the backend</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -149,7 +144,7 @@
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">search_terms</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;entry_type&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="n">Snapshot</span><span class="p">:</span>
-                    <span class="n">entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_snapshots</span><span class="p">()</span>
+                    <span class="n">entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_snapshots</span><span class="p">(</span><span class="n">meta_pvs</span><span class="o">=</span><span class="n">meta_pvs</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_pvs</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">:</span>
@@ -610,7 +605,7 @@
             <span class="n">params</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
                 <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">tags</span><span class="p">,</span>
-                <span class="s2">&quot;metadataPVs&quot;</span><span class="p">:</span> <span class="n">meta_pvs</span><span class="p">,</span>
+                <span class="s2">&quot;metadataPVs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">pv</span><span class="o">.</span><span class="n">readback</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">meta_pvs</span> <span class="k">if</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback</span><span class="p">]</span>
             <span class="p">}</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
@@ -653,30 +648,6 @@
 <span class="sd">        method is potentially valuable for limiting how much data is sent by the</span>
 <span class="sd">        backend at once.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
-<div class="viewcode-block" id="MongoBackend.get_meta_pvs">
-<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_meta_pvs">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_meta_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Dummy method that does nothing, but is required for</span>
-<span class="sd">        compatibility with the current Client</span>
-
-<span class="sd">        .. deprecated</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[]</span></div>
-
-
-<div class="viewcode-block" id="MongoBackend.set_meta_pvs">
-<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.set_meta_pvs">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_meta_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta_pvs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Dummy method that does nothing, but is required for</span>
-<span class="sd">        compatibility with the current Client</span>
-
-<span class="sd">        .. deprecated</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span></div>
 
 
     <span class="nd">@staticmethod</span>
@@ -795,18 +766,27 @@
             <span class="c1"># tags=metadata_dict[&quot;tags&quot;],</span>
             <span class="n">meta_pvs</span><span class="o">=</span><span class="p">[</span>
                 <span class="n">PV</span><span class="p">(</span>
-                    <span class="n">setpoint</span><span class="o">=</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;setpointAddress&quot;</span><span class="p">],</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
-                    <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
-                    <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
+                    <span class="n">setpoint</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;setpointAddress&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                    <span class="n">setpoint_data</span><span class="o">=</span><span class="n">EpicsData</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                        <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
+                        <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
+                        <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+                    <span class="p">),</span>
+                    <span class="n">readback</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;readbackAddress&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                    <span class="n">readback_data</span><span class="o">=</span><span class="n">EpicsData</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                        <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
+                        <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
+                        <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+                    <span class="p">),</span>
                     <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
                 <span class="p">)</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;metadataPVs&quot;</span><span class="p">]</span>
             <span class="p">],</span>
             <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_snapshot</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Snapshot</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot_dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Snapshot</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts data received from backend endpoints into a complete Snapshot</span>
 <span class="sd">        instance.</span>
@@ -822,22 +802,45 @@
 <span class="sd">            Snapshot instance containing all encoded data received from the</span>
 <span class="sd">            backend</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pv_defs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_pvs</span><span class="p">()</span>
+        <span class="n">pvs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">pv_values_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">pv_defs</span><span class="p">:</span>
+            <span class="n">pv_with_values</span> <span class="o">=</span> <span class="n">PV</span><span class="p">(</span>
+                <span class="n">setpoint</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">,</span>
+                <span class="n">readback</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">:</span>
+                <span class="n">pv_values_map</span><span class="p">[</span><span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">]</span> <span class="o">=</span> <span class="n">pv_with_values</span>
+            <span class="k">if</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback</span><span class="p">:</span>
+                <span class="n">pv_values_map</span><span class="p">[</span><span class="n">pv</span><span class="o">.</span><span class="n">readback</span><span class="p">]</span> <span class="o">=</span> <span class="n">pv_with_values</span>
+            <span class="n">pvs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pv_with_values</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">value_dict</span> <span class="ow">in</span> <span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">EpicsData</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">value_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">value_dict</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
+                <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">value_dict</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">value_dict</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">value_dict</span><span class="p">[</span><span class="s2">&quot;pvName&quot;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pv</span> <span class="o">=</span> <span class="n">pv_values_map</span><span class="p">[</span><span class="n">address</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Address </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2"> within Snapshot did not match any PV from backend&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">address</span> <span class="o">==</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">:</span>
+                    <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="k">elif</span> <span class="n">address</span> <span class="o">==</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback</span><span class="p">:</span>
+                    <span class="n">pv</span><span class="o">.</span><span class="n">readback_data</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Address </span><span class="si">{address}</span><span class="s2"> did not match PV address </span><span class="si">{pv.setpoint}</span><span class="s2"> or </span><span class="si">{pv.readback}</span><span class="s2">; skipping&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Snapshot</span><span class="p">(</span>
             <span class="n">uuid</span><span class="o">=</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
             <span class="n">title</span><span class="o">=</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">],</span>
             <span class="n">description</span><span class="o">=</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
             <span class="c1"># tags=snapshot_dict[&quot;tags&quot;],</span>
-            <span class="n">pvs</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">PV</span><span class="p">(</span>
-                    <span class="n">setpoint</span><span class="o">=</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;pvName&quot;</span><span class="p">],</span>
-                    <span class="n">setpoint_data</span><span class="o">=</span><span class="n">EpicsData</span><span class="p">(</span>
-                        <span class="n">data</span><span class="o">=</span><span class="n">pv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                        <span class="n">status</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Status</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]),</span>
-                        <span class="n">severity</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Severity</span><span class="p">,</span> <span class="n">pv</span><span class="p">[</span><span class="s2">&quot;severity&quot;</span><span class="p">]),</span>
-                        <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
-                    <span class="p">)</span>
-                <span class="p">)</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
-            <span class="p">],</span>
+            <span class="n">pvs</span><span class="o">=</span><span class="n">pvs</span><span class="p">,</span>
             <span class="n">creation_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">[</span><span class="s2">&quot;createdDate&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
         <span class="p">)</span>
 
@@ -854,17 +857,26 @@
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">setpoint_values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;pvName&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">,</span>
+                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">pvs</span> <span class="k">if</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span>
+        <span class="p">]</span>
+        <span class="n">readback_values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;pvName&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback</span><span class="p">,</span>
+                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback_data</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback_data</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">pvs</span> <span class="k">if</span> <span class="n">pv</span><span class="o">.</span><span class="n">readback</span>
+        <span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;pvName&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint</span><span class="p">,</span>
-                    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="s2">&quot;severity&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">pv</span><span class="o">.</span><span class="n">setpoint_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                <span class="p">}</span> <span class="k">for</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">pvs</span>
-            <span class="p">],</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">setpoint_values</span> <span class="o">+</span> <span class="n">readback_values</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 </pre></div>

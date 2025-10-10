@@ -20,6 +20,18 @@ Sections
 * ``ca``: boolean flag for whether to use channel access protocol for accessing PVs
 * ``pva``: boolean flag for whether to use PVAccess protocol for accessing PVs
 
+[meta PVs]
+^^^^^^^^^^
+
+* ``pvs``: list of strings to use as PV addresses
+
+.. admonition:: Example
+    :collapsible: closed
+
+    pvs=BEND:DMPH:400:BDES
+        BEND:DMPH:400:EDES
+        SIOC:SYS0:ML00:CALC252
+
 [demo] (deprecated)
 ^^^^^^^^^^^^^^^^^^^
 
