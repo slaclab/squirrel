@@ -181,6 +181,7 @@ class PVDetailsPopupEditable(QDialog):
         self.tolerance_rel_input.setValidator(validator)
 
         if pv_details:
+            self.device_input.setText(pv_details.device)
             self.setpoint_name_input.setText(pv_details.setpoint_name)
             self.readback_name_input.setText(pv_details.readback_name)
             self.description_input.setText(pv_details.description)
