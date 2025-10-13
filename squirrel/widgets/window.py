@@ -551,7 +551,6 @@ class NavigationPanel(QtWidgets.QWidget):
             self.expanded = value
             if self.expanded:
                 self.toggle_and_bug_layout.setDirection(QtWidgets.QBoxLayout.LeftToRight)
-                self.toggle_and_bug_layout.addStretch()
                 self.toggle_and_bug_layout.addWidget(self.bug_report_button)
                 self.toggle_expand_button.setIcon(qta.icon("ph.arrow-line-left"))
                 self.view_snapshots_button.setText("View Snapshots")
@@ -562,8 +561,8 @@ class NavigationPanel(QtWidgets.QWidget):
                     button.setProperty("icon-only", False)
                 self.save_button.setProperty("icon-only", False)
             else:
-                self.toggle_and_bug_layout.setDirection(QtWidgets.QBoxLayout.TopToBottom)
-                self.toggle_and_bug_layout.insertWidget(0, self.bug_report_button, alignment=QtCore.Qt.AlignCenter)
+                self.toggle_and_bug_layout.setDirection(QtWidgets.QBoxLayout.BottomToTop)
+                self.toggle_and_bug_layout.insertWidget(1, self.bug_report_button, alignment=QtCore.Qt.AlignCenter)
                 self.toggle_expand_button.setIcon(qta.icon("ph.arrow-line-right"))
                 for button in self.nav_buttons:
                     button.setText("")
