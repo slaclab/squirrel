@@ -459,7 +459,7 @@
 
 <div class="viewcode-block" id="MongoBackend.update_pv">
 <a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.update_pv">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_pv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_id</span><span class="p">,</span> <span class="n">setpoint</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">abs_tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rel_tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_pv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv_id</span><span class="p">,</span> <span class="n">setpoint</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">readback</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">abs_tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rel_tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update PV in the backend. Data will be updated for any passed parameter;</span>
 <span class="sd">        data for other parameters will not be affected.</span>
@@ -470,6 +470,8 @@
 <span class="sd">            ID of the PV to update</span>
 <span class="sd">        setpoint : str, optional</span>
 <span class="sd">            A new setpoint address</span>
+<span class="sd">        readback : str, optional</span>
+<span class="sd">            A new readback address</span>
 <span class="sd">        description : str, optional</span>
 <span class="sd">            A new description</span>
 <span class="sd">        device : str, optional</span>
@@ -488,6 +490,8 @@
         <span class="n">body</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">setpoint</span><span class="p">:</span>
             <span class="n">body</span><span class="p">[</span><span class="s2">&quot;setpointAddress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">setpoint</span>
+        <span class="k">if</span> <span class="n">readback</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;readbackAddress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">readback</span>
         <span class="k">if</span> <span class="n">description</span><span class="p">:</span>
             <span class="n">body</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
         <span class="k">if</span> <span class="n">device</span><span class="p">:</span>
