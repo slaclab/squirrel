@@ -10,7 +10,7 @@ from typing import Optional
 
 import qtawesome as qta
 from epicscorelibs.ca.cadef import CAException
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtGui import QCloseEvent
 
 from squirrel.client import Client
@@ -504,16 +504,27 @@ class NavigationPanel(QtWidgets.QWidget):
 
         self.layout().addStretch()
 
-        toggle_expand_layout = QtWidgets.QHBoxLayout()
+        self.toggle_and_bug_layout = QtWidgets.QHBoxLayout()
         self.toggle_expand_button = QtWidgets.QPushButton()
         self.toggle_expand_button.setIcon(qta.icon("ph.arrow-line-left"))
         self.toggle_expand_button.setIconSize(QtCore.QSize(24, 24))
         self.toggle_expand_button.setFlat(True)
         self.toggle_expand_button.setProperty("icon-only", False)
         self.toggle_expand_button.clicked.connect(self.toggle_expanded)
-        toggle_expand_layout.addWidget(self.toggle_expand_button)
-        toggle_expand_layout.addStretch()
-        self.layout().addLayout(toggle_expand_layout)
+
+        self.toggle_and_bug_layout.setAlignment(QtCore.Qt.AlignVCenter)
+        self.toggle_and_bug_layout.addWidget(self.toggle_expand_button)
+        self.toggle_and_bug_layout.addStretch()
+        self.layout().addLayout(self.toggle_and_bug_layout)
+
+        self.bug_report_button = QtWidgets.QPushButton()
+        self.bug_report_button.setIcon(qta.icon("ph.bug"))
+        self.bug_report_button.setIconSize(QtCore.QSize(20, 20))
+        self.bug_report_button.setFlat(True)
+        self.bug_report_button.setProperty("icon-only", False)
+        self.bug_report_button.setToolTip("Report a Bug")
+        self.bug_report_button.clicked.connect(self.open_bug_form)
+        self.toggle_and_bug_layout.addWidget(self.bug_report_button)
 
         self.save_button = QtWidgets.QPushButton()
         self.save_button.setIcon(qta.icon("ph.instagram-logo"))
@@ -543,6 +554,8 @@ class NavigationPanel(QtWidgets.QWidget):
         if self.expanded != value:
             self.expanded = value
             if self.expanded:
+                self.toggle_and_bug_layout.setDirection(QtWidgets.QBoxLayout.LeftToRight)
+                self.toggle_and_bug_layout.addWidget(self.bug_report_button)
                 self.toggle_expand_button.setIcon(qta.icon("ph.arrow-line-left"))
                 self.view_snapshots_button.setText("View Snapshots")
                 self.browse_pvs_button.setText("Browse PVs")
@@ -552,6 +565,8 @@ class NavigationPanel(QtWidgets.QWidget):
                     button.setProperty("icon-only", False)
                 self.save_button.setProperty("icon-only", False)
             else:
+                self.toggle_and_bug_layout.setDirection(QtWidgets.QBoxLayout.BottomToTop)
+                self.toggle_and_bug_layout.insertWidget(1, self.bug_report_button, alignment=QtCore.Qt.AlignCenter)
                 self.toggle_expand_button.setIcon(qta.icon("ph.arrow-line-right"))
                 for button in self.nav_buttons:
                     button.setText("")
@@ -568,3 +583,14 @@ class NavigationPanel(QtWidgets.QWidget):
         stylesheet = self.styleSheet()
         self.setStyleSheet("")
         self.setStyleSheet(stylesheet)
+
+    def open_bug_form(self):
+        """Open Microsoft Form for bug reporting in default browser."""
+        url = QtCore.QUrl("https://forms.office.com/r/A6p1TmFNw3")
+
+        if not QtGui.QDesktopServices.openUrl(url):
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Error",
+                "Unable to open the bug report form. Please visit:\nhttps://forms.office.com/r/A6p1TmFNw3",
+            )
