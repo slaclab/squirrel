@@ -38,7 +38,7 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
     def __init__(self, client, parent=None):
         super().__init__(parent=parent)
         self.client = client
-        self._data = self.client.search(("entry_type", "eq", PV))
+        self._data = self.client.backend.get_all_pvs()
 
     def rowCount(self, _=QtCore.QModelIndex()) -> int:
         return len(self._data)

@@ -13,7 +13,6 @@ from squirrel.backends import _Backend
 from squirrel.bin.demo_parser import DEMO_CONFIG
 from squirrel.bin.ui_parser import main as ui_main
 from squirrel.client import Client
-from squirrel.model import PV
 from squirrel.tests.ioc import IOCFactory
 from squirrel.utils import build_abs_path
 
@@ -51,6 +50,6 @@ def main(*args, db_path=None, **kwargs):
     source_names = parser.get("demo", "fixtures").split()
     populate_backend(client.backend, source_names)
     # IOCFactory needs the Entries with data
-    filled = client.search(("entry_type", "eq", PV))
+    filled = client.backend.get_all_pvs()
     with IOCFactory.from_entries(filled, client)(prefix=''):
         ui_main(cfg_path=DEMO_CONFIG)
