@@ -422,6 +422,31 @@ class MongoBackend(_Backend):
         self._raise_for_status(r)
         return [self._unpack_pv(d) for d in r.json()["payload"]]
 
+    def get_pvs(self, search_string="") -> Iterable[PV]:
+        """
+        Get PVs with setpoint or readback matching search_string
+
+        Parameters
+        ----------
+        search_string : str
+
+        Returns
+        -------
+        Iterable[PV]
+
+        Raises
+        ------
+        BackendError
+        """
+        r = requests.get(
+            self.address + ENDPOINTS["PVS"],
+            params={
+                "pvName": search_string,
+            }
+        )
+        self._raise_for_status(r)
+        return [self._unpack_pv(d) for d in r.json()["payload"]]
+
     def add_snapshot(self, snapshot: Snapshot) -> None:
         """
         Add snapshot to the backend.
