@@ -15,7 +15,7 @@ def test_save_entry(test_backend: _Backend):
         readback="TEST:RDBK",
         description="This is a test",
     )
-    assert test_backend.search() == [added_pv]
+    assert test_backend.get_all_pvs() == [added_pv]
 
     # Cannot save an entry that already exists.
     with pytest.raises(EntryExistsError):
