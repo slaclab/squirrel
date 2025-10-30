@@ -118,14 +118,14 @@ class Client:
             pv_strs = cfg_parser['meta PVs']['pvs'].split('\n')
             meta_pvs = []
             for string in pv_strs:
-                pv = list(backend.search(
-                    ('entry_type', 'eq', PV),
-                    ('readback', 'eq', string)),
-                )
+                pv = backend.get_pvs(search_string=string)
                 if len(pv) == 1:
                     meta_pvs.append(pv[0])
                 else:
-                    logger.warning(f"Could not fetch meta PV {string} from backend")
+                    logger.warning(
+                        f"Could not set meta PV \"{string}\": found {len(pv)} "
+                        "matches in backend"
+                    )
 
         return cls(backend=backend, control_layer=control_layer, meta_pvs=meta_pvs)
 
