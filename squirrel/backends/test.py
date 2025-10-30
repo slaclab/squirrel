@@ -111,15 +111,19 @@ class TestBackend(_Backend):
     def add_snapshot(self, snapshot: Snapshot) -> None:
         self.snapshots.append(snapshot)
 
-    def get_snapshots(self, uuid=None, title="", tags=None, meta_pvs=None) -> Iterable[Snapshot]:
+    def get_snapshots(self, title="", tags=None, meta_pvs=None) -> Iterable[Snapshot]:
         tags = tags or {}
         return [
             s for s in self.snapshots if (
-                s.uuid == s.uuid
-                and title in s.title
+                title in s.title
                 and all(tags[key] <= s.tags[key] for key in tags)
             )
         ]
+
+    def get_snapshot(self, uuid) -> Snapshot:
+        for snapshot in self.snapshots:
+            if snapshot.uuid == uuid:
+                return snapshot
 
     def delete_snapshot(self, snapshot: Snapshot) -> None:
         raise NotImplementedError

@@ -206,18 +206,9 @@ class PVTableModel(LivePVTableModel):
             a snapshot
         """
         try:
-            entries = snapshot.pvs
+            self._data = snapshot.pvs
         except AttributeError:
-            entries = self.client.search(
-                ("ancestor", "eq", snapshot),
-                ("entry_type", "eq", PV),
-            )
-        finally:
-            self._data = [
-                entry if isinstance(entry, PV) else self.client.search(
-                    ("uuid", "eq", entry)
-                )[0] for entry in entries
-            ]
+            self._data = self.client.backend.get_snapshot(snapshot).pvs
         self._checked = set()
         self.set_entries(self._data)
 

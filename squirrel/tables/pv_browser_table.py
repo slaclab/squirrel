@@ -119,12 +119,13 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
 
     def refetch_row(self, row):
         index = self.index(row, PV_BROWSER_HEADER.PV.value)
-        pv_id = self.data(index, QtCore.Qt.UserRole).uuid
-        pv = self.client.search(
-            ("entry_type", "eq", PV),
-            ("uuid", "eq", pv_id),
-        )[0]
-        self._data[row] = pv
+        pv = self.data(index, QtCore.Qt.UserRole)
+        pv_name = pv.setpoint or pv.readback
+        matches = self.client.backend.get_pvs(search_string=pv_name)
+        for match in matches:
+            if match.uuid == pv.uuid:
+                refetched = match
+        self._data[row] = refetched
         self.dataChanged.emit(index, index)
 
 
