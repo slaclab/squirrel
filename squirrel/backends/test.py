@@ -25,6 +25,7 @@ class TestBackend(_Backend):
         self.meta_pvs = meta_pvs or []
 
     def search(self, *search_terms: SearchTermType):
+        matching = []
         for entry in self.pvs + self.snapshots:
             conditions = []
             for attr, op, target in search_terms:
@@ -38,7 +39,8 @@ class TestBackend(_Backend):
                     except AttributeError:
                         conditions.append(False)
             if all(conditions):
-                yield entry
+                matching.append(entry)
+        return matching
 
     def get_tags(self) -> TagDef:
         return self.tag_groups.copy()
