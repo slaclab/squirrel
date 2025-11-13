@@ -23,7 +23,7 @@ Installation
 
 ::
 
-  $ conda create --name squirrel pip
+  $ conda create --name squirrel pip python<=3.13
   $ conda activate squirrel
   $
   $ conda install --file requirements.txt  # install statically, and only include packages necessary to run
