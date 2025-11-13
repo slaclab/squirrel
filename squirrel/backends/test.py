@@ -108,6 +108,10 @@ class TestBackend(_Backend):
     def get_all_pvs(self) -> Iterable[PV]:
         return self.pvs.copy()
 
+    def get_paged_pvs(self, limit: int, token="", search_string="") -> Iterable[PV]:
+        token = token or 0
+        return self.pvs[token:token+limit].copy(), token + limit
+
     def add_snapshot(self, snapshot: Snapshot) -> None:
         self.snapshots.append(snapshot)
 
