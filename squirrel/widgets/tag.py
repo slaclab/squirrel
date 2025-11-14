@@ -56,12 +56,15 @@ class TagChip(QtWidgets.QFrame):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         margins = self.contentsMargins()
-        if event.rect().width() > self.sizeHint().width():
-            margins.setLeft((event.rect().width() - self.sizeHint().width()) // 2)
-            margins.setRight((event.rect().width() - self.sizeHint().width()) // 2)
-        if event.rect().height() > self.sizeHint().height():
-            margins.setTop((event.rect().height() - self.sizeHint().height()) // 2)
-            margins.setBottom((event.rect().height() - self.sizeHint().height()) // 2)
+
+        x_margin = max(0, (event.rect().width() - self.sizeHint().width()) // 2)
+        y_margin = max(0, (event.rect().height() - self.sizeHint().height()) // 2)
+
+        margins.setLeft(x_margin)
+        margins.setRight(x_margin)
+        margins.setTop(y_margin)
+        margins.setBottom(y_margin)
+
         self.setContentsMargins(margins)
         self.paint(painter)
 
