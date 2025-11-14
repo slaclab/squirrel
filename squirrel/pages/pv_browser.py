@@ -26,6 +26,7 @@ class PVBrowserPage(Page):
         super().__init__(parent)
         self.client = client
         self.setup_ui()
+        self._hasBeenShown = False
 
     def setup_ui(self):
         """Initialize the PV browser page with the PV browser table."""
