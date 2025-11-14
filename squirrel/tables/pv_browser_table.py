@@ -11,6 +11,7 @@ from squirrel.type_hints import TagSet
 logger = logging.getLogger(__name__)
 
 NO_DATA = "--"
+PAGE_SIZE = 100
 
 
 class PV_BROWSER_HEADER(Enum):
@@ -38,13 +39,25 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
     def __init__(self, client, parent=None):
         super().__init__(parent=parent)
         self.client = client
-        self._data = self.client.backend.get_all_pvs()
+        self._data = []
+        self._canFetchMore = True
+        self._token = ""
 
     def rowCount(self, _=QtCore.QModelIndex()) -> int:
         return len(self._data)
 
     def columnCount(self, _=QtCore.QModelIndex()) -> int:
         return len(PV_BROWSER_HEADER)
+
+    def canFetchMore(self, parent=QtCore.QModelIndex()) -> bool:
+        return self._canFetchMore
+
+    def fetchMore(self, parent=QtCore.QModelIndex()) -> None:
+        fetched, self._token = self.client.backend.get_paged_pvs(PAGE_SIZE, token=self._token)
+        self._canFetchMore = len(fetched) == PAGE_SIZE
+        self.beginInsertRows(QtCore.QModelIndex(), len(self._data), len(self._data) + len(fetched) - 1)
+        self._data.extend(fetched)
+        self.endInsertRows()
 
     def headerData(
         self,
