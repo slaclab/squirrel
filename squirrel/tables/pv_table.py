@@ -155,9 +155,8 @@ class PVTableModel(LivePVTableModel):
                     return font
             return None
         elif role == QtCore.Qt.TextAlignmentRole:
-            if column not in [PV_HEADER.DEVICE, PV_HEADER.PV] or index.data() != NO_DATA:
-                return None
-            return QtCore.Qt.AlignCenter
+            if column not in [PV_HEADER.PV]:
+                return QtCore.Qt.AlignCenter
         elif role == QtCore.Qt.UserRole:
             return entry
         return None
