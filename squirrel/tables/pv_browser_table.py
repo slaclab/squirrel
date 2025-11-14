@@ -42,7 +42,6 @@ class PVBrowserTableModel(QtCore.QAbstractTableModel):
         self._data = []
         self._canFetchMore = True
         self._token = ""
-        self.fetchMore()
 
     def rowCount(self, _=QtCore.QModelIndex()) -> int:
         return len(self._data)
