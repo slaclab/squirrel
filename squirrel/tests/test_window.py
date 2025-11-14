@@ -45,6 +45,7 @@ def test_take_snapshot(qtbot, test_client):
 @setup_test_stack(sources=["sample_database"], backend_type=TestBackend)
 def test_pv_browser_model(test_client):
     pv_browser_model = PVBrowserTableModel(client=test_client)
+    pv_browser_model.fetchMore()
 
     assert pv_browser_model.rowCount() == 4
     assert pv_browser_model.columnCount() == 5
@@ -56,6 +57,7 @@ def test_pv_browser_search(qtbot, test_client):
     qtbot.addWidget(window)
 
     pv_browser_filter = window.pv_browser_page.pv_browser_filter
+    pv_browser_filter.sourceModel().fetchMore()
     search_bar = window.pv_browser_page.findChild(QtWidgets.QLineEdit)
     assert isinstance(search_bar, QtWidgets.QLineEdit)
 
@@ -75,6 +77,7 @@ def test_pv_browser_tags(qtbot, test_client):
     qtbot.addWidget(window)
 
     pv_browser_filter = window.pv_browser_page.pv_browser_filter
+    pv_browser_filter.sourceModel().fetchMore()
     tags_widget = window.pv_browser_page.findChild(TagsWidget)
 
     assert pv_browser_filter.rowCount() == 4

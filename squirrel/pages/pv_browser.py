@@ -82,7 +82,6 @@ class PVBrowserPage(Page):
         header_view.setSectionResizeMode(PV_BROWSER_HEADER.TAGS.value, header_view.ResizeMode.Stretch)
         header_view.sectionResized.connect(self.pv_browser_table.resizeRowsToContents)
         pv_browser_layout.addWidget(self.pv_browser_table)
-        self.pv_browser_table.resizeColumnsToContents()
 
         self.search_bar.textEdited.connect(self.search_bar_middle_man)
         filter_tags.tagSetChanged.connect(self.pv_browser_filter.set_tag_set)
