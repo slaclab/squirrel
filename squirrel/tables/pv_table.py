@@ -17,6 +17,7 @@ class PV_HEADER(Enum):
     SEVERITY = auto()
     DEVICE = auto()
     PV = auto()
+    READBACK_ADDR = auto()
     SETPOINT = auto()
     LIVE_SETPOINT = auto()
     READBACK = auto()
@@ -32,11 +33,12 @@ PV_HEADER._strings = {
     PV_HEADER.CHECKBOX: "",
     PV_HEADER.SEVERITY: "",
     PV_HEADER.DEVICE: "Device",
-    PV_HEADER.PV: "PV Name",
-    PV_HEADER.SETPOINT: "Saved Value",
-    PV_HEADER.LIVE_SETPOINT: "Live Value",
-    PV_HEADER.READBACK: "Saved Readback",
-    PV_HEADER.LIVE_READBACK: "Live Readback",
+    PV_HEADER.PV: "Setpoint Addr",
+    PV_HEADER.READBACK_ADDR: "Readback Addr",
+    PV_HEADER.SETPOINT: "Saved SP",
+    PV_HEADER.LIVE_SETPOINT: "Live SP",
+    PV_HEADER.READBACK: "Saved RB",
+    PV_HEADER.LIVE_READBACK: "Live RB",
     PV_HEADER.CONFIG: "CON",
 }
 
@@ -106,6 +108,10 @@ class PVTableModel(LivePVTableModel):
                 return entry.device or NO_DATA
             elif column == PV_HEADER.PV:
                 return entry.setpoint
+            elif column == PV_HEADER.READBACK_ADDR:
+                sp = entry.setpoint
+                rb = entry.readback
+                return self.format_readback_addr(sp, rb)
             elif column == PV_HEADER.SETPOINT:
                 return getattr(entry.setpoint_data, "data", "")
             elif column == PV_HEADER.LIVE_SETPOINT:
@@ -169,6 +175,23 @@ class PVTableModel(LivePVTableModel):
                 self._checked.add(index.row())
             self.dataChanged.emit(index, index)
         return True
+
+    def format_readback_addr(self, sp: Optional[str], rb: Optional[str]) -> str:
+        """
+        Truncate readback addr if addresses match except for the final section, else return full readback address.
+        """
+        if not rb:
+            return NO_DATA
+        if not sp:
+            return NO_DATA
+
+        rb_parts = rb.split(":")
+        sp_parts = sp.split(":")
+
+        if sp_parts[:-1] == rb_parts[:-1]:
+            return "-:" + rb_parts[-1]
+
+        return rb
 
     def set_snapshot(self, snapshot: Union[UUID, Snapshot]) -> None:
         """
