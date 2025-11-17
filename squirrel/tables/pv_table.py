@@ -108,7 +108,7 @@ class PVTableModel(LivePVTableModel):
                 return entry.device or NO_DATA
             elif column == PV_HEADER.PV:
                 return entry.setpoint
-            elif column == PV_HEADER.READBACK:
+            elif column == PV_HEADER.READBACK_ADDR:
                 sp = entry.setpoint
                 rb = entry.readback
                 return self.format_readback_addr(sp, rb)
