@@ -115,7 +115,7 @@ class MongoBackend(_Backend):
 
         Returns
         -------
-        int
+        str
             ID of the newly created tag group, received from the backend
 
         Raises
@@ -137,7 +137,7 @@ class MongoBackend(_Backend):
 
         Parameters
         ----------
-        group_id : int
+        group_id : str
             ID of the tag group
         name : str, optional
             New name to use for the tag group
@@ -174,18 +174,23 @@ class MongoBackend(_Backend):
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
 
-    def add_tag_to_group(self, group_id: int, name, description="") -> None:
+    def add_tag_to_group(self, group_id: str, name: str, description="") -> str:
         """
         Add new tag to a tag group.
 
         Parameters
         ----------
-        group_id : int
+        group_id : str
             ID of the tag group
         name : str
             Name to use for the new tag
         description : str, optional
             Description to use for the new tag
+
+        Returns
+        -------
+        str
+            ID of the newly created tag, received from the backend
 
         Raises
         ------
@@ -201,6 +206,7 @@ class MongoBackend(_Backend):
         r = requests.put(self.address + ENDPOINTS["TAGS"] + f"/{group_id}/tags", params=params, json=body)
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        return next(tag["id"] for tag in r.json()["payload"]["tags"] if tag["name"] == name)
 
     def update_tag_in_group(self, group_id, tag_id, name="", description="") -> None:
         """
@@ -211,7 +217,7 @@ class MongoBackend(_Backend):
         ----------
         group_id : int
             ID of the tag group
-        tag_id : int
+        tag_id : str
             ID of the tag to in the tag group
         name : str, optional
             New name to use for the tag

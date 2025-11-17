@@ -10,6 +10,7 @@ from qtpy.QtWidgets import (QAbstractItemView, QDialog, QFrame, QHBoxLayout,
                             QTableWidget, QTableWidgetItem, QVBoxLayout,
                             QWidget)
 
+from squirrel.client import Client
 from squirrel.permission_manager import PermissionManager
 from squirrel.widgets.tag import TagChip
 
@@ -28,9 +29,11 @@ class TagsDialog(QDialog):
     dataSaved = Signal(int, str, str, object)
 
     def __init__(self,
+                 client: Client,
+                 group_id: str,
                  group_name: str,
                  description: str,
-                 tags_dict: Optional[Dict[int, str]] = None,
+                 tags_dict: Optional[Dict[str, str]] = None,
                  parent: Optional[QWidget] = None,
                  is_admin: bool = False,
                  row_index: Optional[int] = None) -> None:
@@ -38,6 +41,8 @@ class TagsDialog(QDialog):
 
         self.setWindowTitle("Tag Group")
         self.setMinimumSize(500, 600)
+        self.client = client
+        self.group_id = group_id
         self.original_group_name = group_name
         self.original_row = row_index
         self.tags_dict = tags_dict or {}
@@ -190,44 +195,42 @@ class TagsDialog(QDialog):
                 QMessageBox.warning(self, "Duplicate Tag",
                                     f"The tag '{tag}' already exists.")
             else:
-                next_key = 0
-                if self.tags_dict:
-                    next_key = max(self.tags_dict.keys()) + 1
-
-                self.tags_dict[next_key] = tag
+                new_tag_id = self.client.backend.add_tag_to_group(self.group_id, tag)
+                self.tags_dict[new_tag_id] = tag
                 self.populate_tag_list()
 
-    def edit_tag(self, key: int, row: int) -> None:
+    def edit_tag(self, tag_id: str, row: int) -> None:
         """
         Edit a tag by its key.
 
         Parameters
         ----------
-        key : int
-            The dictionary key of the tag to edit
+        tag_id : str
+            The id of the tag to edit
         row : int
             The row index in the table
         """
-        current_tag = self.tags_dict[key]
+        current_tag = self.tags_dict[tag_id]
         new_tag, ok = QInputDialog.getText(self, "Edit Tag", "Enter new tag name:", text=current_tag)
         if ok and new_tag and new_tag != current_tag:
             if new_tag in self.tags_dict.values():
                 QMessageBox.warning(self, "Duplicate Tag",
                                     f"The tag '{new_tag}' already exists.")
             else:
-                self.tags_dict[key] = new_tag
+                self.client.backend.update_tag_in_group(self.group_id, tag_id, new_tag)
+                self.tags_dict[tag_id] = new_tag
                 self.populate_tag_list()
 
-    def remove_tag(self, key: int) -> None:
+    def remove_tag(self, tag_id: str) -> None:
         """
         Remove a tag from the group by its key.
 
         Parameters
         ----------
-        key : int
-            The dictionary key of the tag to remove
+        tag_id : str
+            The id tag to remove
         """
-        tag: str = self.tags_dict[key]
+        tag: str = self.tags_dict[tag_id]
         confirm = QMessageBox.question(
             self,
             'Confirm Remove',
@@ -237,7 +240,8 @@ class TagsDialog(QDialog):
         )
 
         if confirm == QMessageBox.Yes:
-            del self.tags_dict[key]
+            self.client.backend.delete_tag_from_group(self.group_id, tag_id)
+            del self.tags_dict[tag_id]
             self.populate_tag_list()
 
     def save(self) -> None:
@@ -286,8 +290,8 @@ class TagPage(QWidget):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setMinimumSize(600, 400)
 
-        self.groups_data: dict[int, list[Union[str, str, dict[int, str]]]] = {}
-        self.index_to_tag_group: list[int] = []
+        self.groups_data: dict[str, list[Union[str, str, dict[int, str]]]] = {}
+        self.index_to_tag_group: list[str] = []
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -653,7 +657,7 @@ class TagPage(QWidget):
         if edit_button and edit_button.property("editing"):
             self.edit_next_cell(row, column)
 
-    def get_all_data(self) -> Dict[int, list[Union[str, str, dict[int, str]]]]:
+    def get_all_data(self) -> Dict[str, list[Union[str, str, dict[int, str]]]]:
         """
         Return the entire groups data dictionary.
 
@@ -750,6 +754,7 @@ class TagPage(QWidget):
                 self.table.setCellWidget(row, 3, delete_button)
 
             self.index_to_tag_group.append(group)
+        self.table.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
 
     def print_all_data(self) -> str:
         """
@@ -795,6 +800,7 @@ class TagPage(QWidget):
         """
         row = index.row()
 
+        group_id = self.index_to_tag_group[row]
         group_name = self.get_group_name_from_row(row)
         description = self.get_description_from_row(row)
 
@@ -806,10 +812,10 @@ class TagPage(QWidget):
         is_admin = self.permission_manager.is_admin()
 
         if is_admin:
-            dialog = TagsDialog(group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=True, row_index=row)
+            dialog = TagsDialog(self.client, group_id, group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=True, row_index=row)
             dialog.dataSaved.connect(self.save_group_data)
         else:
-            dialog = TagsDialog(group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=False, row_index=row)
+            dialog = TagsDialog(self.client, group_id, group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=False, row_index=row)
 
         dialog.exec_()
 
