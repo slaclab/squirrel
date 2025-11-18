@@ -77,6 +77,7 @@ def _dlg(
 ) -> TagsDialog:
     """Helper creating an **editable** ``TagsDialog``."""
     return TagsDialog(
+        _DummyClient(),
         group_id="group_a_id",
         group_name="Group A",
         description="Desc",
@@ -108,6 +109,7 @@ def test_tagsdialog_add_new_tag(monkeypatch: pytest.MonkeyPatch, app: QApplicati
     dlg = _dlg()
 
     monkeypatch.setattr(QInputDialog, "getText", lambda *_a, **_k: ("three", True))
+    monkeypatch.setattr(TestBackend, "add_tag_to_group", lambda *_a, **_k: "dummy_id")
     dlg.add_new_tag()
 
     assert "three" in dlg.tags_dict.values()
@@ -118,6 +120,7 @@ def test_tagsdialog_edit_tag(monkeypatch: pytest.MonkeyPatch, app: QApplication)
     """`edit_tag` renames a tag after confirmation."""
     dlg = _dlg()
     monkeypatch.setattr(QInputDialog, "getText", lambda *_a, **_k: ("uno", True))
+    monkeypatch.setattr(TestBackend, "update_tag_in_group", lambda *_a, **_k: None)
     dlg.edit_tag(0, 0)
     assert dlg.tags_dict[0] == "uno"
 
@@ -126,6 +129,7 @@ def test_tagsdialog_remove_tag(monkeypatch: pytest.MonkeyPatch, app: QApplicatio
     """`remove_tag` deletes the entry when the user clicks *Yes*."""
     dlg = _dlg()
     monkeypatch.setattr(QMessageBox, "question", lambda *_: QMessageBox.Yes)
+    monkeypatch.setattr(TestBackend, "delete_tag_from_group", lambda *_a, **_k: None)
     dlg.remove_tag(0)
     assert 0 not in dlg.tags_dict
     assert dlg.tag_list.rowCount() == 1
