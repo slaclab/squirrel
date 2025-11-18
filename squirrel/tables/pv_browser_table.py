@@ -27,8 +27,8 @@ class PV_BROWSER_HEADER(Enum):
 # Must be added outside class def to avoid processing as an enum member
 PV_BROWSER_HEADER._strings = {
     PV_BROWSER_HEADER.DEVICE: "Device",
-    PV_BROWSER_HEADER.PV: "PV Name",
-    PV_BROWSER_HEADER.READBACK: "Readback",
+    PV_BROWSER_HEADER.PV: "Setpoint Addr",
+    PV_BROWSER_HEADER.READBACK: "Readback Addr",
     PV_BROWSER_HEADER.TAGS: "Tags",
     PV_BROWSER_HEADER.DELETE: "",
 }
