@@ -191,6 +191,7 @@ class TagsDialog(QDialog):
                 QMessageBox.warning(self, "Duplicate Tag",
                                     f"The tag '{tag}' already exists.")
             else:
+                # Use the tag name as a temporary key, replaced by tag id from the backend when the user chooses to save
                 self.tags_dict[tag] = tag
                 self.populate_tag_list()
 
