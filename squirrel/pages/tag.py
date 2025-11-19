@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 from typing import Dict, Optional, Union
@@ -10,7 +11,6 @@ from qtpy.QtWidgets import (QAbstractItemView, QDialog, QFrame, QHBoxLayout,
                             QTableWidget, QTableWidgetItem, QVBoxLayout,
                             QWidget)
 
-from squirrel.client import Client
 from squirrel.permission_manager import PermissionManager
 from squirrel.widgets.tag import TagChip
 
@@ -29,8 +29,6 @@ class TagsDialog(QDialog):
     dataSaved = Signal(int, str, str, object)
 
     def __init__(self,
-                 client: Client,
-                 group_id: str,
                  group_name: str,
                  description: str,
                  tags_dict: Optional[Dict[str, str]] = None,
@@ -41,8 +39,6 @@ class TagsDialog(QDialog):
 
         self.setWindowTitle("Tag Group")
         self.setMinimumSize(500, 600)
-        self.client = client
-        self.group_id = group_id
         self.original_group_name = group_name
         self.original_row = row_index
         self.tags_dict = tags_dict or {}
@@ -195,8 +191,7 @@ class TagsDialog(QDialog):
                 QMessageBox.warning(self, "Duplicate Tag",
                                     f"The tag '{tag}' already exists.")
             else:
-                new_tag_id = self.client.backend.add_tag_to_group(self.group_id, tag)
-                self.tags_dict[new_tag_id] = tag
+                self.tags_dict[tag] = tag
                 self.populate_tag_list()
 
     def edit_tag(self, tag_id: str, row: int) -> None:
@@ -217,7 +212,6 @@ class TagsDialog(QDialog):
                 QMessageBox.warning(self, "Duplicate Tag",
                                     f"The tag '{new_tag}' already exists.")
             else:
-                self.client.backend.update_tag_in_group(self.group_id, tag_id, new_tag)
                 self.tags_dict[tag_id] = new_tag
                 self.populate_tag_list()
 
@@ -240,7 +234,6 @@ class TagsDialog(QDialog):
         )
 
         if confirm == QMessageBox.Yes:
-            self.client.backend.delete_tag_from_group(self.group_id, tag_id)
             del self.tags_dict[tag_id]
             self.populate_tag_list()
 
@@ -357,7 +350,7 @@ class TagPage(QWidget):
         self.table.setShowGrid(False)
         self.original_edit_triggers = QTableWidget.NoEditTriggers
 
-        self.groups_data = self.client.backend.get_tags()
+        self.groups_data = copy.deepcopy(self.client.backend.get_tags())
         self.rebuild_table_from_data()
 
     def get_group_name_from_row(self, row: int) -> str:
@@ -395,7 +388,7 @@ class TagPage(QWidget):
         return desc_item.text() if desc_item else "New group description"
 
     def update_group_data(self, row: int, name: str, description: str,
-                          tags_dict: Optional[Dict[int, str]] = None) -> None:
+                          tags_dict: Optional[Dict[str, str]] = None) -> None:
         """
         Update the groups_data dictionary when group details change.
 
@@ -407,7 +400,7 @@ class TagPage(QWidget):
             The name of the group
         description : str
             The updated description
-        tags_dict : Dict[int, str], optional
+        tags_dict : Dict[str, str], optional
             New dictionary of tags if provided, by default None
         """
         group = self.index_to_tag_group[row]
@@ -800,7 +793,6 @@ class TagPage(QWidget):
         """
         row = index.row()
 
-        group_id = self.index_to_tag_group[row]
         group_name = self.get_group_name_from_row(row)
         description = self.get_description_from_row(row)
 
@@ -812,10 +804,10 @@ class TagPage(QWidget):
         is_admin = self.permission_manager.is_admin()
 
         if is_admin:
-            dialog = TagsDialog(self.client, group_id, group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=True, row_index=row)
+            dialog = TagsDialog(group_name, description, dict(current_tags_dict) if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=True, row_index=row)
             dialog.dataSaved.connect(self.save_group_data)
         else:
-            dialog = TagsDialog(self.client, group_id, group_name, description, current_tags_dict if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=False, row_index=row)
+            dialog = TagsDialog(group_name, description, dict(current_tags_dict) if isinstance(current_tags_dict, dict) else None, parent=self, is_admin=False, row_index=row)
 
         dialog.exec_()
 
@@ -824,10 +816,9 @@ class TagPage(QWidget):
         row: int,
         new_name: str,
         new_desc: str,
-        tags_dict: Dict[int, str]
+        tags_dict: Dict[str, str]
     ) -> None:
         self.update_group_data(row, new_name, new_desc, tags_dict)
-
         try:
             group = self.index_to_tag_group[row]
             self.client.backend.update_tag_group(group, name=new_name, description=new_desc)
@@ -835,9 +826,12 @@ class TagPage(QWidget):
             for tag in cur_tags:
                 if tag not in tags_dict:
                     self.client.backend.delete_tag_from_group(group, tag)
-            for tag, name in tags_dict.items():
+            for tag, name in list(tags_dict.items()):
                 if tag not in cur_tags:
-                    self.client.backend.add_tag_to_group(group, name)
+                    new_tag_id = self.client.backend.add_tag_to_group(group, name)
+                    # Replace the placeholder tag ID with the permanent one returned by the backend
+                    del tags_dict[tag]
+                    tags_dict[new_tag_id] = name
                 elif cur_tags[tag] != name:  # TODO: handle desc
                     self.client.backend.update_tag_in_group(group, tag, name)
         except Exception as e:

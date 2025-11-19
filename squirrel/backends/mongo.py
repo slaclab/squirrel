@@ -69,6 +69,10 @@ class MongoBackend(_Backend):
             if all(conditions):
                 yield entry
 
+    def _invalidate_tag_cache(self) -> None:
+        """Ensure that a call to get_tags will return the most recent data after a mutating action is performed"""
+        self._last_tag_fetch = datetime.min
+
     def get_tags(self) -> TagDef:
         """
         Fetch tag definition from the backend. Caches data for one minute.
@@ -129,6 +133,7 @@ class MongoBackend(_Backend):
         r = requests.post(self.address + ENDPOINTS["TAGS"], json=body)
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        self._invalidate_tag_cache()
         return r.json()["payload"]["id"]
 
     def update_tag_group(self, group_id, name="", description="") -> None:
@@ -156,6 +161,7 @@ class MongoBackend(_Backend):
         r = requests.put(self.address + ENDPOINTS["TAGS"] + f"/{group_id}", json=body)
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        self._invalidate_tag_cache()
 
     def delete_tag_group(self, group_id) -> None:
         """
@@ -173,6 +179,7 @@ class MongoBackend(_Backend):
         r = requests.delete(self.address + ENDPOINTS["TAGS"] + f"/{group_id}", params={"force": True})
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        self._invalidate_tag_cache()
 
     def add_tag_to_group(self, group_id: str, name: str, description="") -> str:
         """
@@ -206,6 +213,7 @@ class MongoBackend(_Backend):
         r = requests.put(self.address + ENDPOINTS["TAGS"] + f"/{group_id}/tags", params=params, json=body)
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        self._invalidate_tag_cache()
         return next(tag["id"] for tag in r.json()["payload"]["tags"] if tag["name"] == name)
 
     def update_tag_in_group(self, group_id, tag_id, name="", description="") -> None:
@@ -240,6 +248,7 @@ class MongoBackend(_Backend):
         r = requests.put(self.address + ENDPOINTS["TAGS"] + f"/{group_id}/tags/{tag_id}", params=params, json=body)
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        self._invalidate_tag_cache()
 
     def delete_tag_from_group(self, group_id, tag_id) -> None:
         """
@@ -259,6 +268,7 @@ class MongoBackend(_Backend):
         r = requests.delete(self.address + ENDPOINTS["TAGS"] + f"/{group_id}/tags/{tag_id}")
         logger.debug(f"{r.request.method} {r.url} with response {r.status_code} ({r.reason})")
         self._raise_for_status(r)
+        self._invalidate_tag_cache()
 
     def add_pv(
         self,

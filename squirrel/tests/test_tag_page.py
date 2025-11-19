@@ -77,8 +77,6 @@ def _dlg(
 ) -> TagsDialog:
     """Helper creating an **editable** ``TagsDialog``."""
     return TagsDialog(
-        _DummyClient(),
-        group_id="group_a_id",
         group_name="Group A",
         description="Desc",
         tags_dict=tags or {0: "one", 1: "two"},
