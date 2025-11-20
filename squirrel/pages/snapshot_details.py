@@ -36,7 +36,7 @@ class SnapshotDetailsPage(Page):
         """
         super().__init__(parent)
         self.client = client
-        self.snapshot = snapshot
+        self.snapshot = None
 
         self.init_ui()
         if snapshot is not None:
