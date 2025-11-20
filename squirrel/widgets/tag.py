@@ -97,19 +97,24 @@ class TagChip(QtWidgets.QFrame):
         else:
             painter.translate(spacing, 0)
 
+        # Use QFontMetricsF for accurate text width measurement
+        metrics = QtGui.QFontMetricsF(painter.font())
         painter.setPen(QtCore.Qt.SolidLine)
-        name_rect = QtCore.QRectF(0, 0, painter.font().pointSize() * len(self.tag_name), spacing * 2)
+        name_width = metrics.horizontalAdvance(self.tag_name)
+        name_rect = QtCore.QRectF(0, 0, name_width, spacing * 2)
         painter.drawText(name_rect, self.tag_name)
         painter.translate(name_rect.right(), 0)
 
         if len(tag_strings) > 0:
-            painter.drawLine(QtCore.QPointF(-painter.pen().width(), name_rect.top()), QtCore.QPointF(-painter.pen().width(), name_rect.bottom()))
-            painter.translate(spacing, 0)
+            painter.translate(spacing / 2, 0)
+            painter.drawLine(QtCore.QPointF(0, name_rect.top()), QtCore.QPointF(0, name_rect.bottom()))
+            painter.translate(spacing / 2, 0)
 
         pen.setColor(QtGui.QColor(squirrel.color.LIGHT_BLUE))
         painter.setPen(pen)
         tags_string = ", ".join(sorted(tag_strings))
-        tags_rect = QtCore.QRectF(0, 0, painter.font().pointSize() * len(tags_string), name_rect.height())
+        tags_width = metrics.horizontalAdvance(tags_string)
+        tags_rect = QtCore.QRectF(0, 0, tags_width, name_rect.height())
         painter.drawText(tags_rect, tags_string)
 
         painter.restore()
@@ -118,13 +123,39 @@ class TagChip(QtWidgets.QFrame):
     def sizeHint(self):
         metrics = QtGui.QFontMetricsF(QtGui.QFont())
         tag_strings = {self.choices[tag] for tag in self.tags}
-        text = self.tag_name + ", ".join(sorted(tag_strings))
-        text_size = metrics.size(QtCore.Qt.TextSingleLine, text)
+
+        # Calculate height
+        text_size = metrics.size(QtCore.Qt.TextSingleLine, self.tag_name)
         height = text_size.height() * 2
         spacing = height / 4
-        spaces = 7 if len(self.tags) > 0 else 4
-        spaces += int(self.isEnabled())
-        return QtCore.QSizeF(text_size.width() + (spaces * spacing), height).toSize()
+
+        # Calculate width based on paint method layout logic
+        width = 0
+
+        # Icon button or initial spacing
+        if self.isEnabled():
+            width += spacing * 2  # button width
+            width += spacing / 2  # spacing after button
+        else:
+            width += spacing
+
+        # Tag group name
+        name_width = metrics.horizontalAdvance(self.tag_name)
+        width += name_width
+
+        # Separator and tags if present
+        if len(tag_strings) > 0:
+            width += spacing / 2  # spacing before separator
+            # separator line has negligible width
+            width += spacing / 2  # spacing after separator
+            tags_string = ", ".join(tag_strings)
+            tags_width = metrics.horizontalAdvance(tags_string)
+            width += tags_width
+
+        # Add padding for rounded border
+        width += spacing * 3
+
+        return QtCore.QSizeF(width, height).toSize()
 
     def minimumSize(self):
         return self.sizeHint()
