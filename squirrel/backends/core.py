@@ -2,8 +2,8 @@
 Base squirrel data storage backend interface
 """
 import re
-from collections.abc import Container, Generator
-from typing import NamedTuple, Sequence, Union
+from collections.abc import Container
+from typing import Iterable, NamedTuple, Sequence, Union
 from uuid import UUID
 
 from squirrel.model import PV, Snapshot
@@ -56,9 +56,9 @@ class _Backend:
         """
         raise NotImplementedError
 
-    def search(self, *search_terms: SearchTermType) -> Generator[Entry, None, None]:
+    def search(self, *search_terms: SearchTermType) -> Iterable[Union[PV, Snapshot]]:
         """
-        Yield Entry objects matching all ``search_terms``. Each SearchTerm has the format
+        Return all entries matching all ``search_terms``. Each SearchTerm has the format
         (<attr>, <operator>, <value>).  Some operators take tuples as values.
 
         The supported operators are:

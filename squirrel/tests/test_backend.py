@@ -43,56 +43,56 @@ def test_search_entry(test_backend: _Backend):
     results = test_backend.search(
         SearchTerm('description', 'eq', 'Snapshot 1')
     )
-    assert len(list(results)) == 1
+    assert len() == 1
     # Search by field name
     results = test_backend.search(
         SearchTerm('uuid', 'eq', UUID('ffd668d3-57d9-404e-8366-0778af7aee61'))
     )
-    assert len(list(results)) == 1
+    assert len(results) == 1
     # Search by field name
     results = test_backend.search(
         SearchTerm('data', 'eq', 2)
     )
-    assert len(list(results)) == 2
+    assert len(results) == 2
     # Search by field name
     results = test_backend.search(
         SearchTerm('uuid', 'eq', UUID('ecb42cdb-b703-4562-86e1-45bd67a2ab1a')),
         SearchTerm('data', 'eq', 2)
     )
-    assert len(list(results)) == 1
+    assert len(results) == 1
 
     results = test_backend.search(
         SearchTerm('entry_type', 'eq', Snapshot)
     )
-    assert len(list(results)) == 1
+    assert len(results) == 1
 
     results = test_backend.search(
         SearchTerm('entry_type', 'in', (Snapshot))
     )
-    assert len(list(results)) == 2
+    assert len(results) == 2
 
     results = test_backend.search(
         SearchTerm('data', 'lt', 3)
     )
-    assert len(list(results)) == 3
+    assert len(results) == 3
 
     results = test_backend.search(
         SearchTerm('data', 'gt', 3)
     )
-    assert len(list(results)) == 1
+    assert len(results) == 1
 
 
 @setup_test_stack(
     sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_fuzzy_search(test_backend: _Backend):
-    results = list(test_backend.search(
-        SearchTerm('description', 'like', 'motor'))
+    results = test_backend.search(
+        SearchTerm('description', 'like', 'motor')
     )
     assert len(results) == 3
 
-    results = list(test_backend.search(
-        SearchTerm('description', 'like', 'motor field (?!PREC)'))
+    results = test_backend.search(
+        SearchTerm('description', 'like', 'motor field (?!PREC)')
     )
     assert len(results) == 2
 
@@ -101,22 +101,22 @@ def test_fuzzy_search(test_backend: _Backend):
     sources=["sample_database"], backend_type=[TestBackend]
 )
 def test_tag_search(test_backend: _Backend):
-    results = list(test_backend.search(
+    results = test_backend.search(
         SearchTerm('tags', 'gt', {})
-    ))
+    )
     assert len(results) == 4
 
     smaller_tag_set = {0: {1}}
     bigger_tag_set = {0: {0, 1}}
 
-    results = list(test_backend.search(
+    results = test_backend.search(
         SearchTerm('tags', 'gt', smaller_tag_set)
-    ))
+    )
     assert len(results) == 2
 
-    results = list(test_backend.search(
+    results = test_backend.search(
         SearchTerm('tags', 'gt', bigger_tag_set)
-    ))
+    )
     assert len(results) == 0
 
 
@@ -126,15 +126,13 @@ def test_tag_search(test_backend: _Backend):
 )
 def test_search_error(test_backend: _Backend):
     with pytest.raises(TypeError):
-        results = test_backend.search(
+        test_backend.search(
             SearchTerm('data', 'like', 5)
         )
-        list(results)
     with pytest.raises(ValueError):
-        results = test_backend.search(
+        test_backend.search(
             SearchTerm('data', 'near', 5)
         )
-        list(results)
 
 
 @pytest.mark.skip(reason="Rewrite to test update_pv")
@@ -143,16 +141,16 @@ def test_search_error(test_backend: _Backend):
 )
 def test_update_entry(test_backend: _Backend):
     # grab an entry from the database and modify it.
-    entry = list(test_backend.search(
+    entry = test_backend.search(
         SearchTerm('description', 'eq', 'collection 1 defining some motor fields')
-    ))[0]
+    )[0]
     old_uuid = entry.uuid
 
     entry.description = 'new_description'
     test_backend.update_entry(entry)
-    new_entry = list(test_backend.search(
+    new_entry = test_backend.search(
         SearchTerm('description', 'eq', 'new_description')
-    ))[0]
+    )[0]
     new_uuid = new_entry.uuid
 
     assert old_uuid == new_uuid
