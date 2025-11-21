@@ -14,7 +14,6 @@ NO_DATA = "--"
 
 class PV_HEADER(Enum):
     CHECKBOX = 0
-    SEVERITY = auto()
     DEVICE = auto()
     PV = auto()
     READBACK_ADDR = auto()
@@ -31,7 +30,6 @@ class PV_HEADER(Enum):
 # Must be added outside class def to avoid processing as an enum member
 PV_HEADER._strings = {
     PV_HEADER.CHECKBOX: "",
-    PV_HEADER.SEVERITY: "",
     PV_HEADER.DEVICE: "Device",
     PV_HEADER.PV: "Setpoint Addr",
     PV_HEADER.READBACK_ADDR: "Readback Addr",
@@ -102,8 +100,6 @@ class PVTableModel(LivePVTableModel):
         if role == QtCore.Qt.DisplayRole:
             if column == PV_HEADER.CHECKBOX:
                 pass
-            elif column == PV_HEADER.SEVERITY:
-                return None
             elif column == PV_HEADER.DEVICE:
                 return entry.device or NO_DATA
             elif column == PV_HEADER.PV:
@@ -127,9 +123,7 @@ class PVTableModel(LivePVTableModel):
             else:
                 return None
         elif role == QtCore.Qt.ToolTipRole:
-            if column == PV_HEADER.SEVERITY:
-                return entry.setpoint + ".SEVR"
-            elif column in (PV_HEADER.PV, PV_HEADER.SETPOINT, PV_HEADER.LIVE_SETPOINT):
+            if column in (PV_HEADER.PV, PV_HEADER.SETPOINT, PV_HEADER.LIVE_SETPOINT):
                 return entry.setpoint
             elif column in (PV_HEADER.READBACK, PV_HEADER.LIVE_READBACK) and entry.readback:
                 return entry.readback
@@ -137,15 +131,23 @@ class PVTableModel(LivePVTableModel):
                 return None
         elif role == QtCore.Qt.CheckStateRole and column == PV_HEADER.CHECKBOX:
             return index.row() in self._checked
-        elif role == QtCore.Qt.DecorationRole and column == PV_HEADER.SEVERITY:
-            severity = Severity.INVALID
-            try:
-                severity = entry.setpoint_data.severity
-            except AttributeError:
-                pass
+        elif role == QtCore.Qt.DecorationRole:
+            col_map = {
+                PV_HEADER.SETPOINT: entry.setpoint_data,
+                PV_HEADER.LIVE_SETPOINT: entry.live_setpoint_data,
+                PV_HEADER.READBACK: entry.readback_data,
+                PV_HEADER.LIVE_READBACK: entry.live_readback_data,
+                PV_HEADER.CONFIG: entry.config_data,
+            }
+            data = col_map.get(column)
+            if not data:
+                return None
+            severity = getattr(data, "severity", Severity.INVALID)
             icon = SEVERITY_ICONS[severity]
             if icon is None:
-                icon = SEVERITY_ICONS[entry.setpoint_data.status]
+                status = getattr(data, "status", None)
+                if status is not None:
+                    icon = SEVERITY_ICONS[status]
             return icon
         elif role == QtCore.Qt.ForegroundRole and column in [PV_HEADER.LIVE_SETPOINT, PV_HEADER.LIVE_READBACK]:
             return QtGui.QColor(squirrel.color.BLUE)
