@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 ENDPOINTS = {
     "TAGS": "/v1/tags",
     "PVS": "/v1/pvs",
+    "PVS_PAGED": "/v1/pvs/paged",
     "PVS_MULTI": "/v1/pvs/multi",
     "SNAPSHOTS": "/v1/snapshots",
 }
@@ -462,6 +463,44 @@ class MongoBackend(_Backend):
         )
         self._raise_for_status(r)
         return [self._unpack_pv(d) for d in r.json()["payload"]]
+
+    def get_paged_pvs(self, limit: int, token="", search_string="") -> tuple[Iterable[PV], str]:
+        """
+        Get PVs with setpoint or readback matching search_string
+
+        Parameters
+        ----------
+        limit : int
+            Maximum number of PVs to receive at a time
+        token : str
+            Continuation token received from the most recent call
+        search_string : str
+
+        Returns
+        -------
+        tupe[Iterable[PV], str)
+            First element is the PV payload; second element is the continuation token
+
+        Raises
+        ------
+        BackendError
+        """
+        params = {
+            "pageSize": limit,
+        }
+        if token:
+            params["continuationToken"] = token
+        if search_string:
+            params["pvName"] = search_string
+        r = requests.get(
+            self.address + ENDPOINTS["PVS_PAGED"],
+            params=params,
+        )
+        self._raise_for_status(r)
+        return (
+            [self._unpack_pv(d) for d in r.json()["payload"]["results"]],
+            r.json()["payload"]["continuationToken"]
+        )
 
     def add_snapshot(self, snapshot: Snapshot) -> None:
         """

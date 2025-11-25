@@ -224,9 +224,11 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         if self.main_content_stack.currentWidget() != self.pv_browser_page:
             self.main_content_stack.setCurrentWidget(self.pv_browser_page)
             self.navigation_panel.set_nav_button_selected(self.navigation_panel.browse_pvs_button)
-
+        if not self.pv_browser_page._hasBeenShown:
+            self.pv_browser_page.pv_browser_table.resizeColumnsToContents()
             # Fixes TagWidget vertical size allocation
             self.pv_browser_page.pv_browser_table.resizeRowsToContents()
+            self.pv_browser_page._hasBeenShown = True
 
     @QtCore.Slot()
     def open_view_snapshot_page(self) -> None:
