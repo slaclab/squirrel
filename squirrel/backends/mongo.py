@@ -422,6 +422,31 @@ class MongoBackend(_Backend):
         self._raise_for_status(r)
         return [self._unpack_pv(d) for d in r.json()["payload"]]
 
+    def get_pvs(self, search_string="") -> Iterable[PV]:
+        """
+        Get PVs with setpoint or readback matching search_string
+
+        Parameters
+        ----------
+        search_string : str
+
+        Returns
+        -------
+        Iterable[PV]
+
+        Raises
+        ------
+        BackendError
+        """
+        r = requests.get(
+            self.address + ENDPOINTS["PVS"],
+            params={
+                "pvName": search_string,
+            }
+        )
+        self._raise_for_status(r)
+        return [self._unpack_pv(d) for d in r.json()["payload"]]
+
     def add_snapshot(self, snapshot: Snapshot) -> None:
         """
         Add snapshot to the backend.
@@ -440,14 +465,12 @@ class MongoBackend(_Backend):
         )
         self._raise_for_status(r)
 
-    def get_snapshots(self, uuid=None, title="", tags=None, meta_pvs=None) -> Iterable[Snapshot]:
+    def get_snapshots(self, title="", tags=None, meta_pvs=None) -> Iterable[Snapshot]:
         """
         Fetch snapshots from the backend.
 
         Parameters
         ----------
-        uuid : str, optional
-            ID of one specific Snapshot; if present, other parameters are ignored
         title : str, optional
             Substring contained in the title field of desired Snapshots
         tags : TagSet, optional
@@ -464,12 +487,6 @@ class MongoBackend(_Backend):
         ------
         BackendError
         """
-        if uuid:
-            r = requests.get(self.address + ENDPOINTS["SNAPSHOTS"] + f"/{uuid}")
-            self._raise_for_status(r)
-            snapshot_dict = r.json()["payload"]
-            return [self._unpack_snapshot(snapshot_dict)]
-
         tags = tags or {}
         meta_pvs = meta_pvs or []
         r = requests.get(
@@ -482,6 +499,29 @@ class MongoBackend(_Backend):
         )
         self._raise_for_status(r)
         return [self._unpack_snapshot_metadata(snapshot_dict) for snapshot_dict in r.json()["payload"]]
+
+    def get_snapshot(self, uuid) -> Snapshot:
+        """
+        Fetch specific snapshot with uuid from the backend
+
+        Parameters
+        ----------
+        uuid : str
+            ID of the individual Snapshot to fetch
+
+        Returns
+        -------
+        Snapshot
+            Snapshot instance with the specified uuid
+
+        Raises
+        ------
+        BackendError
+        """
+        r = requests.get(self.address + ENDPOINTS["SNAPSHOTS"] + f"/{uuid}")
+        self._raise_for_status(r)
+        snapshot_dict = r.json()["payload"]
+        return self._unpack_snapshot(snapshot_dict)
 
     def delete_snapshot(self, snapshot: Snapshot) -> None:
         """

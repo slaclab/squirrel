@@ -152,10 +152,7 @@ def test_search(test_client):
     backend_type=TestBackend
 )
 def test_search_entries_by_ancestor(test_client: Client):
-    entries = test_client.search(
-        ("entry_type", "eq", PV),
-        ("pv_name", "eq", "LASR:GUNB:TEST1"),
-    )
+    entries = test_client.backend.get_pvs(search_string="LASR:GUNB:TEST1")
     assert len(entries) == 2
     entries = test_client.search(
         ("entry_type", "eq", PV),
