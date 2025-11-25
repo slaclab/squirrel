@@ -76,6 +76,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_from_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_tag_from_group()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_tag_group()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_all_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_all_pvs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_pvs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshot"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots_in_date_range()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots_in_index_range()</span></code></a></li>
@@ -210,7 +212,13 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_meta_pvs</span></code>()</p></td>
 <td><p>Return the PVs used as Snapshot metadata</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots</span></code></a>([uuid, title, tags, meta_pvs])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_pvs" title="squirrel.backends.mongo.MongoBackend.get_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pvs</span></code></a>([search_string])</p></td>
+<td><p>Get PVs with setpoint or readback matching search_string</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshot" title="squirrel.backends.mongo.MongoBackend.get_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshot</span></code></a>(uuid)</p></td>
+<td><p>Fetch specific snapshot with uuid from the backend</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots</span></code></a>([title, tags, meta_pvs])</p></td>
 <td><p>Fetch snapshots from the backend.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_date_range</span></code></a>()</p></td>
@@ -459,14 +467,60 @@ data for this PV be saved in future Snapshots.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_pvs">
+<span class="sig-name descname"><span class="pre">get_pvs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PV</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_pvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_pvs" title="Link to this definition"></a></dt>
+<dd><p>Get PVs with setpoint or readback matching search_string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>search_string</strong><span class="classifier">str</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Iterable[PV]</dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_snapshot">
+<span class="sig-name descname"><span class="pre">get_snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Snapshot</span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_snapshot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_snapshot" title="Link to this definition"></a></dt>
+<dd><p>Fetch specific snapshot with uuid from the backend</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>uuid</strong><span class="classifier">str</span></dt><dd><p>ID of the individual Snapshot to fetch</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Snapshot</dt><dd><p>Snapshot instance with the specified uuid</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_snapshots">
-<span class="sig-name descname"><span class="pre">get_snapshots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_pvs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Snapshot</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_snapshots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_snapshots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_pvs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Snapshot</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_snapshots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="Link to this definition"></a></dt>
 <dd><p>Fetch snapshots from the backend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>uuid</strong><span class="classifier">str, optional</span></dt><dd><p>ID of one specific Snapshot; if present, other parameters are ignored</p>
-</dd>
 <dt><strong>title</strong><span class="classifier">str, optional</span></dt><dd><p>Substring contained in the title field of desired Snapshots</p>
 </dd>
 <dt><strong>tags</strong><span class="classifier">TagSet, optional</span></dt><dd><p>Tags contained in the tags field of desired Snapshots</p>

@@ -551,6 +551,34 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_pv</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]]</span></div>
 
 
+<div class="viewcode-block" id="MongoBackend.get_pvs">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_pvs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_string</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">PV</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get PVs with setpoint or readback matching search_string</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        search_string : str</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Iterable[PV]</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;PVS&quot;</span><span class="p">],</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;pvName&quot;</span><span class="p">:</span> <span class="n">search_string</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_pv</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]]</span></div>
+
+
 <div class="viewcode-block" id="MongoBackend.add_snapshot">
 <a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.add_snapshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">Snapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -574,14 +602,12 @@
 
 <div class="viewcode-block" id="MongoBackend.get_snapshots">
 <a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_snapshots">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_snapshots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta_pvs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Snapshot</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_snapshots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta_pvs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Snapshot</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fetch snapshots from the backend.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        uuid : str, optional</span>
-<span class="sd">            ID of one specific Snapshot; if present, other parameters are ignored</span>
 <span class="sd">        title : str, optional</span>
 <span class="sd">            Substring contained in the title field of desired Snapshots</span>
 <span class="sd">        tags : TagSet, optional</span>
@@ -598,12 +624,6 @@
 <span class="sd">        ------</span>
 <span class="sd">        BackendError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">uuid</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-            <span class="n">snapshot_dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]</span>
-            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_snapshot</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)]</span>
-
         <span class="n">tags</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">meta_pvs</span> <span class="o">=</span> <span class="n">meta_pvs</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -616,6 +636,32 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpack_snapshot_metadata</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">snapshot_dict</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="MongoBackend.get_snapshot">
+<a class="viewcode-back" href="../../../backends/index.html#squirrel.backends.mongo.MongoBackend.get_snapshot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Snapshot</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch specific snapshot with uuid from the backend</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        uuid : str</span>
+<span class="sd">            ID of the individual Snapshot to fetch</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Snapshot</span>
+<span class="sd">            Snapshot instance with the specified uuid</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        BackendError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">ENDPOINTS</span><span class="p">[</span><span class="s2">&quot;SNAPSHOTS&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_for_status</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">snapshot_dict</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;payload&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_snapshot</span><span class="p">(</span><span class="n">snapshot_dict</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MongoBackend.delete_snapshot">
