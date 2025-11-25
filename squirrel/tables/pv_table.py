@@ -134,9 +134,9 @@ class PVTableModel(LivePVTableModel):
         elif role == QtCore.Qt.DecorationRole:
             col_map = {
                 PV_HEADER.SETPOINT: entry.setpoint_data,
-                PV_HEADER.LIVE_SETPOINT: entry.live_setpoint_data,
+                PV_HEADER.LIVE_SETPOINT: getattr(entry, "live_setpoint_data", None),
                 PV_HEADER.READBACK: entry.readback_data,
-                PV_HEADER.LIVE_READBACK: entry.live_readback_data,
+                PV_HEADER.LIVE_READBACK: getattr(entry, "live_readback_data", None),
                 PV_HEADER.CONFIG: entry.config_data,
             }
             data = col_map.get(column)
