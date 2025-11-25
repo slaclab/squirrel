@@ -109,7 +109,7 @@ class SnapshotDetailsPage(Page):
         header_view = self.snapshot_details_table.horizontalHeader()
         header_view.setSectionResizeMode(header_view.ResizeMode.Stretch)
         header_view.setSectionResizeMode(PV_HEADER.CHECKBOX.value, header_view.ResizeMode.Fixed)
-        header_view.setSectionResizeMode(PV_HEADER.SEVERITY.value, header_view.ResizeMode.Fixed)
+        # header_view.setSectionResizeMode(PV_HEADER.SEVERITY.value, header_view.ResizeMode.Fixed)
         header_view.setSectionResizeMode(PV_HEADER.DEVICE.value, header_view.ResizeMode.Fixed)
         header_view.setSectionResizeMode(PV_HEADER.PV.value, header_view.ResizeMode.Fixed)
         self.snapshot_details_table.resizeColumnsToContents()
