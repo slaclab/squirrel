@@ -76,6 +76,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_from_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_tag_from_group()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.delete_tag_group"><code class="docutils literal notranslate"><span class="pre">MongoBackend.delete_tag_group()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_all_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_all_pvs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_paged_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_paged_pvs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_pvs"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_pvs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshot"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="docutils literal notranslate"><span class="pre">MongoBackend.get_snapshots()</span></code></a></li>
@@ -212,46 +213,49 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_meta_pvs</span></code>()</p></td>
 <td><p>Return the PVs used as Snapshot metadata</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_pvs" title="squirrel.backends.mongo.MongoBackend.get_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pvs</span></code></a>([search_string])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_paged_pvs" title="squirrel.backends.mongo.MongoBackend.get_paged_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_paged_pvs</span></code></a>(limit[, token, search_string])</p></td>
 <td><p>Get PVs with setpoint or readback matching search_string</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshot" title="squirrel.backends.mongo.MongoBackend.get_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshot</span></code></a>(uuid)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_pvs" title="squirrel.backends.mongo.MongoBackend.get_pvs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pvs</span></code></a>([search_string])</p></td>
+<td><p>Get PVs with setpoint or readback matching search_string</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshot" title="squirrel.backends.mongo.MongoBackend.get_snapshot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshot</span></code></a>(uuid)</p></td>
 <td><p>Fetch specific snapshot with uuid from the backend</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots</span></code></a>([title, tags, meta_pvs])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots" title="squirrel.backends.mongo.MongoBackend.get_snapshots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots</span></code></a>([title, tags, meta_pvs])</p></td>
 <td><p>Fetch snapshots from the backend.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_date_range</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_date_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_date_range</span></code></a>()</p></td>
 <td><p>TODO: Returns snapshots with timestamps in a given range.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_index_range</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range" title="squirrel.backends.mongo.MongoBackend.get_snapshots_in_index_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snapshots_in_index_range</span></code></a>()</p></td>
 <td><p>TODO: Returns snapshots with indicies in a given range, indexed by reverse-chronological position in the complete list of snapshots.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_tags" title="squirrel.backends.mongo.MongoBackend.get_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tags</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.get_tags" title="squirrel.backends.mongo.MongoBackend.get_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tags</span></code></a>()</p></td>
 <td><p>Fetch tag definition from the backend.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_entry</span></code>(entry)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_entry</span></code>(entry)</p></td>
 <td><p>Save <code class="docutils literal notranslate"><span class="pre">entry</span></code> into the database Throws EntryExistsError</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.search" title="squirrel.backends.mongo.MongoBackend.search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code></a>(*search_terms[, meta_pvs])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.search" title="squirrel.backends.mongo.MongoBackend.search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code></a>(*search_terms[, meta_pvs])</p></td>
 <td><p>Search for all entries matching the passed search terms.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_pvs</span></code>(meta_pvs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_pvs</span></code>(meta_pvs)</p></td>
 <td><p>Set the PVs used as Snapshot metadata</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tags</span></code>(tags)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_tags</span></code>(tags)</p></td>
 <td><p>Set the definition of valid entry tags</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_entry</span></code>(entry)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_entry</span></code>(entry)</p></td>
 <td><p>Update <code class="docutils literal notranslate"><span class="pre">entry</span></code> in the backend.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_pv" title="squirrel.backends.mongo.MongoBackend.update_pv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_pv</span></code></a>(pv_id[, setpoint, readback, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_pv" title="squirrel.backends.mongo.MongoBackend.update_pv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_pv</span></code></a>(pv_id[, setpoint, readback, ...])</p></td>
 <td><p>Update PV in the backend.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_group" title="squirrel.backends.mongo.MongoBackend.update_tag_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_tag_group</span></code></a>(group_id[, name, description])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_group" title="squirrel.backends.mongo.MongoBackend.update_tag_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_tag_group</span></code></a>(group_id[, name, description])</p></td>
 <td><p>Update name and/or description of a tag group.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_in_group" title="squirrel.backends.mongo.MongoBackend.update_tag_in_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_tag_in_group</span></code></a>(group_id, tag_id[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#squirrel.backends.mongo.MongoBackend.update_tag_in_group" title="squirrel.backends.mongo.MongoBackend.update_tag_in_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_tag_in_group</span></code></a>(group_id, tag_id[, ...])</p></td>
 <td><p>Update tag in a tag group.</p></td>
 </tr>
 </tbody>
@@ -466,6 +470,34 @@ data for this PV be saved in future Snapshots.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
+<dt>BackendError</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.get_paged_pvs">
+<span class="sig-name descname"><span class="pre">get_paged_pvs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PV</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.get_paged_pvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.get_paged_pvs" title="Link to this definition"></a></dt>
+<dd><p>Get PVs with setpoint or readback matching search_string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>limit</strong><span class="classifier">int</span></dt><dd><p>Maximum number of PVs to receive at a time</p>
+</dd>
+<dt><strong>token</strong><span class="classifier">str</span></dt><dd><p>Continuation token received from the most recent call</p>
+</dd>
+<dt><strong>search_string</strong><span class="classifier">str</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tupe[Iterable[PV], str)</dt><dd><p>First element is the PV payload; second element is the continuation token</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
 <dt>BackendError</dt><dd></dd>
 </dl>
 </dd>
