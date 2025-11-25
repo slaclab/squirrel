@@ -339,7 +339,7 @@ explicitly.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>int</dt><dd><p>ID of the newly created tag group, received from the backend</p>
+<dt>str</dt><dd><p>ID of the newly created tag group, received from the backend</p>
 </dd>
 </dl>
 </dd>
@@ -353,12 +353,12 @@ explicitly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="squirrel.backends.mongo.MongoBackend.add_tag_to_group">
-<span class="sig-name descname"><span class="pre">add_tag_to_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.add_tag_to_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.add_tag_to_group" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_tag_to_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/squirrel/backends/mongo.html#MongoBackend.add_tag_to_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#squirrel.backends.mongo.MongoBackend.add_tag_to_group" title="Link to this definition"></a></dt>
 <dd><p>Add new tag to a tag group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
+<dt><strong>group_id</strong><span class="classifier">str</span></dt><dd><p>ID of the tag group</p>
 </dd>
 <dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name to use for the new tag</p>
 </dd>
@@ -366,8 +366,14 @@ explicitly.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>ID of the newly created tag, received from the backend</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
 <dt>BackendError</dt><dd></dd>
 </dl>
 </dd>
@@ -633,7 +639,7 @@ data for other parameters will not be affected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
+<dt><strong>group_id</strong><span class="classifier">str</span></dt><dd><p>ID of the tag group</p>
 </dd>
 <dt><strong>name</strong><span class="classifier">str, optional</span></dt><dd><p>New name to use for the tag group</p>
 </dd>
@@ -659,7 +665,7 @@ passed as parameters.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>group_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag group</p>
 </dd>
-<dt><strong>tag_id</strong><span class="classifier">int</span></dt><dd><p>ID of the tag to in the tag group</p>
+<dt><strong>tag_id</strong><span class="classifier">str</span></dt><dd><p>ID of the tag to in the tag group</p>
 </dd>
 <dt><strong>name</strong><span class="classifier">str, optional</span></dt><dd><p>New name to use for the tag</p>
 </dd>
