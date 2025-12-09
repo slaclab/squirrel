@@ -14,7 +14,7 @@ jobs:
       matrix:
         python-version: ["3.10.14", "3.12"]
     name: "Conda"
-    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-conda-test.yml@master
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/python-conda-test.yml@8c760fa1ee84d80f1e7c5d3842fc0c07fe45aec3
     secrets: inherit
     with:
       package-name: "superscore"
