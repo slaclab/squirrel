@@ -331,14 +331,14 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
             return
         data: PV
         if isinstance(index.model(), QtCore.QSortFilterProxyModel):
-            source_model = index.model().sourceModel()
-            source_index = index.model().mapToSource(index)
+            model = index.model().sourceModel()
+            row = index.model().mapToSource(index).row()
         elif isinstance(index.model(), PVTableModel):
-            source_model = index.model()
-            source_index = index
+            model = index.model()
+            row = index.row()
         else:
             raise TypeError("Invalid model type passed to open_pv_details")
-        data = source_model._data[source_index.row()]
+        data = model._data[row]
 
         # Get data via the client for alarm limits
         epics_data: EpicsData = None
@@ -368,7 +368,7 @@ class Window(QtWidgets.QMainWindow, metaclass=QtSingleton):
         )
         if editable:
             self.popup.accepted.connect(self.update_pv)
-            self.popup.accepted.connect(lambda: source_model.refetch_row(source_index.row()))
+            self.popup.accepted.connect(lambda: model.refetch_row(row))
         self.popup.adjustSize()
 
         table_top_right = view.mapToGlobal(view.rect().topRight())
