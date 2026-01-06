@@ -1,6 +1,6 @@
 [run]
 source =
-    superscore
+    squirrel
 [report]
 omit =
     #versioning
@@ -8,4 +8,4 @@ omit =
     *_version.py
     #tests
     *test*
-    superscore/tests/*
+    squirrel/tests/*
